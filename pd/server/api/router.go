@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 	"net/http"
-	"pd/pd-server/server"
+	"pd/server"
 )
 
 const ApiPrefix = "/pd"

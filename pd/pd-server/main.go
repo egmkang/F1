@@ -1,8 +1,8 @@
 package main
 
 import (
-	"pd/pd-server/api"
-	"pd/pd-server/server"
+	"pd/server"
+	"pd/server/api"
 	"time"
 )
 

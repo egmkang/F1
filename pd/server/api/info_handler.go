@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/unrolled/render"
 	"net/http"
-	"pd/pd-server/server"
+	"pd/server"
 )
 
 type infoHandler struct {
