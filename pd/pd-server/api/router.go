@@ -3,33 +3,32 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
-	"github.com/urfave/negroni"
 	"net/http"
 	"pd/pd-server/server"
 )
 
-const apiPrefix = "/pd"
+const ApiPrefix = "/pd"
 
 func createRouter(prefix string, server *server.Server) *mux.Router {
 	render := render.New(render.Options{IndentJSON: true})
 
-	router := mux.NewRouter().PathPrefix(prefix).Subrouter()
+	subRouter := mux.NewRouter().PathPrefix(prefix).Subrouter()
 
 	infoHandler := newInfoHandler(server, render)
-	router.HandleFunc("/api/v1/version", infoHandler.Version).Methods("GET")
+	subRouter.HandleFunc("/api/v1/version", infoHandler.Version).Methods("GET")
 
-	return router
+	return subRouter
 }
 
 func NewHandle(server *server.Server) http.Handler {
-	engine := negroni.New()
+	return createRouter(ApiPrefix, server)
+	//engine := negroni.New()
 
-	recovery := negroni.NewRecovery()
-	engine.Use(recovery)
+	//router := mux.NewRouter()
+	//router.PathPrefix(ApiPrefix).Handler(negroni.New(
+	//	negroni.Wrap(createRouter(ApiPrefix, server)),
+	//))
 
-	router := mux.NewRouter()
-	router.PathPrefix(apiPrefix).Handler(createRouter(apiPrefix, server))
-
-	engine.UseHandler(router)
-	return engine
+	//engine.UseHandler(router)
+	//return engine
 }
