@@ -1,7 +1,9 @@
 PlacementDriver:
 
 * [ ] 名字空间
-* [ ] ID生成(服务器ID, Version)
+* [x] ID生成
+    * [x] ServerID Generator
+    * [x] Sequence Generator
 * [ ] 节点
     * [ ] 注册服务器
     * [ ] 续约服务器

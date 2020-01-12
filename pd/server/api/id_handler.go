@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-var serverIdGenerator *util.IdGenerator
+var serverIdGenerator = util.NewIdGenerator("/global/server_id", 1)
 
 var sequenceMapMutex = sync.Mutex{}
 var sequenceGenerator = map[string]*util.IdGenerator{}
@@ -42,10 +42,6 @@ type NewIDResp struct {
 }
 
 func (this *idHandler) NewServerID(w http.ResponseWriter, r *http.Request) {
-	if serverIdGenerator == nil {
-		serverIdGenerator = util.NewIdGenerator("/global/server_id", 1)
-	}
-
 	newId, err := serverIdGenerator.GetNewID(this.server.GetEtcdClient())
 	if err != nil {
 		this.render.JSON(w, http.StatusInternalServerError, err.Error())
