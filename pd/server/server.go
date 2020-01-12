@@ -3,10 +3,12 @@ package server
 import (
 	"github.com/pingcap/log"
 	"github.com/pkg/errors"
+	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/embed"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
+	"time"
 )
 
 type Config struct {
@@ -37,6 +39,7 @@ type Server struct {
 	config     *Config
 	etcdConfig *embed.Config
 	etcd       *embed.Etcd
+	etcdClient *clientv3.Client
 
 	handler http.Handler
 
@@ -66,17 +69,34 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 
 	etcd, err := embed.StartEtcd(this.etcdConfig)
 	if err != nil {
+		log.Error("StartEtcd failed", zap.Error(err))
 		return errors.WithStack(err)
 	}
 
 	select {
 	case <-etcd.Server.ReadyNotify():
-		println("etcd inited")
+		log.Info("etcd inited")
+	}
+
+	endpoints := []string{this.etcdConfig.ACUrls[0].String()}
+	log.Info("create etcd v3 client", zap.Strings("endpoints", endpoints))
+
+	client, err := clientv3.New(clientv3.Config{
+		Endpoints:   endpoints,
+		DialTimeout: 3 * time.Second,
+	})
+
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	this.etcd = etcd
-
+	this.etcdClient = client
 	return nil
+}
+
+func (this *Server) GetEtcdClient() *clientv3.Client {
+	return this.etcdClient
 }
 
 func NewServer() *Server {
