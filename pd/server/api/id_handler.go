@@ -10,7 +10,10 @@ import (
 	"sync"
 )
 
-var serverIdGenerator = util.NewIdGenerator("/global/server_id", 1)
+const SequencePathPrefix = "/global/sequence/"
+const ServerIDPathPrefix = "/global/server_id"
+
+var serverIdGenerator = util.NewIdGenerator(ServerIDPathPrefix, 1)
 
 var sequenceMapMutex = sync.Mutex{}
 var sequenceGenerator = map[string]*util.IdGenerator{}
@@ -22,7 +25,7 @@ func getIdGenerator(sequencePath string, step int64) *util.IdGenerator {
 	if ok {
 		return v
 	}
-	path := "/global/sequence/" + sequencePath
+	path := SequencePathPrefix + sequencePath
 	newGenerator := util.NewIdGenerator(path, step)
 	sequenceGenerator[sequencePath] = newGenerator
 	return newGenerator

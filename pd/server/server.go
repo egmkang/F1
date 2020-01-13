@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -45,6 +46,9 @@ type Server struct {
 
 	logger      *zap.Logger
 	loggerProps *log.ZapProperties
+
+	hostMutex sync.Mutex
+	hosts     map[int64]*ActorHostInfo
 }
 
 func (this *Server) InitLogger() error {
@@ -101,6 +105,9 @@ func (this *Server) GetEtcdClient() *clientv3.Client {
 
 func NewServer() *Server {
 	config := newConfig()
-	s := &Server{config: config}
+	s := &Server{
+		config:    config,
+		hostMutex: sync.Mutex{},
+		hosts:     map[int64]*ActorHostInfo{}}
 	return s
 }

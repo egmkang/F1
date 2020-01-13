@@ -12,6 +12,51 @@ import (
 const DefaultRequestTimeout = time.Second * 10
 const DefaultSlowRequest = time.Second * 1
 
+func EtcdLeaseGrant(client *clientv3.Client, ttl int64, opts ...clientv3.OpOption) (*clientv3.LeaseGrantResponse, error) {
+	ctx, cancel := context.WithTimeout(client.Ctx(), DefaultRequestTimeout)
+	defer cancel()
+
+	start := time.Now()
+	resp, err := clientv3.NewLease(client).Grant(ctx, ttl)
+	if err != nil {
+		log.Error("EtcdLeaseGrant", zap.Error(err))
+	}
+	if cost := time.Since(start); cost > DefaultSlowRequest {
+		log.Warn("EtcdLeaseGrant get too slow", zap.Duration("cost", cost), zap.Error(err))
+	}
+	return resp, errors.WithStack(err)
+}
+
+func EtcdLeaseKeepAliveOnce(client *clientv3.Client, leaseID int64, opts ...clientv3.OpOption) (*clientv3.LeaseKeepAliveResponse, error) {
+	ctx, cancel := context.WithTimeout(client.Ctx(), DefaultRequestTimeout)
+	defer cancel()
+
+	start := time.Now()
+	resp, err := clientv3.NewLease(client).KeepAliveOnce(ctx, clientv3.LeaseID(leaseID))
+	if err != nil {
+		log.Error("EtcdLeaseKeepAliveOnce", zap.Error(err))
+	}
+	if cost := time.Since(start); cost > DefaultSlowRequest {
+		log.Warn("EtcdLeaseKeepAliveOnce get too slow", zap.Duration("cost", cost), zap.Error(err))
+	}
+	return resp, errors.WithStack(err)
+}
+
+func EtcdKVPut(client *clientv3.Client, key string, value string, opts ...clientv3.OpOption) (*clientv3.PutResponse, error) {
+	ctx, cancel := context.WithTimeout(client.Ctx(), DefaultRequestTimeout)
+	defer cancel()
+
+	start := time.Now()
+	resp, err := clientv3.NewKV(client).Put(ctx, key, value, opts...)
+	if err != nil {
+		log.Error("EtcdKVPut error", zap.Error(err))
+	}
+	if cost := time.Since(start); cost > DefaultSlowRequest {
+		log.Warn("EtcdKVPut get too slow", zap.String("key", key), zap.Duration("cost", cost), zap.Error(err))
+	}
+	return resp, errors.WithStack(err)
+}
+
 func EtcdKVGet(client *clientv3.Client, key string, opts ...clientv3.OpOption) (*clientv3.GetResponse, error) {
 	ctx, cancel := context.WithTimeout(client.Ctx(), DefaultRequestTimeout)
 	defer cancel()

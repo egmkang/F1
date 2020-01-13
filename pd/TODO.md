@@ -4,9 +4,12 @@ PlacementDriver:
 * [x] ID生成
     * [x] ServerID Generator
     * [x] Sequence Generator
+* [ ] PD节点
+    * [ ] 心跳
 * [ ] 节点
     * [ ] 注册服务器
     * [ ] 续约服务器
+    * [ ] 服务器索引
     * [ ] 拉取最近的事件(新老节点状态, Actor信息)
 * [ ] Actor
     * [ ] 定位(包含ActorID, ServerUniqueID, ActorVersion)

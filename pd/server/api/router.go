@@ -18,9 +18,12 @@ func createRouter(prefix string, server *server.Server) *mux.Router {
 	subRouter.HandleFunc("/api/v1/version", infoHandler.Version).Methods("GET")
 
 	idHandler := newIdHandler(server, render)
-	subRouter.HandleFunc("/api/v1/new_server_id", idHandler.NewServerID).Methods("POST")
-	subRouter.HandleFunc("/api/v1/new_sequence_id/{sequence_key}/{step}", idHandler.NewSequenceID).Methods("POST")
+	subRouter.HandleFunc("/api/v1/id/new_server_id", idHandler.NewServerID).Methods("POST")
+	subRouter.HandleFunc("/api/v1/id/new_sequence/{sequence_key}/{step}", idHandler.NewSequenceID).Methods("POST")
 
+	serverHandler := newServerHandler(server, render)
+	subRouter.HandleFunc("/api/v1/server/register", serverHandler.RegisterNewServer).Methods("POST")
+	subRouter.HandleFunc("/api/v1/server/keep_alive", serverHandler.KeepAliveServer).Methods("POST")
 	return subRouter
 }
 

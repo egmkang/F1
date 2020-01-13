@@ -14,6 +14,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.12.1 // indirect
 	github.com/json-iterator/go v1.1.8 // indirect
+	github.com/pingcap/errors v0.11.0
 
 	github.com/pingcap/log v0.0.0-20190715063458-479153f07ebd
 	github.com/pkg/errors v0.8.1
