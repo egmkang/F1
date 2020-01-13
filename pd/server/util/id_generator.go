@@ -1,6 +1,7 @@
 package util
 
 import (
+	"github.com/pingcap/errors"
 	"github.com/pingcap/log"
 	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
@@ -32,8 +33,9 @@ func (this *IdGenerator) GetNewID(client *clientv3.Client) (int64, error) {
 	defer this.mutex.Unlock()
 
 	if this.current == this.end {
-		//TODO:尝试多次(失败之后还未处理)
-		for i := 0; i < MaxRetryCount; i++ {
+		//尝试多次
+		i := 0
+		for ; i < MaxRetryCount; i++ {
 			newEnd, err := this.tryGenerateNewID(client)
 			if err != nil {
 				return 0, err
@@ -46,6 +48,9 @@ func (this *IdGenerator) GetNewID(client *clientv3.Client) (int64, error) {
 			this.current = newEnd - this.step
 			this.end = newEnd
 			break
+		}
+		if i >= MaxRetryCount {
+			return 0, errors.Errorf("need retry")
 		}
 	}
 	this.current++
