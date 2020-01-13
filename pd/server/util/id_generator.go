@@ -32,7 +32,7 @@ func (this *IdGenerator) GetNewID(client *clientv3.Client) (int64, error) {
 	defer this.mutex.Unlock()
 
 	if this.current == this.end {
-		//尝试多次
+		//TODO:尝试多次(失败之后还未处理)
 		for i := 0; i < MaxRetryCount; i++ {
 			newEnd, err := this.tryGenerateNewID(client)
 			if err != nil {
