@@ -11,10 +11,6 @@ import (
 	"pd/server/util"
 )
 
-//路径: /actor_server/{domain}/{server_id}
-//内容是ActorHostInfo的JSON字符串
-const ActorHostServerPrefix = "/actor_server"
-
 //默认存活时间是15秒, 5秒一个心跳
 const ActorHostServerDefaultTTL = 15
 
@@ -32,11 +28,11 @@ type RegisterNewServerResp struct {
 }
 
 type KeepAliveServerResp struct {
-	Hosts []*server.ActorHostInfo `json:"hosts"`
+	Hosts map[int64]*server.ActorHostInfo `json:"hosts"`
 }
 
 func generateServerKey(serverID int64, domain string) string {
-	return fmt.Sprintf("%s/%s/%d", ActorHostServerPrefix, domain, serverID)
+	return fmt.Sprintf("%s/%s/%d", server.ActorHostServerPrefix, domain, serverID)
 }
 
 func (this *serverHandler) getActorHostInfoByID(serverID int64, domain string) *server.ActorHostInfo {
@@ -139,11 +135,14 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	//TODO:
+	//更新缓存和etcd里面的数据
+
 	log.Debug("KeepAliveServer",
 		zap.Int64("ServerID", serverInfo.ServerID),
 		zap.Int64("LeaseID", serverInfo.LeaseID),
 		zap.Int64("Load", serverInfo.Load))
 
-	hosts := this.server.GetActorHost()
+	hosts := this.server.GetActorHosts()
 	this.render.JSON(w, http.StatusOK, &KeepAliveServerResp{Hosts: hosts})
 }

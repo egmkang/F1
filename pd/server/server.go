@@ -9,7 +9,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
-	"sync"
 	"time"
 )
 
@@ -50,10 +49,8 @@ type Server struct {
 	logger      *zap.Logger
 	loggerProps *log.ZapProperties
 
-	hostMutex sync.Mutex
-	hosts     map[int64]*ActorHostInfo
-
-	actorHostsID *lru.Cache
+	actorHostsID     *lru.Cache
+	actorHostManager *ActorHostManager
 }
 
 func (this *Server) InitLogger() error {
@@ -101,6 +98,7 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 
 	this.etcd = etcd
 	this.etcdClient = client
+	go this.updateActorHostListLoop()
 	return nil
 }
 
@@ -122,10 +120,9 @@ func NewServer() *Server {
 	lru, _ := lru.New(LRUSize)
 
 	s := &Server{
-		config:       config,
-		hostMutex:    sync.Mutex{},
-		hosts:        map[int64]*ActorHostInfo{},
-		actorHostsID: lru,
+		config:           config,
+		actorHostsID:     lru,
+		actorHostManager: NewActorHostManager(),
 	}
 	return s
 }

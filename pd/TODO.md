@@ -9,7 +9,7 @@ PlacementDriver:
 * [ ] 节点
     * [x] 注册服务器
     * [x] 续约服务器
-    * [ ] 服务器索引
+    * [x] 服务器索引
     * [ ] 拉取最近的事件(新老节点状态, Actor信息)
 * [ ] Actor
     * [ ] 定位(包含ActorID, ServerUniqueID, ActorVersion)
