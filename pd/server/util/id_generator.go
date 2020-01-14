@@ -59,7 +59,7 @@ func (this *IdGenerator) GetNewID(client *clientv3.Client) (int64, error) {
 
 //-1: need retry
 func (this *IdGenerator) tryGenerateNewID(client *clientv3.Client) (int64, error) {
-	value, err := getKVValue(client, this.path)
+	value, err := EtcdGetKVValue(client, this.path)
 	if err != nil {
 		return 0, err
 	}

@@ -12,6 +12,7 @@ type ActorHostInfo struct {
 	Load      int64    `json:"load"`       //负载
 	StartTime int64    `json:"start_time"` //服务器注册的时间(单位毫秒)
 	TTL       int64    `json:"ttl"`        //存活时间(心跳时间*3)
+	Address   string   `json:"address"`    //服务器地址
 	Domain    string   `json:"domain"`     //命名空间
 	ActorType []string `json:"actor_type"` //可以提供服务的类型
 }

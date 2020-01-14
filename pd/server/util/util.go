@@ -35,6 +35,14 @@ func ReadJSON(reader io.ReadCloser, data interface{}) error {
 	return nil
 }
 
+func ReadJSONFromData(data []byte, value interface{}) error {
+	err := json.Unmarshal(data, value)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
 func JSON(data interface{}) (string, error) {
 	bytes, err := json.Marshal(data)
 	if err != nil {
