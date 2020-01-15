@@ -6,11 +6,11 @@ PlacementDriver:
     * [x] Sequence Generator
 * [ ] PD节点
     * [ ] 心跳
-* [ ] 节点
+* [x] 节点
     * [x] 注册服务器
     * [x] 续约服务器
     * [x] 服务器索引
-    * [ ] 拉取最近的事件(新老节点状态, Actor信息)
+    * [x] 拉取最近的事件(新老节点状态)
 * [ ] Actor
     * [ ] 定位(包含ActorID, ServerUniqueID, ActorVersion)
     * [ ] 修改位置(老Version信息过期)

@@ -10,7 +10,7 @@ import (
 const ApiPrefix = "/pd"
 
 func createRouter(prefix string, server *server.Server) *mux.Router {
-	render := render.New(render.Options{IndentJSON: true})
+	render := render.New(render.Options{IndentJSON: false})
 
 	subRouter := mux.NewRouter().PathPrefix(prefix).Subrouter()
 

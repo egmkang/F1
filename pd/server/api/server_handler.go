@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pingcap/log"
 	"github.com/unrolled/render"
-	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
 	"net/http"
 	"pd/server"
@@ -28,27 +27,8 @@ type RegisterNewServerResp struct {
 }
 
 type KeepAliveServerResp struct {
-	Hosts map[int64]*server.ActorHostInfo `json:"hosts"`
-}
-
-func generateServerKey(serverID int64, domain string) string {
-	return fmt.Sprintf("%s/%s/%d", server.ActorHostServerPrefix, domain, serverID)
-}
-
-func (this *serverHandler) getActorHostInfoByID(serverID int64, domain string) *server.ActorHostInfo {
-	key := generateServerKey(serverID, domain)
-	data, err := util.EtcdGetKVValue(this.server.GetEtcdClient(), key)
-	if err != nil || data == nil {
-		return nil
-	}
-
-	info := &server.ActorHostInfo{}
-	err = util.ReadJSONFromData(data, info)
-	if err != nil {
-		log.Error("GetActorHostInfoByID", zap.Int64("ServerID", serverID), zap.String("Domain", domain), zap.Error(err))
-		return nil
-	}
-	return info
+	Hosts  map[int64]*server.ActorHostInfo   `json:"hosts"`
+	Events []*server.ActorHostAddRemoveEvent `json:"events"`
 }
 
 func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Request) {
@@ -64,14 +44,14 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 	}
 
 	//从etcd里面获取server信息, 如果存在就拒绝注册
-	if info := this.getActorHostInfoByID(serverInfo.ServerID, serverInfo.Domain); info != nil {
+	if info := this.server.GetActorHostInfoByServerID(serverInfo.ServerID); info != nil {
 		this.render.JSON(w, http.StatusBadRequest, fmt.Sprintf("RegisterNewServer, ServerID:%d exist", serverInfo.ServerID))
 		log.Info("RegisterNewServer server exist", zap.Int64("ServerID", info.ServerID), zap.Int64("LeaseID", info.LeaseID))
 		return
 	}
 
 	//从LRU里面查看
-	if v := this.server.GetActorHostID(serverInfo.ServerID); v != nil {
+	if v := this.server.GetRegisteredActorHostID(serverInfo.ServerID); v != nil {
 		this.render.JSON(w, http.StatusBadRequest, fmt.Sprintf("RegisterNewServer, ServerID:%d exist", serverInfo.ServerID))
 		log.Info("RegisterNewServer server exist", zap.Reflect("ServerID", v))
 		return
@@ -89,15 +69,7 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 	}
 	serverInfo.LeaseID = int64(lease.ID)
 
-	json, err := util.JSON(serverInfo)
-	if err != nil {
-		this.render.JSON(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	//domain和server id存在正交, 实际上是server id决定了domain
-	key := generateServerKey(serverInfo.ServerID, serverInfo.Domain)
-	_, err = util.EtcdKVPut(this.server.GetEtcdClient(), key, json, clientv3.WithLease(lease.ID))
+	err = this.server.SaveActorHostInfo(serverInfo)
 	if err != nil {
 		this.render.JSON(w, http.StatusInternalServerError, err.Error())
 		return
@@ -135,14 +107,25 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	//TODO:
 	//更新缓存和etcd里面的数据
+	info := this.server.GetActorHostInfoByServerID(serverInfo.ServerID)
+	if info == nil {
+		log.Error("KeepAliveServer server not found", zap.Int64("ServerID", serverInfo.ServerID))
+		this.render.JSON(w, http.StatusBadRequest, "ServerID not found")
+		return
+	}
+
+	info.Load = serverInfo.Load
+	this.server.SaveActorHostInfo(info)
 
 	log.Debug("KeepAliveServer",
-		zap.Int64("ServerID", serverInfo.ServerID),
-		zap.Int64("LeaseID", serverInfo.LeaseID),
-		zap.Int64("Load", serverInfo.Load))
+		zap.Int64("ServerID", info.ServerID),
+		zap.Int64("LeaseID", info.LeaseID),
+		zap.Int64("Load", info.Load))
 
-	hosts := this.server.GetActorHosts()
-	this.render.JSON(w, http.StatusOK, &KeepAliveServerResp{Hosts: hosts})
+	result := &KeepAliveServerResp{
+		Hosts:  this.server.GetActorHosts(info.Domain),
+		Events: this.server.GetActorHostEvent(),
+	}
+	this.render.JSON(w, http.StatusOK, result)
 }

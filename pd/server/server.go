@@ -1,7 +1,6 @@
 package server
 
 import (
-	lru "github.com/hashicorp/golang-lru"
 	"github.com/pingcap/log"
 	"github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
@@ -11,8 +10,6 @@ import (
 	"net/http"
 	"time"
 )
-
-const LRUSize = 1024 * 10
 
 type Config struct {
 	Name    string
@@ -49,8 +46,7 @@ type Server struct {
 	logger      *zap.Logger
 	loggerProps *log.ZapProperties
 
-	actorHostsID     *lru.Cache
-	actorHostManager *ActorHostManager
+	hostManager *ActorHostManager
 }
 
 func (this *Server) InitLogger() error {
@@ -106,23 +102,11 @@ func (this *Server) GetEtcdClient() *clientv3.Client {
 	return this.etcdClient
 }
 
-func (this *Server) AddActorHostID(serverID int64) {
-	this.actorHostsID.Add(serverID, serverID)
-}
-
-func (this *Server) GetActorHostID(serverID int64) interface{} {
-	v, _ := this.actorHostsID.Get(serverID)
-	return v
-}
-
 func NewServer() *Server {
 	config := newConfig()
-	lru, _ := lru.New(LRUSize)
-
 	s := &Server{
-		config:           config,
-		actorHostsID:     lru,
-		actorHostManager: NewActorHostManager(),
+		config:      config,
+		hostManager: NewActorHostManager(),
 	}
 	return s
 }
