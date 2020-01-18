@@ -4,11 +4,9 @@ import (
 	"fmt"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/pingcap/log"
-	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
 	"pd/server/util"
 	"sort"
-	"time"
 )
 
 const LRUSize = 1024 * 10
@@ -39,7 +37,7 @@ type ActorHostIndex struct {
 	types map[string]map[int64]*ActorHostInfo //Domain:ActorType => Set<ActorHostInfo>
 }
 
-type ActorHostManager struct {
+type ActorMembership struct {
 	lastUpdateIndexTime int64
 	lastGCEventTime     int64
 	index               *ActorHostIndex
@@ -68,10 +66,10 @@ func (s ActorHostEventSlice) Less(i, j int) bool {
 	return s[i].Time < s[j].Time
 }
 
-func NewActorHostManager() *ActorHostManager {
+func NewActorHostManager() *ActorMembership {
 	index := buildIndexFromArray(nil)
 	l, _ := lru.New(LRUSize)
-	return &ActorHostManager{
+	return &ActorMembership{
 		lastUpdateIndexTime: util.GetMilliSeconds(),
 		lastGCEventTime:     util.GetMilliSeconds(),
 		index:               index,
@@ -80,7 +78,7 @@ func NewActorHostManager() *ActorHostManager {
 	}
 }
 
-func (this *ActorHostManager) compare2Index(newIndex *ActorHostIndex) ([]int64, []int64) {
+func (this *ActorMembership) compare2Index(newIndex *ActorHostIndex) ([]int64, []int64) {
 	add := make([]int64, 0)
 	remove := make([]int64, 0)
 	for k, v := range newIndex.ids {
@@ -96,7 +94,7 @@ func (this *ActorHostManager) compare2Index(newIndex *ActorHostIndex) ([]int64, 
 	return add, remove
 }
 
-func (this *ActorHostManager) updateEvents(add []int64, remove []int64) {
+func (this *ActorMembership) updateEvents(add []int64, remove []int64) {
 	if len(add) > 0 || len(remove) > 0 {
 		event := &ActorHostAddRemoveEvent{
 			Time:   this.lastUpdateIndexTime,
@@ -125,7 +123,24 @@ func (this *ActorHostManager) updateEvents(add []int64, remove []int64) {
 	}
 }
 
-func (this *ActorHostManager) UpdateIndex(startTime int64, newIndex *ActorHostIndex) ([]int64, []int64) {
+func (this *ActorMembership) GetReadonlyIndex() *ActorHostIndex {
+	return this.index
+}
+
+func (this *ActorMembership) GetReadonlyRecentEvents() []*ActorHostAddRemoveEvent {
+	return this.eventsSnapshot
+}
+
+func (this *ActorMembership) AddActorMemberID(serverID int64) {
+	this.registeredID.Add(serverID, serverID)
+}
+
+func (this *ActorMembership) GetActorMember(serverID int64) interface{} {
+	v, _ := this.registeredID.Get(serverID)
+	return v
+}
+
+func (this *ActorMembership) UpdateIndex(startTime int64, newIndex *ActorHostIndex) ([]int64, []int64) {
 	if startTime > this.lastUpdateIndexTime {
 		this.lastUpdateIndexTime = startTime
 
@@ -136,72 +151,6 @@ func (this *ActorHostManager) UpdateIndex(startTime int64, newIndex *ActorHostIn
 	}
 	log.Warn("UpdateIndex", zap.Int64("LastUpdateTime", this.lastUpdateIndexTime), zap.Int64("StartTime", startTime))
 	return nil, nil
-}
-
-func (this *Server) GetActorHostEvent() []*ActorHostAddRemoveEvent {
-	return this.hostManager.eventsSnapshot
-}
-
-func (this *Server) SaveActorHostInfo(serverInfo *ActorHostInfo) error {
-	json, err := util.JSON(serverInfo)
-	if err != nil {
-		return err
-	}
-
-	key := GenerateServerKey(serverInfo.ServerID)
-	_, err = util.EtcdKVPut(this.etcdClient, key, json, clientv3.WithLease(clientv3.LeaseID(serverInfo.LeaseID)))
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (this *Server) GetActorHostInfoByServerID(serverID int64) *ActorHostInfo {
-	index := this.hostManager.index
-	info, ok := index.ids[serverID]
-	if ok {
-		return info
-	}
-
-	key := GenerateServerKey(serverID)
-	data, err := util.EtcdGetKVValue(this.etcdClient, key)
-	if err != nil || data == nil {
-		return nil
-	}
-	info = tryParseActorHostInfo(data)
-	return info
-}
-
-func (this *Server) GetActorHosts(domain string) map[int64]*ActorHostInfo {
-	result := map[int64]*ActorHostInfo{}
-	index := this.hostManager.index
-
-	for k, v := range index.ids {
-		if v.Domain == domain {
-			result[k] = v
-		}
-	}
-
-	return result
-}
-
-func (this *Server) AddActorHostID(serverID int64) {
-	this.hostManager.registeredID.Add(serverID, serverID)
-}
-
-func (this *Server) GetRegisteredActorHostID(serverID int64) interface{} {
-	v, _ := this.hostManager.registeredID.Get(serverID)
-	return v
-}
-
-func (this *Server) updateActorHostListLoop() {
-	beginTime := util.GetMilliSeconds()
-	for i := int64(0); ; i++ {
-		currentTime := util.GetMilliSeconds()
-		sleepTime := beginTime + (i+1)*PDServerHeartBeatTime - currentTime
-		time.Sleep(time.Millisecond * time.Duration(sleepTime))
-		go this.tryUpdateActorHostListOnce()
-	}
 }
 
 func tryParseActorHostInfo(data []byte) *ActorHostInfo {
@@ -233,34 +182,4 @@ func buildIndexFromArray(list []*ActorHostInfo) *ActorHostIndex {
 		}
 	}
 	return index
-}
-
-//从etcd pull所有的服务器信息
-//构造map, 然后替换hosts
-//需要注意分配程序, 可能新的服务器会丢失一次: Add了Host, 然后pull的时候还没进etcd
-func (this *Server) tryUpdateActorHostListOnce() {
-	startTime := util.GetMilliSeconds()
-	prefix := ActorHostServerPrefix
-	resp, err := util.EtcdKVGet(this.etcdClient, prefix, clientv3.WithPrefix())
-	if err != nil {
-		log.Error("tryUpdateActorHostListOnce", zap.Error(err))
-		return
-	}
-
-	var list []*ActorHostInfo
-	for _, data := range resp.Kvs {
-		item := tryParseActorHostInfo(data.Value)
-		if item != nil {
-			list = append(list, item)
-		}
-	}
-
-	index := buildIndexFromArray(list)
-	add, remove := this.hostManager.UpdateIndex(startTime, index)
-	if add != nil && len(add) > 0 {
-		log.Info("TryUpdateActorHostList", zap.Reflect("AddServer", add))
-	}
-	if remove != nil && len(remove) > 0 {
-		log.Info("TryUpdateActorHostList", zap.Reflect("RemoveServer", remove))
-	}
 }

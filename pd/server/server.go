@@ -46,7 +46,7 @@ type Server struct {
 	logger      *zap.Logger
 	loggerProps *log.ZapProperties
 
-	hostManager *ActorHostManager
+	actorMembership *ActorMembership
 }
 
 func (this *Server) InitLogger() error {
@@ -105,8 +105,8 @@ func (this *Server) GetEtcdClient() *clientv3.Client {
 func NewServer() *Server {
 	config := newConfig()
 	s := &Server{
-		config:      config,
-		hostManager: NewActorHostManager(),
+		config:          config,
+		actorMembership: NewActorHostManager(),
 	}
 	return s
 }

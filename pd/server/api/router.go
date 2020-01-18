@@ -24,18 +24,12 @@ func createRouter(prefix string, server *server.Server) *mux.Router {
 	serverHandler := newServerHandler(server, render)
 	subRouter.HandleFunc("/api/v1/server/register", serverHandler.RegisterNewServer).Methods("POST")
 	subRouter.HandleFunc("/api/v1/server/keep_alive", serverHandler.KeepAliveServer).Methods("POST")
+
+	actorHandler := newActorHandler(server, render)
+	subRouter.HandleFunc("/api/v1/actor/find_position", actorHandler.FindPosition).Methods("POST")
 	return subRouter
 }
 
 func NewHandle(server *server.Server) http.Handler {
 	return createRouter(ApiPrefix, server)
-	//engine := negroni.New()
-
-	//router := mux.NewRouter()
-	//router.PathPrefix(ApiPrefix).Handler(negroni.New(
-	//	negroni.Wrap(createRouter(ApiPrefix, server)),
-	//))
-
-	//engine.UseHandler(router)
-	//return engine
 }
