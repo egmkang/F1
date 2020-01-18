@@ -72,17 +72,12 @@ func (this *Server) GetActorHostInfoByServerID(serverID int64) *ActorHostInfo {
 	return info
 }
 
-func (this *Server) GetActorHosts(domain string) map[int64]*ActorHostInfo {
-	result := map[int64]*ActorHostInfo{}
-	index := this.actorMembership.GetReadonlyIndex()
+func (this *Server) GetActorMembersByDomain(domain string) map[int64]*ActorHostInfo {
+	return this.actorMembership.GetActorMembersByDomain(domain)
+}
 
-	for k, v := range index.ids {
-		if v.Domain == domain {
-			result[k] = v
-		}
-	}
-
-	return result
+func (this *Server) GetActorMembersByDomainAndType(domain string, actorType string) map[int64]*ActorHostInfo {
+	return this.actorMembership.GetMembersByDomainAndType(domain, actorType)
 }
 
 func (this *Server) AddActorHostID(serverID int64) {
@@ -90,7 +85,7 @@ func (this *Server) AddActorHostID(serverID int64) {
 }
 
 func (this *Server) GetRegisteredActorHostID(serverID int64) interface{} {
-	v := this.actorMembership.GetActorMember(serverID)
+	v := this.actorMembership.GetActorMemberID(serverID)
 	return v
 }
 

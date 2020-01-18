@@ -5,6 +5,7 @@ import (
 	"github.com/pingcap/log"
 	"github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
+	"go.etcd.io/etcd/clientv3/concurrency"
 	"go.uber.org/zap"
 	"time"
 )
@@ -167,4 +168,46 @@ func (this *slowLogTxn) Commit() (*clientv3.TxnResponse, error) {
 	//metrics
 
 	return resp, errors.WithStack(err)
+}
+
+type EtcdMutex struct {
+	session *concurrency.Session
+	name    string
+	mutex   *concurrency.Mutex
+}
+
+var defaultEtcdMutexTimeout = concurrency.WithTTL(10)
+
+func NewMutex(client *clientv3.Client, name string, opts ...concurrency.SessionOption) (*EtcdMutex, error) {
+	var optstemp = make([]concurrency.SessionOption, 0)
+	optstemp = append(optstemp, defaultEtcdMutexTimeout)
+	optstemp = append(optstemp, opts...)
+	session, err := concurrency.NewSession(client, optstemp...)
+
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	mutex := concurrency.NewMutex(session, name)
+	return &EtcdMutex{session: session, name: name, mutex: mutex}, nil
+}
+
+func (this *EtcdMutex) Lock() error {
+	start := time.Now()
+	err := this.mutex.Lock(context.TODO())
+	if cost := time.Since(start); cost > DefaultSlowRequest {
+		log.Warn("EtcdMutex get too slow", zap.Duration("cost", cost), zap.Error(err))
+	}
+	return err
+}
+
+func (this *EtcdMutex) Unlock() {
+	this.mutex.Unlock(context.TODO())
+}
+
+func (this *EtcdMutex) Close() {
+	this.session.Close()
+}
+
+func (this *EtcdMutex) AsyncClose() {
+	go this.session.Close()
 }

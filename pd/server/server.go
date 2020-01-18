@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
+	"pd/server/util"
 	"time"
 )
 
@@ -95,7 +96,29 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 	this.etcd = etcd
 	this.etcdClient = client
 	go this.updateActorHostListLoop()
+
+	//go this.TestEtcdMutex("/tttttt", 0)
+	//go this.TestEtcdMutex("/tttttt", 1)
+	//go this.TestEtcdMutex("/tttttt", 2)
 	return nil
+}
+
+func (this *Server) TestEtcdMutex(prefix string, x int) {
+	mutex, err := util.NewMutex(this.etcdClient, prefix)
+	if err != nil {
+		log.Error("Etcd Mutex error", zap.Error(err))
+		return
+	}
+
+	err = mutex.Lock()
+	if err != nil {
+		log.Error("etcd mutex lock error", zap.Error(err))
+		return
+	}
+
+	defer mutex.AsyncClose()
+	time.Sleep(time.Second * time.Duration(x))
+	log.Info("print", zap.Int("index", x))
 }
 
 func (this *Server) GetEtcdClient() *clientv3.Client {

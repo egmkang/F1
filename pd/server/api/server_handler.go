@@ -124,7 +124,7 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 		zap.Int64("Load", info.Load))
 
 	result := &KeepAliveServerResp{
-		Hosts:  this.server.GetActorHosts(info.Domain),
+		Hosts:  this.server.GetActorMembersByDomain(info.Domain),
 		Events: this.server.GetActorMembershipRecentEvent(),
 	}
 	this.render.JSON(w, http.StatusOK, result)

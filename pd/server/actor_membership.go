@@ -9,7 +9,8 @@ import (
 	"sort"
 )
 
-const LRUSize = 1024 * 10
+const RecentActorMemberServerIDLRUSize = 1024 * 10
+const ActorPositionLRUSize = 1024 * 1024
 const PDServerHeartBeatTime int64 = 3 * 1000
 const ActorHostEventLifeTime = 60 * 1000
 
@@ -41,9 +42,10 @@ type ActorMembership struct {
 	lastUpdateIndexTime int64
 	lastGCEventTime     int64
 	index               *ActorHostIndex
-	events              map[int64]*ActorHostAddRemoveEvent
-	eventsSnapshot      []*ActorHostAddRemoveEvent
-	registeredID        *lru.Cache
+	events              map[int64]*ActorHostAddRemoveEvent //milliSeconds => events
+	eventsSnapshot      []*ActorHostAddRemoveEvent         //event snapshot
+	registeredID        *lru.Cache                         //recent registered server id
+	actorPositionCache  *lru.Cache                         //actor position lru
 }
 
 type ActorHostAddRemoveEvent struct {
@@ -68,13 +70,15 @@ func (s ActorHostEventSlice) Less(i, j int) bool {
 
 func NewActorHostManager() *ActorMembership {
 	index := buildIndexFromArray(nil)
-	l, _ := lru.New(LRUSize)
+	serverIdLru, _ := lru.New(RecentActorMemberServerIDLRUSize)
+	actorPositionLru, _ := lru.New(ActorPositionLRUSize)
 	return &ActorMembership{
 		lastUpdateIndexTime: util.GetMilliSeconds(),
 		lastGCEventTime:     util.GetMilliSeconds(),
 		index:               index,
 		events:              map[int64]*ActorHostAddRemoveEvent{},
-		registeredID:        l,
+		registeredID:        serverIdLru,
+		actorPositionCache:  actorPositionLru,
 	}
 }
 
@@ -135,9 +139,33 @@ func (this *ActorMembership) AddActorMemberID(serverID int64) {
 	this.registeredID.Add(serverID, serverID)
 }
 
-func (this *ActorMembership) GetActorMember(serverID int64) interface{} {
+func (this *ActorMembership) GetActorMemberID(serverID int64) interface{} {
 	v, _ := this.registeredID.Get(serverID)
 	return v
+}
+
+func (this *ActorMembership) GetActorMembersByDomain(domain string) map[int64]*ActorHostInfo {
+	result := map[int64]*ActorHostInfo{}
+	index := this.GetReadonlyIndex()
+
+	for k, v := range index.ids {
+		if v.Domain == domain {
+			result[k] = v
+		}
+	}
+
+	return result
+}
+
+func (this *ActorMembership) GetMembersByDomainAndType(domain string, actorType string) map[int64]*ActorHostInfo {
+	typesName := domain + ":" + actorType
+	index := this.GetReadonlyIndex()
+
+	result, ok := index.types[typesName]
+	if ok {
+		return map[int64]*ActorHostInfo{}
+	}
+	return result
 }
 
 func (this *ActorMembership) UpdateIndex(startTime int64, newIndex *ActorHostIndex) ([]int64, []int64) {
