@@ -4,7 +4,6 @@ import (
 	"github.com/pingcap/log"
 	"github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/clientv3/concurrency"
 	"go.etcd.io/etcd/embed"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -101,6 +100,12 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 	//go this.TestEtcdMutex("/tttttt", 0)
 	//go this.TestEtcdMutex("/tttttt", 1)
 	//go this.TestEtcdMutex("/tttttt", 2)
+	go this.actorMembership.FindPosition(&ActorPositionArgs{
+		ActorID:   "1",
+		ActorType: "1",
+		Domain:    "tt",
+		TTL:       0,
+	})
 	return nil
 }
 
@@ -131,9 +136,7 @@ func NewServer() *Server {
 	s := &Server{
 		config: config,
 	}
-	membership := NewActorMembershipManager(func(name string, opts ...concurrency.SessionOption) (*util.EtcdMutex, error) {
-		return util.NewMutex(s.GetEtcdClient(), name, opts...)
-	})
+	membership := NewActorMembershipManager(s)
 	s.actorMembership = membership
 	return s
 }

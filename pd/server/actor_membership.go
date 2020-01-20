@@ -4,7 +4,6 @@ import (
 	"fmt"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/pingcap/log"
-	"go.etcd.io/etcd/clientv3/concurrency"
 	"go.uber.org/zap"
 	"pd/server/util"
 	"sort"
@@ -39,8 +38,6 @@ type ActorHostIndex struct {
 	types map[string]map[int64]*ActorHostInfo //Domain:ActorType => Set<ActorHostInfo>
 }
 
-type MutexFactory func(string, ...concurrency.SessionOption) (*util.EtcdMutex, error)
-
 type ActorMembership struct {
 	lastUpdateIndexTime int64
 	lastGCEventTime     int64
@@ -49,7 +46,8 @@ type ActorMembership struct {
 	eventsSnapshot      []*ActorHostAddRemoveEvent         //event snapshot
 	registeredID        *lru.Cache                         //recent registered server id
 	actorPositionCache  *lru.Cache                         //actor position lru
-	mutexFunc           MutexFactory                       //etcd mutex factory
+
+	server *Server
 }
 
 type ActorHostAddRemoveEvent struct {
@@ -72,7 +70,7 @@ func (s ActorHostEventSlice) Less(i, j int) bool {
 	return s[i].Time < s[j].Time
 }
 
-func NewActorMembershipManager(f MutexFactory) *ActorMembership {
+func NewActorMembershipManager(s *Server) *ActorMembership {
 	index := buildIndexFromArray(nil)
 	serverIdLru, _ := lru.New(RecentActorMemberServerIDLRUSize)
 	actorPositionLru, _ := lru.New(ActorPositionLRUSize)
@@ -83,7 +81,7 @@ func NewActorMembershipManager(f MutexFactory) *ActorMembership {
 		events:              map[int64]*ActorHostAddRemoveEvent{},
 		registeredID:        serverIdLru,
 		actorPositionCache:  actorPositionLru,
-		mutexFunc:           f,
+		server:              s,
 	}
 }
 
