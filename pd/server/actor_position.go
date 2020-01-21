@@ -84,6 +84,12 @@ func (this *ActorMembership) findPositionFromRemote(uniqueActorID string, needAl
 	return info, nil
 }
 
+func (this *ActorMembership) removePositionFromRemote(uniqueActorID string) error {
+	key := fmt.Sprintf("%s/%s", ActorPathPrefix, uniqueActorID)
+	_, err := util.EtcdKVDelete(this.server.GetEtcdClient(), key)
+	return err
+}
+
 func (this *ActorMembership) savePositionToRemote(uniqueActorID string, position *ActorPositionInfo) error {
 	key := fmt.Sprintf("%s/%s", ActorPathPrefix, uniqueActorID)
 	json, err := util.JSON(position)
@@ -134,7 +140,8 @@ func (this *ActorMembership) chooseServerByRandom(domain string, actorType strin
 	loads := make([]int64, 0)
 	servers := make([]*ActorHostInfo, 0)
 	for _, v := range set {
-		if now-v.StartTime >= AliveServerTime {
+		//需要加入到集群一段时间, 然后当前负载是正数
+		if now-v.StartTime >= AliveServerTime && v.Load >= 0 {
 			servers = append(servers, v)
 			loads = append(loads, v.Load)
 			if v.Load > max {
@@ -241,4 +248,20 @@ func (this *ActorMembership) FindPosition(args *ActorPositionArgs) (*ActorPositi
 		return position, nil
 	}
 	return this.findOrAllocNewPosition(args)
+}
+
+func (this *ActorMembership) DeletePosition(args *ActorPositionArgs) error {
+	uniqueActorID := fmt.Sprintf("%s_%s_%s", args.ActorID, args.ActorType, args.Domain)
+
+	mutex, err := util.NewMutex(this.server.GetEtcdClient(), uniqueActorID)
+	if err != nil {
+		return err
+	}
+	mutex.Lock()
+	go mutex.AsyncClose()
+	this.actorPositionCache.Remove(uniqueActorID)
+	err = this.removePositionFromRemote(uniqueActorID)
+	if err != nil {
+		return err
+	}
 }

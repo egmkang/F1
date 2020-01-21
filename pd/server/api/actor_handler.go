@@ -87,3 +87,41 @@ func (this *actorHandler) NewActorToken(w http.ResponseWriter, r *http.Request) 
 	info := NewIDResp{ID: newId}
 	this.render.JSON(w, http.StatusOK, info)
 }
+
+type DeleteActorResponse struct {
+	ActorID   string `json:"actor_id"`
+	Domain    string `json:"domain"`
+	ActorType string `json:"actor_type"`
+}
+
+func (this *actorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
+	req := &FindActorPositionRequest{}
+	if err := util.ReadJSONResponseError(this.render, w, r.Body, req); err != nil {
+		return
+	}
+
+	if len(req.Domain) == 0 || len(req.ActorType) == 0 || len(req.ActorID) == 0 {
+		this.render.JSON(w, http.StatusBadRequest, "args error")
+		return
+	}
+	args := &server.ActorPositionArgs{
+		ActorID:   req.ActorID,
+		ActorType: req.ActorType,
+		Domain:    req.Domain,
+	}
+	err := this.server.GetActorMembership().DeletePosition(args)
+	if err != nil {
+		this.render.JSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	//TODO:
+	//要广播给其他进程
+
+	resp := &DeleteActorResponse{
+		ActorID:   args.ActorID,
+		Domain:    args.Domain,
+		ActorType: args.ActorType,
+	}
+	this.render.JSON(w, http.StatusOK, resp)
+}
