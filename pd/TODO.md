@@ -12,10 +12,10 @@ PlacementDriver:
     * [x] 服务器索引
     * [x] 拉取最近的事件(新老节点状态)
 * [ ] Actor
-    * [ ] 定位(包含ActorID, ServerUniqueID, ActorVersion)
+    * [x] 定位(包含ActorID, ServerUniqueID)
     * [ ] 修改位置(老Version信息过期)
-    * [ ] 存档读写所有权(考虑用Version来做)
-    * [ ] 一次性定位(不会转移, 死了就死了)
+    * [x] 存档读写所有权(考虑用Version来做)
+    * [x] 一次性定位(不会转移, 死了就死了)
 * [ ] MultiRaft
     * [ ] 集群节点事件
     * [ ] 负载均衡以及调度

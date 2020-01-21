@@ -116,13 +116,16 @@ func (this *ActorMembership) savePositionToRemote(uniqueActorID string, position
 	return nil
 }
 
+//-1服务器个数不够
+//-2没有该类型的服务器
+//-3分配算法错误
 func (this *ActorMembership) chooseServerByRandom(domain string, actorType string) int64 {
 	//返回-1表示服务器个数不够
 	index := this.index
 	uniqueType := fmt.Sprintf("%s:%s", domain, actorType)
 	set, ok := index.types[uniqueType]
 	if !ok || len(set) == 0 {
-		return -1
+		return -2
 	}
 
 	now := util.GetMilliSeconds()
@@ -159,7 +162,7 @@ func (this *ActorMembership) chooseServerByRandom(domain string, actorType strin
 			return servers[index].ServerID
 		}
 	}
-	return -1
+	return -3
 }
 
 func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*ActorPositionInfo, error) {
@@ -204,8 +207,13 @@ func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*A
 	newServerID := this.chooseServerByRandom(args.Domain, args.ActorType)
 	log.Info("chooseServerByRandom", zap.String("ActorID", uniqueActorID), zap.Int64("ServerID", newServerID))
 	if newServerID < 0 {
-		log.Error("chooseServerByRandom, without enough server")
-		return nil, errors.Errorf("without enough server")
+		if newServerID == -1 {
+			return nil, errors.New("without enough server")
+		}
+		if newServerID == -2 {
+			return nil, errors.New("not find actor type")
+		}
+		return nil, errors.New("unknown chooseSever error")
 	}
 
 	position = &ActorPositionInfo{

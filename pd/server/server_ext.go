@@ -98,3 +98,7 @@ func (this *Server) updateActorHostListLoop() {
 		time.Sleep(time.Millisecond * time.Duration(sleepTime))
 	}
 }
+
+func (this *Server) GetActorMembership() *ActorMembership {
+	return this.actorMembership
+}

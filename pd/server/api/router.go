@@ -27,6 +27,7 @@ func createRouter(prefix string, server *server.Server) *mux.Router {
 
 	actorHandler := newActorHandler(server, render)
 	subRouter.HandleFunc("/api/v1/actor/find_position", actorHandler.FindPosition).Methods("POST")
+	subRouter.HandleFunc("/api/v1/actor/new_token", actorHandler.NewActorToken).Methods("POST")
 	return subRouter
 }
 
