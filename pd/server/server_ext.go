@@ -8,6 +8,18 @@ import (
 	"time"
 )
 
+func (this *Server) tryUpdateEtcdMembers() {
+	resp, err := util.EtcdListMembers(this.etcdClient)
+	if err != nil {
+		log.Error("tryUpdateEtcdMembers", zap.Error(err))
+		log.Error("etcd server exit")
+
+		this.Shutdown()
+		return
+	}
+	this.etcdMembers = resp.Members
+}
+
 //从etcd pull所有的服务器信息
 //构造map, 然后替换hosts
 //需要注意分配程序, 可能新的服务器会丢失一次: Add了Host, 然后pull的时候还没进etcd
@@ -17,6 +29,9 @@ func (this *Server) tryUpdateActorHostListOnce() {
 	resp, err := util.EtcdKVGet(this.etcdClient, prefix, clientv3.WithPrefix())
 	if err != nil {
 		log.Error("tryUpdateActorHostListOnce", zap.Error(err))
+		log.Error("etcd server exit")
+
+		this.Shutdown()
 		return
 	}
 
@@ -89,10 +104,13 @@ func (this *Server) GetRegisteredActorHostID(serverID int64) interface{} {
 	return v
 }
 
+//这边还要检查pd有没有update成功
+//需要考虑pd脑裂
 func (this *Server) updateActorHostListLoop() {
 	beginTime := util.GetMilliSeconds()
-	for i := int64(0); ; i++ {
+	for i := int64(0); this.IsRunning(); i++ {
 		go this.tryUpdateActorHostListOnce()
+		go this.tryUpdateEtcdMembers()
 		currentTime := util.GetMilliSeconds()
 		sleepTime := beginTime + (i+1)*PDServerHeartBeatTime - currentTime
 		time.Sleep(time.Millisecond * time.Duration(sleepTime))

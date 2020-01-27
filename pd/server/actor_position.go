@@ -264,4 +264,5 @@ func (this *ActorMembership) DeletePosition(args *ActorPositionArgs) error {
 	if err != nil {
 		return err
 	}
+	return nil
 }

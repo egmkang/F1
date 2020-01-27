@@ -127,6 +127,13 @@ func EtcdGetKVValue(client *clientv3.Client, key string, opts ...clientv3.OpOpti
 	return resp.Kvs[0].Value, nil
 }
 
+func EtcdListMembers(client *clientv3.Client) (*clientv3.MemberListResponse, error) {
+	ctx, cancel := context.WithTimeout(client.Ctx(), DefaultRequestTimeout)
+	defer cancel()
+	listResp, err := client.MemberList(ctx)
+	return listResp, errors.WithStack(err)
+}
+
 type slowLogTxn struct {
 	clientv3.Txn
 	cancel context.CancelFunc

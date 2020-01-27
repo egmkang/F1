@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/pingcap/log"
 	"pd/server"
 	"pd/server/api"
 	"time"
@@ -12,9 +13,10 @@ func main() {
 
 	server.InitEtcd(api.ApiPrefix, api.NewHandle)
 
-	for {
+	for server.IsRunning() {
 		time.Sleep(time.Second)
 	}
+	log.Info("exit")
 	//cfg := embed.NewConfig()
 	//cfg.Dir = "default.etcd"
 	//etcd, err := embed.StartEtcd(cfg)

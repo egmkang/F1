@@ -5,10 +5,12 @@ import (
 	"github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/embed"
+	"go.etcd.io/etcd/etcdserver/etcdserverpb"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net/http"
 	"pd/server/util"
+	"sync/atomic"
 	"time"
 )
 
@@ -42,11 +44,14 @@ type Server struct {
 	etcd       *embed.Etcd
 	etcdClient *clientv3.Client
 
+	terminal int32
+
 	handler http.Handler
 
 	logger      *zap.Logger
 	loggerProps *log.ZapProperties
 
+	etcdMembers     []*etcdserverpb.Member
 	actorMembership *ActorMembership
 }
 
@@ -109,6 +114,15 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 	return nil
 }
 
+func (this *Server) Shutdown() {
+	atomic.StoreInt32(&this.terminal, 1)
+	this.etcd.Close()
+}
+
+func (this *Server) IsRunning() bool {
+	return atomic.LoadInt32(&this.terminal) == 0
+}
+
 func (this *Server) TestEtcdMutex(prefix string, x int) {
 	mutex, err := util.NewMutex(this.etcdClient, prefix)
 	if err != nil {
@@ -134,7 +148,8 @@ func (this *Server) GetEtcdClient() *clientv3.Client {
 func NewServer() *Server {
 	config := newConfig()
 	s := &Server{
-		config: config,
+		config:   config,
+		terminal: 0,
 	}
 	membership := NewActorMembershipManager(s)
 	s.actorMembership = membership
