@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetty.Handlers" Version="0.6.0" />
+    <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
+    <PackageReference Include="DotNetty.Transport.Libuv" Version="0.6.0" />
+
+
+    <PackageReference Include="Google.Protobuf" Version="3.11.3" />
+    <PackageReference Include="google.protobuf.tools" Version="3.11.3" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <Protobuf Include=".\Message\*.proto" OutputDir=".\Message\" CompileOutputs="false" GrpcServices="None" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Message\rpc.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\F1.Abstractions\F1.Abstractions.csproj" />
+  </ItemGroup>
+</Project>
