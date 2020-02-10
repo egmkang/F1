@@ -7,10 +7,10 @@ using F1.Abstractions.Network;
 
 namespace F1.Core.Network
 {
-    public class ConnectionManager : IConnectionManager
+    public sealed class ConnectionManager : IConnectionManager
     {
-        private ConcurrentDictionary<long, IChannel> channels = new ConcurrentDictionary<long, IChannel>();
-        private ILogger logger;
+        private readonly ConcurrentDictionary<long, IChannel> channels = new ConcurrentDictionary<long, IChannel>();
+        private readonly ILogger logger;
 
         public ConnectionManager(ILoggerFactory loggerFactory)
         {

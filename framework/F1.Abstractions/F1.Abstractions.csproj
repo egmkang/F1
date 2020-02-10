@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
+    <PackageReference Include="System.Threading.Channels" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

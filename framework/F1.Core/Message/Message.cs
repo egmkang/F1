@@ -8,7 +8,7 @@ using F1.Core.Utils;
 
 namespace F1.Core.Message
 {
-    public class InboundMessage : IInboundMessage
+    public sealed class InboundMessage : IInboundMessage
     {
         private IMessage innerMessage;
         private IChannel channel;
@@ -29,7 +29,7 @@ namespace F1.Core.Message
         public object Inner => this.innerMessage;
     }
 
-    public class OutboundMessage : IOutboundMessage
+    public sealed class OutboundMessage : IOutboundMessage
     {
         private IMessage innerMessage;
         private IChannel channel;

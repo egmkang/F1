@@ -8,24 +8,28 @@ using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Network
 {
-    public class DefaultChannelSessionInfoFactory : IConnectionSessionInfoFactory
+    public sealed class DefaultChannelSessionInfoFactory : IConnectionSessionInfoFactory
     {
         private static readonly DateTime RelativeTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private long SessionIDSeed = 0;
-        private ILogger logger;
+        private readonly ILogger logger;
+        private readonly IMessageCenter messageCenter;
 
-        public DefaultChannelSessionInfoFactory(ILoggerFactory loggerFactory) 
+        public DefaultChannelSessionInfoFactory(ILoggerFactory loggerFactory, IMessageCenter messageCenter) 
         {
-            this.logger = loggerFactory.CreateLogger("F1");
+            this.logger = loggerFactory.CreateLogger("F1.SessionInfo");
+            this.messageCenter = messageCenter;
             var relativeSeconds = Platform.GetRelativeSeconds(RelativeTime);
             SessionIDSeed = relativeSeconds  * 10000000000;
 
-            logger.LogInformation("DefaultChannelSessionInfo, SessionIDSeed:{0}, RelativeSeconds:{1}", SessionIDSeed, relativeSeconds);
+            logger.LogInformation("DefaultChannelSessionInfo, SessionIDSeed:{0}, RelativeSeconds:{1}",
+                SessionIDSeed, relativeSeconds);
         }
 
         public IConnectionSessionInfo NewSessionInfo()
         {
-            return new DefaultChannelSessionInfo(Interlocked.Increment(ref this.SessionIDSeed));
+            return new DefaultChannelSessionInfo(Interlocked.Increment(ref this.SessionIDSeed),
+                this.logger, this.messageCenter);
         }
     }
 }

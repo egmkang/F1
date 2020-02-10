@@ -7,7 +7,7 @@ using F1.Abstractions.Network;
 
 namespace F1.Core.Message
 {
-    public class MessageHandlerFactory : IMessageHandlerFactory
+    public sealed class MessageHandlerFactory : IMessageHandlerFactory
     {
         private ILoggerFactory loggerFactory;
         private IServiceProvider serviceProvider;

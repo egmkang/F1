@@ -17,14 +17,14 @@ using F1.Core.Utils;
 
 namespace F1.Core.Network
 {
-    public class ConnectionListener : IConnectionListener
+    public sealed class ConnectionListener : IConnectionListener
     {
         private IEventLoopGroup bossGroup;
         private IEventLoopGroup workGroup;
-        private ILogger logger;
-        private IConnectionManager connectionManager;
-        private IConnectionSessionInfoFactory channelSessionInfoFactory;
         private NetworkConfiguration config;
+        private readonly ILogger logger;
+        private readonly IConnectionManager connectionManager;
+        private readonly IConnectionSessionInfoFactory channelSessionInfoFactory;
         private readonly List<ServerBootstrap> ports = new List<ServerBootstrap>();
 
         public IServiceProvider ServiceProvider { get; private set; }
@@ -88,6 +88,7 @@ namespace F1.Core.Network
                     info.ActiveTime = Platform.GetMilliSeconds();
 
                     this.connectionManager.AddConnection(channel);
+                    info.RunSendLoopAsync(channel);
 
                     IChannelPipeline pipeline = channel.Pipeline;
                     pipeline.AddLast("TimeOut", new IdleStateHandler(this.config.ReadTimeout, this.config.WriteTimeout, this.config.ReadTimeout));

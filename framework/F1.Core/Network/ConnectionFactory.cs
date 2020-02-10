@@ -13,16 +13,16 @@ using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Network
 {
-    public class ConnectionFactory : IConnectionFactory
+    public sealed class ConnectionFactory : IConnectionFactory
     {
         private MultithreadEventLoopGroup group;
+        private NetworkConfiguration config;
         private readonly object mutex = new object();
         private Dictionary<IMessageHandlerFactory, Bootstrap> bootstraps = new Dictionary<IMessageHandlerFactory, Bootstrap>();
 
-        private ILogger logger;
-        private IConnectionManager connectionManager;
-        private IConnectionSessionInfoFactory channelSessionInfoFactory;
-        private NetworkConfiguration config;
+        private readonly ILogger logger;
+        private readonly IConnectionManager connectionManager;
+        private readonly IConnectionSessionInfoFactory channelSessionInfoFactory;
 
         public IServiceProvider ServiceProvider { get; private set; }
 
@@ -76,6 +76,7 @@ namespace F1.Core.Network
             }
             var channel = await bootstrap.ConnectAsync(address);
             this.connectionManager.AddConnection(channel);
+            channel.GetSessionInfo().RunSendLoopAsync(channel);
             return channel;
         }
 
