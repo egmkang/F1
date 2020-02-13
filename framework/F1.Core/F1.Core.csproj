@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     <PackageReference Include="System.Threading.Channels" Version="4.7.0" />
 
     <Protobuf Include=".\Message\*.proto" OutputDir=".\Message\" CompileOutputs="false" GrpcServices="None" />

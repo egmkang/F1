@@ -5,7 +5,7 @@ using DotNetty.Common.Utilities;
 using F1.Message;
 using F1.Core.Message;
 
-namespace F1.Core.Test
+namespace F1.Core.Test.Network
 {
     public class Codec
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using DotNetty.Buffers;
+using F1.Abstractions.Network;
 using Google.Protobuf;
 
 
@@ -81,6 +82,42 @@ namespace F1.Core.Message
             }
 
             return (0, null);
+        }
+    }
+
+    internal sealed class ProtobufMessageCodec : IMessageCodec
+    {
+        private readonly MessageEncoder encoder = new MessageEncoder();
+        private readonly MessageDecoder decoder = new MessageDecoder();
+
+        public (long length, string typeName, object msg) Decode(IByteBuffer input)
+        {
+            var (length, msg) = decoder.Decode(input);
+            return (length, msg?.Descriptor.FullName, msg);
+        }
+
+        public IByteBuffer Encode(IByteBufferAllocator allocator, object msg)
+        {
+            return encoder.Encode(allocator, msg as IMessage);
+        }
+    }
+
+
+    public sealed class StringMessageCodec : IMessageCodec
+    {
+        public (long length, string typeName, object msg) Decode(IByteBuffer input)
+        {
+            var length = input.ReadableBytes;
+            var typeName = "String";
+            var msg = input.ReadString(length, Encoding.UTF8);
+            return (length, typeName, msg);
+        }
+
+        public IByteBuffer Encode(IByteBufferAllocator allocator, object msg)
+        {
+            var buffer = allocator.Buffer();
+            buffer.WriteString(msg.ToString(), Encoding.UTF8);
+            return buffer;
         }
     }
 }

@@ -13,16 +13,21 @@ namespace F1.Core.Message
 {
     internal sealed class MessageHandler : ByteToMessageDecoder
     {
-        private static readonly MessageDecoder decoder = new MessageDecoder();
-        private ILogger logger;
-        private IServiceProvider serviceProvider;
-        private IMessageCenter messageCenter;
+        private readonly ILogger logger;
+        private readonly IServiceProvider serviceProvider;
+        private readonly IMessageCenter messageCenter;
+        private readonly IMessageCodec codec;
 
-        public MessageHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IMessageCenter messageCenter)
+
+        public MessageHandler(IServiceProvider serviceProvider,
+            ILoggerFactory loggerFactory,
+            IMessageCenter messageCenter,
+            IMessageCodec codec)
         {
             this.messageCenter = messageCenter;
             this.serviceProvider = serviceProvider;
             this.logger = loggerFactory.CreateLogger("F1.Sockets");
+            this.codec = codec;
         }
 
         public override bool IsSharable => false;
@@ -32,9 +37,9 @@ namespace F1.Core.Message
             var currentMilliSeconds = Platform.GetMilliSeconds();
             var sessionInfo = context.Channel.GetSessionInfo();
 
-            while (input.ReadableBytes >= Constants.HeaderLength)
+            while (input.ReadableBytes > 0)
             {
-                var (length, message) = decoder.Decode(input);
+                var (length, typeName, message) = this.codec.Decode(input);
                 if (length == 0)
                 {
                     break;
@@ -46,7 +51,7 @@ namespace F1.Core.Message
                 }
                 sessionInfo.ActiveTime = currentMilliSeconds;
 
-                var inboundMessage = new InboundMessage(context.Channel, message);
+                var inboundMessage = new InboundMessage(context.Channel, typeName, message);
                 this.messageCenter.OnReceivedMessage(inboundMessage);
             }
         }

@@ -61,9 +61,11 @@ namespace F1.Core.Network
                         .Option(ChannelOption.WriteBufferHighWaterMark, this.config.WriteBufferHighWaterMark)
                         .Option(ChannelOption.WriteBufferLowWaterMark, this.config.WriteBufferLowWaterMark)
                         .Option(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
-                        .Attribute(ChannelExt.SESSION_INFO, this.channelSessionInfoFactory.NewSessionInfo())
                         .Handler(new ActionChannelInitializer<IChannel>(channel =>
                         {
+                            var info = this.channelSessionInfoFactory.NewSessionInfo(factory);
+                            channel.GetAttribute(ChannelExt.SESSION_INFO).Set(info);
+
                             IChannelPipeline pipeline = channel.Pipeline;
                             pipeline.AddLast("TimeOut", new IdleStateHandler(this.config.ReadTimeout, this.config.WriteTimeout, this.config.ReadTimeout));
                             pipeline.AddLast(factory.NewHandler());
@@ -76,13 +78,13 @@ namespace F1.Core.Network
             }
             var channel = await bootstrap.ConnectAsync(address);
             this.connectionManager.AddConnection(channel);
-            channel.GetSessionInfo().RunSendLoopAsync(channel);
+            channel.GetSessionInfo().RunSendingLoopAsync(channel);
             return channel;
         }
 
         public async Task ShutdDownAsync()
         {
-            await this.group.ShutdownGracefullyAsync();
+            if (this.group != null) await this.group.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
         }
     }
 }

@@ -6,40 +6,33 @@ using System.Threading.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Google.Protobuf;
 using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Message;
+using F1.Core.Utils;
 
 namespace F1.Core.Network
 {
-    public sealed class DefaultChannelSessionInfo : IConnectionSessionInfo
+    public sealed class DefaultConnectionSessionInfo : IConnectionSessionInfo
     {
-        private static readonly UnboundedChannelOptions options = new UnboundedChannelOptions
-        {
-            SingleReader = true,
-            SingleWriter = false,
-            AllowSynchronousContinuations = false,
-        };
-
         private readonly long sessionID;
         private long activeTime;
-        private int stop = 0;
         private int queueCount = 0;
+        private bool stop = false;
         private IPEndPoint address;
-        private readonly Channel<IOutboundMessage> queue;
-        private readonly ChannelWriter<IOutboundMessage> writer;
+        private readonly AsyncMessageQueue<IOutboundMessage> queue;
         private readonly ILogger logger;
         private readonly IMessageCenter messageCenter;
+        private readonly IMessageCodec codec;
 
-        public DefaultChannelSessionInfo(long sessionID, ILogger logger, IMessageCenter messageCenter)
+        public DefaultConnectionSessionInfo(long sessionID, ILogger logger, IMessageCenter messageCenter, IMessageCodec codec)
         {
             this.sessionID = sessionID;
             this.logger = logger;
             this.messageCenter = messageCenter;
+            this.codec = codec;
 
-            this.queue = Channel.CreateUnbounded<IOutboundMessage>(options);
-            this.writer = queue.Writer;
+            this.queue = new AsyncMessageQueue<IOutboundMessage>(this.logger);
         }
 
         public long SessionID => sessionID;
@@ -49,29 +42,24 @@ namespace F1.Core.Network
         public int PutOutboundMessage(IOutboundMessage msg)
         {
             var v = Interlocked.Increment(ref this.queueCount);
-            if (!this.writer.TryWrite(msg))
-            {
-                Interlocked.Decrement(ref this.queueCount);
-                v--;
-                logger.LogInformation("PutOutboundMessage, SessionID:{0}, queue has been closed", this.sessionID);
-            }
+            this.queue.PushMessage(msg);
             return v;
         }
         public int SendingQueueCount => this.queueCount;
         public void ShutDown() 
         {
-            this.stop = 1;
-            this.writer.TryWrite(null);
-            this.writer.Complete();
+            this.stop = true;
+            this.queue.PushMessage(null);
+            this.queue.ShutDown();
         }
 
-        public void RunSendLoopAsync(IChannel channel)
+        public void RunSendingLoopAsync(IChannel channel)
         {
             var allocator = channel.Allocator;
             var reader = this.queue.Reader;
             Task.Run(async () => 
             {
-                while (this.stop == 0) 
+                while (this.queue.Valid) 
                 {
                     var more = await reader.WaitToReadAsync();
                     if (!more) 
@@ -85,13 +73,19 @@ namespace F1.Core.Network
                     {
                         while (number < 4 && reader.TryRead(out message)) 
                         {
+                            if (message == null)  break;
                             Interlocked.Decrement(ref this.queueCount);
-                            var msg = message.Inner as IMessage;
-                            var buffer = msg.ToByteBuffer(allocator);
-                            await channel.WriteAsync(buffer);
+                            var buffer = this.codec.Encode(allocator, message.Inner);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                            channel.WriteAsync(buffer);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             number++;
                         }
                         channel.Flush();
+                        if (this.logger.IsEnabled(LogLevel.Trace)) 
+                        {
+                            logger.LogInformation("Flush");
+                        }
                         number = 0;
                     }
                     catch (Exception e)  when(message != default)

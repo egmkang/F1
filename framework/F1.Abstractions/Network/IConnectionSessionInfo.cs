@@ -15,7 +15,7 @@ namespace F1.Abstractions.Network
 
         int PutOutboundMessage(IOutboundMessage msg);
         int SendingQueueCount { get; }
-        void RunSendLoopAsync(IChannel channel);
+        void RunSendingLoopAsync(IChannel channel);
         void ShutDown();
     }
 }

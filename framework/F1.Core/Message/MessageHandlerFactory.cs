@@ -18,11 +18,14 @@ namespace F1.Core.Message
             this.messageCenter = messageCenter;
             this.serviceProvider = serviceProvider;
             this.loggerFactory = loggerFactory;
+            this.Codec = new ProtobufMessageCodec();
         }
+
+        public IMessageCodec Codec { get; set; }
 
         public ByteToMessageDecoder NewHandler()
         {
-            return new MessageHandler(this.serviceProvider, this.loggerFactory, this.messageCenter);
+            return new MessageHandler(this.serviceProvider, this.loggerFactory, this.messageCenter, this.Codec);
         }
     }
 }

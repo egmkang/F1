@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Network;
+using F1.Core.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Message
@@ -16,14 +17,12 @@ namespace F1.Core.Message
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger logger;
         private readonly IConnectionManager connectionManager;
-        private readonly InboundMessageQueue inboundMessageQueue;
+        private readonly AsyncMessageQueue<IInboundMessage> inboundMessageQueue;
 
         private int inboundMessageQueueSize = 0;
         private Action<IInboundMessage> inboundMessageProc;
         private Action<IChannel> channelClosedProc;
         private Action<IOutboundMessage> failMessageProc;
-
-        private bool stop;
 
         public MessageCenter(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IConnectionManager connectionManager) 
         {
@@ -32,7 +31,9 @@ namespace F1.Core.Message
             this.connectionManager = connectionManager;
             this.logger = this.loggerFactory.CreateLogger("F1.MessageCenter");
 
-            this.inboundMessageQueue = new InboundMessageQueue(loggerFactory);
+            this.inboundMessageQueue = new AsyncMessageQueue<IInboundMessage>(this.logger);
+
+            this.StartAsync();
         }
 
         public void RegsiterEvent(Action<IInboundMessage> inboundMessageProc,
@@ -49,27 +50,35 @@ namespace F1.Core.Message
             var reader = this.inboundMessageQueue.Reader;
             Task.Run(async () =>
             {
-                while (this.stop) 
+                while (this.inboundMessageQueue.Valid) 
                 {
-                    try 
+                    var more = await reader.WaitToReadAsync();
+                    if (!more) 
                     {
-                        var inboundMessage = await reader.ReadAsync();
-                        if (inboundMessage == null)
-                            break;
-                        Interlocked.Decrement(ref this.inboundMessageQueueSize);
-                        this.inboundMessageProc(inboundMessage);
+                        break;
                     }
-                    catch (Exception e) 
+
+                    IInboundMessage message = default;
+                    while (reader.TryRead(out message))
                     {
-                        this.logger.LogError("MessageCenter Process InboundMessage, Exception:{0}, StackTrace:{1}", e, e.StackTrace.ToString());
+                        if (message == null) break;
+                        Interlocked.Decrement(ref this.inboundMessageQueueSize);
+                        try
+                        {
+                            this.inboundMessageProc(message);
+                        }
+                        catch (Exception e)
+                        {
+                            this.logger.LogError("MessageCenter Process InboundMessage, Exception:{0}, StackTrace:{1}", e, e.StackTrace.ToString());
+                        }
                     }
                 }
+                this.logger.LogInformation("MessageCenter Exit");
             });
         }
 
         public void StopAsync()
         {
-            this.stop = true;
             this.inboundMessageQueue.ShutDown();
         }
 
@@ -79,6 +88,7 @@ namespace F1.Core.Message
             this.connectionManager.RemoveConnection(channel);
             try
             {
+                sessionInfo.ShutDown();
                 this.channelClosedProc(channel);
             }
             catch (Exception e)
@@ -102,6 +112,13 @@ namespace F1.Core.Message
 
         public void OnReceivedMessage(IInboundMessage message)
         {
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                var sessionInfo = message.SourceConnection.GetSessionInfo();
+                this.logger.LogTrace("MessageCenter.OnRecievedMessage, SessionID:{0}, MilliSeconds:{1}, Data:{2}",
+                    sessionInfo.SessionID, message.MilliSeconds, message.Inner.ToString());
+            }
+
             this.inboundMessageQueue.PushMessage(message);
             if (Interlocked.Increment(ref this.inboundMessageQueueSize) > 10000) 
             {

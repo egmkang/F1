@@ -72,14 +72,12 @@ namespace F1.Core.Network
                 .Option(ChannelOption.SoReuseaddr, true)
                 .Option(ChannelOption.SoKeepalive, true)
                 .Option(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
-
-                .ChildAttribute(ChannelExt.SESSION_INFO, this.channelSessionInfoFactory.NewSessionInfo())
-
-
                 .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
                 {
+                    var info = this.channelSessionInfoFactory.NewSessionInfo(factory);
+                    channel.GetAttribute(ChannelExt.SESSION_INFO).Set(info);
+
                     var localPort = (channel.LocalAddress as IPEndPoint).Port;
-                    var info = channel.GetSessionInfo();
 
                     if (channel.RemoteAddress is IPEndPoint)
                     {
@@ -88,7 +86,7 @@ namespace F1.Core.Network
                     info.ActiveTime = Platform.GetMilliSeconds();
 
                     this.connectionManager.AddConnection(channel);
-                    info.RunSendLoopAsync(channel);
+                    info.RunSendingLoopAsync(channel);
 
                     IChannelPipeline pipeline = channel.Pipeline;
                     pipeline.AddLast("TimeOut", new IdleStateHandler(this.config.ReadTimeout, this.config.WriteTimeout, this.config.ReadTimeout));
@@ -105,8 +103,8 @@ namespace F1.Core.Network
 
         public async Task ShutdDownAsync()
         {
-            await this.bossGroup.ShutdownGracefullyAsync();
-            await this.workGroup.ShutdownGracefullyAsync();
+            if (this.bossGroup != null) await this.bossGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
+            if(this.workGroup != null) await this.workGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using DotNetty.Transport.Channels;
-using Google.Protobuf;
 using F1.Abstractions.Network;
 using F1.Core.Utils;
 
@@ -10,17 +9,19 @@ namespace F1.Core.Message
 {
     public sealed class InboundMessage : IInboundMessage
     {
-        private IMessage innerMessage;
+        private object innerMessage;
+        private string typeName;
         private IChannel channel;
         private long milliSecond = Platform.GetMilliSeconds();
 
-        public InboundMessage(IChannel channel, IMessage message) 
+        public InboundMessage(IChannel channel, string typeName, object message) 
         {
             this.channel = channel;
+            this.typeName = typeName;
             this.innerMessage = message;
         }
 
-        public string MessageName => this.innerMessage?.Descriptor.FullName;
+        public string MessageName => this.typeName;
 
         public IChannel SourceConnection => this.channel;
 
@@ -31,10 +32,10 @@ namespace F1.Core.Message
 
     public sealed class OutboundMessage : IOutboundMessage
     {
-        private IMessage innerMessage;
+        private object innerMessage;
         private IChannel channel;
 
-        public OutboundMessage(IChannel channel, IMessage msg) 
+        public OutboundMessage(IChannel channel, object msg)
         {
             this.innerMessage = msg;
             this.channel = channel;
