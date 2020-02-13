@@ -17,7 +17,6 @@ namespace F1.Core.Network
     {
         private readonly long sessionID;
         private long activeTime;
-        private int queueCount = 0;
         private bool stop = false;
         private IPEndPoint address;
         private readonly AsyncMessageQueue<IOutboundMessage> queue;
@@ -41,11 +40,12 @@ namespace F1.Core.Network
         public IPEndPoint RemoteAddress { get => address; set => address = value; }
         public int PutOutboundMessage(IOutboundMessage msg)
         {
-            var v = Interlocked.Increment(ref this.queueCount);
-            this.queue.PushMessage(msg);
-            return v;
+            if (!this.queue.PushMessage(msg)) 
+            {
+                logger.LogWarning("SessionID:{0}, Drop Message", this.sessionID);
+            }
+            return this.queue.QueueCount;
         }
-        public int SendingQueueCount => this.queueCount;
         public void ShutDown() 
         {
             this.stop = true;
@@ -74,7 +74,7 @@ namespace F1.Core.Network
                         while (number < 4 && reader.TryRead(out message)) 
                         {
                             if (message == null)  break;
-                            Interlocked.Decrement(ref this.queueCount);
+                            this.queue.DecQueueCount();
                             var buffer = this.codec.Encode(allocator, message.Inner);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             channel.WriteAsync(buffer);

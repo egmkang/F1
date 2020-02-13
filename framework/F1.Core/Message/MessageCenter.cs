@@ -19,7 +19,6 @@ namespace F1.Core.Message
         private readonly IConnectionManager connectionManager;
         private readonly AsyncMessageQueue<IInboundMessage> inboundMessageQueue;
 
-        private int inboundMessageQueueSize = 0;
         private Action<IInboundMessage> inboundMessageProc;
         private Action<IChannel> channelClosedProc;
         private Action<IOutboundMessage> failMessageProc;
@@ -62,7 +61,7 @@ namespace F1.Core.Message
                     while (reader.TryRead(out message))
                     {
                         if (message == null) break;
-                        Interlocked.Decrement(ref this.inboundMessageQueueSize);
+                        this.inboundMessageQueue.DecQueueCount();
                         try
                         {
                             this.inboundMessageProc(message);
@@ -120,19 +119,20 @@ namespace F1.Core.Message
             }
 
             this.inboundMessageQueue.PushMessage(message);
-            if (Interlocked.Increment(ref this.inboundMessageQueueSize) > 10000) 
+            if (this.inboundMessageQueue.QueueCount > 10000)
             {
-                this.logger.LogWarning("InboundMessage Queue Size:{0}", this.inboundMessageQueueSize);
+                this.logger.LogWarning("InboundMessage Queue Size:{0}", this.inboundMessageQueue.QueueCount);
             }
         }
 
         public void SendMessage(IOutboundMessage message)
         {
             var sessionInfo = message.DestConnection.GetSessionInfo();
-            if (sessionInfo.PutOutboundMessage(message) > 1000)
+            var size = 0;
+            if ((size = sessionInfo.PutOutboundMessage(message)) > 1000)
             {
                 this.logger.LogWarning("SessionID:{0}, SendingQueueCount:{1}",
-                   sessionInfo.SessionID, sessionInfo.SendingQueueCount);
+                   sessionInfo.SessionID, size);
             }
         }
     }

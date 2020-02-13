@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,7 @@ namespace F1.Core.Utils
         });
 
         private readonly ILogger logger;
+        private int queueCount = 0;
 
         public AsyncMessageQueue(ILogger logger) 
         {
@@ -24,12 +26,15 @@ namespace F1.Core.Utils
             this.logger = logger;
         }
 
-        public void PushMessage(T message) 
+        public bool PushMessage(T message) 
         {
+            Interlocked.Increment(ref this.queueCount);
             if (!this.channel.Writer.TryWrite(message)) 
             {
-                this.logger.LogError("Dropping Message, because queue is closed");
+                Interlocked.Decrement(ref this.queueCount);
+                return false;
             }
+            return true;
         }
 
         public void ShutDown() 
@@ -40,6 +45,11 @@ namespace F1.Core.Utils
         }
 
         public bool Valid { get; private set; }
+        public int QueueCount => Interlocked.Add(ref this.queueCount, 0);
+        public void DecQueueCount() 
+        {
+            Interlocked.Decrement(ref this.queueCount);
+        }
         public ChannelReader<T> Reader => this.channel.Reader;
     }
 }
