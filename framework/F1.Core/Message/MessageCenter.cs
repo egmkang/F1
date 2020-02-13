@@ -60,7 +60,7 @@ namespace F1.Core.Message
                     IInboundMessage message = default;
                     while (reader.TryRead(out message) && message != null)
                     {
-                        this.inboundMessageQueue.DecQueueCount();
+                        this.inboundMessageQueue.QueueCount--;
                         try
                         {
                             this.inboundMessageProc(message);

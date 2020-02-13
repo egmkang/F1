@@ -19,7 +19,7 @@ namespace F1.Core.Network
         private long activeTime;
         private bool stop = false;
         private IPEndPoint address;
-        private readonly AsyncMessageQueue<IOutboundMessage> queue;
+        private readonly AsyncMessageQueue<IOutboundMessage> inboundMessageQueue;
         private readonly ILogger logger;
         private readonly IMessageCenter messageCenter;
         private readonly IMessageCodec codec;
@@ -31,7 +31,7 @@ namespace F1.Core.Network
             this.messageCenter = messageCenter;
             this.codec = codec;
 
-            this.queue = new AsyncMessageQueue<IOutboundMessage>(this.logger);
+            this.inboundMessageQueue = new AsyncMessageQueue<IOutboundMessage>(this.logger);
         }
 
         public long SessionID => sessionID;
@@ -40,26 +40,26 @@ namespace F1.Core.Network
         public IPEndPoint RemoteAddress { get => address; set => address = value; }
         public int PutOutboundMessage(IOutboundMessage msg)
         {
-            if (!this.queue.PushMessage(msg)) 
+            if (!this.inboundMessageQueue.PushMessage(msg)) 
             {
                 logger.LogWarning("SessionID:{0}, Drop Message", this.sessionID);
             }
-            return this.queue.QueueCount;
+            return this.inboundMessageQueue.QueueCount;
         }
         public void ShutDown() 
         {
             this.stop = true;
-            this.queue.PushMessage(null);
-            this.queue.ShutDown();
+            this.inboundMessageQueue.PushMessage(null);
+            this.inboundMessageQueue.ShutDown();
         }
 
         public void RunSendingLoopAsync(IChannel channel)
         {
             var allocator = channel.Allocator;
-            var reader = this.queue.Reader;
+            var reader = this.inboundMessageQueue.Reader;
             Task.Run(async () => 
             {
-                while (this.queue.Valid) 
+                while (this.inboundMessageQueue.Valid) 
                 {
                     var more = await reader.WaitToReadAsync();
                     if (!more) 
@@ -73,7 +73,7 @@ namespace F1.Core.Network
                     {
                         while (number < 4 && reader.TryRead(out message) && message != null)
                         {
-                            this.queue.DecQueueCount();
+                            this.inboundMessageQueue.QueueCount--;
                             var buffer = this.codec.Encode(allocator, message.Inner);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             channel.WriteAsync(buffer);

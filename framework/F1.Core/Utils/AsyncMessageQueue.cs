@@ -45,10 +45,10 @@ namespace F1.Core.Utils
         }
 
         public bool Valid { get; private set; }
-        public int QueueCount => Interlocked.Add(ref this.queueCount, 0);
-        public void DecQueueCount() 
+        public int QueueCount
         {
-            Interlocked.Decrement(ref this.queueCount);
+            get => Interlocked.Add(ref this.queueCount, 0);
+            set => Interlocked.Decrement(ref this.queueCount);
         }
         public ChannelReader<T> Reader => this.channel.Reader;
     }
