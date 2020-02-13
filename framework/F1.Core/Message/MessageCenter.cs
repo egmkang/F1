@@ -58,9 +58,8 @@ namespace F1.Core.Message
                     }
 
                     IInboundMessage message = default;
-                    while (reader.TryRead(out message))
+                    while (reader.TryRead(out message) && message != null)
                     {
-                        if (message == null) break;
                         this.inboundMessageQueue.DecQueueCount();
                         try
                         {

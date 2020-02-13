@@ -71,9 +71,8 @@ namespace F1.Core.Network
                     var number = 0;
                     try 
                     {
-                        while (number < 4 && reader.TryRead(out message)) 
+                        while (number < 4 && reader.TryRead(out message) && message != null)
                         {
-                            if (message == null)  break;
                             this.queue.DecQueueCount();
                             var buffer = this.codec.Encode(allocator, message.Inner);
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
