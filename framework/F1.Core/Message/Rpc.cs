@@ -24,36 +24,38 @@ namespace F1.Message {
     static RpcReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFNZXNzYWdlL3JwYy5wcm90bxIKRjEuTWVzc2FnZSI0CgtSZXF1ZXN0UGlu",
-            "ZxIRCglzZXJ2ZXJfaWQYASABKAUSEgoKc3RhcnRfdGltZRgCIAEoAyI1CgxS",
-            "ZXNwb25zZVBvbmcSEQoJc2VydmVyX2lkGAEgASgFEhIKCnN0YXJ0X3RpbWUY",
-            "AiABKAMigAEKClJlcXVlc3RScGMSEwoLZW50aXR5X3R5cGUYASABKAUSEQoJ",
-            "ZW50aXR5X2lkGAIgASgJEg4KBm1ldGhvZBgDIAEoCRIMCgRhcmdzGAQgASgM",
-            "EgwKBGhvc3QYBSABKAkSEgoKcmVxdWVzdF9pZBgGIAEoAxIKCgJpZBgHIAEo",
-            "AyJNCgtSZXNwb25zZVJwYxIKCgJpZBgBIAEoAxISCgplcnJvcl9jb2RlGAIg",
-            "ASgFEhEKCWVycm9yX21zZxgDIAEoCRILCgNyZXQYBSABKAwiKQoQUmVxdWVz",
-            "dEhlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgDIioKEVJlc3BvbnNl",
-            "SGVhcnRCZWF0EhUKDW1pbGxpX3NlY29uZHMYASABKANiBnByb3RvMw=="));
+            "ChFNZXNzYWdlL3JwYy5wcm90bxIKRjEuTWVzc2FnZSI8ChNSZXF1ZXN0UnBj",
+            "SGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEoBRISCgpzdGFydF90aW1lGAIg",
+            "ASgDIj0KFFJlc3BvbnNlUnBjSGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEo",
+            "BRISCgpzdGFydF90aW1lGAIgASgDIpABCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
+            "X3R5cGUYASABKAkSEAoIYWN0b3JfaWQYAiABKAkSDgoGbWV0aG9kGAMgASgJ",
+            "EgwKBGFyZ3MYBCABKAwSEgoKc3JjX3NlcnZlchgGIAEoBhIWCg5zcmNfcmVx",
+            "dWVzdF9pZBgHIAEoBhISCgpyZXF1ZXN0X2lkGAggASgGIloKC1Jlc3BvbnNl",
+            "UnBjEhIKCnJlcXVlc3RfaWQYASABKAMSEgoKZXJyb3JfY29kZRgCIAEoBRIR",
+            "CgllcnJvcl9tc2cYAyABKAkSEAoIcmVzcG9uc2UYBCABKAwiLAoTUmVxdWVz",
+            "dFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgDIi0KFFJlc3Bv",
+            "bnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxpX3NlY29uZHMYASABKANiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestPing), global::F1.Message.RequestPing.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponsePong), global::F1.Message.ResponsePong.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpc), global::F1.Message.RequestRpc.Parser, new[]{ "EntityType", "EntityId", "Method", "Args", "Host", "RequestId", "Id" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpc), global::F1.Message.ResponseRpc.Parser, new[]{ "Id", "ErrorCode", "ErrorMsg", "Ret" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestHeartBeat), global::F1.Message.RequestHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseHeartBeat), global::F1.Message.ResponseHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpcHandshake), global::F1.Message.RequestRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpcHandshake), global::F1.Message.ResponseRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpc), global::F1.Message.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpc), global::F1.Message.ResponseRpc.Parser, new[]{ "RequestId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpcHeartBeat), global::F1.Message.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpcHeartBeat), global::F1.Message.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class RequestPing : pb::IMessage<RequestPing> {
-    private static readonly pb::MessageParser<RequestPing> _parser = new pb::MessageParser<RequestPing>(() => new RequestPing());
+  public sealed partial class RequestRpcHandshake : pb::IMessage<RequestRpcHandshake> {
+    private static readonly pb::MessageParser<RequestRpcHandshake> _parser = new pb::MessageParser<RequestRpcHandshake>(() => new RequestRpcHandshake());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RequestPing> Parser { get { return _parser; } }
+    public static pb::MessageParser<RequestRpcHandshake> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -66,22 +68,22 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestPing() {
+    public RequestRpcHandshake() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestPing(RequestPing other) : this() {
+    public RequestRpcHandshake(RequestRpcHandshake other) : this() {
       serverId_ = other.serverId_;
       startTime_ = other.startTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestPing Clone() {
-      return new RequestPing(this);
+    public RequestRpcHandshake Clone() {
+      return new RequestRpcHandshake(this);
     }
 
     /// <summary>Field number for the "server_id" field.</summary>
@@ -108,11 +110,11 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as RequestPing);
+      return Equals(other as RequestRpcHandshake);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RequestPing other) {
+    public bool Equals(RequestRpcHandshake other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -171,7 +173,7 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RequestPing other) {
+    public void MergeFrom(RequestRpcHandshake other) {
       if (other == null) {
         return;
       }
@@ -206,11 +208,11 @@ namespace F1.Message {
 
   }
 
-  public sealed partial class ResponsePong : pb::IMessage<ResponsePong> {
-    private static readonly pb::MessageParser<ResponsePong> _parser = new pb::MessageParser<ResponsePong>(() => new ResponsePong());
+  public sealed partial class ResponseRpcHandshake : pb::IMessage<ResponseRpcHandshake> {
+    private static readonly pb::MessageParser<ResponseRpcHandshake> _parser = new pb::MessageParser<ResponseRpcHandshake>(() => new ResponseRpcHandshake());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ResponsePong> Parser { get { return _parser; } }
+    public static pb::MessageParser<ResponseRpcHandshake> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -223,22 +225,22 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponsePong() {
+    public ResponseRpcHandshake() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponsePong(ResponsePong other) : this() {
+    public ResponseRpcHandshake(ResponseRpcHandshake other) : this() {
       serverId_ = other.serverId_;
       startTime_ = other.startTime_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponsePong Clone() {
-      return new ResponsePong(this);
+    public ResponseRpcHandshake Clone() {
+      return new ResponseRpcHandshake(this);
     }
 
     /// <summary>Field number for the "server_id" field.</summary>
@@ -265,11 +267,11 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as ResponsePong);
+      return Equals(other as ResponseRpcHandshake);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ResponsePong other) {
+    public bool Equals(ResponseRpcHandshake other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -328,7 +330,7 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ResponsePong other) {
+    public void MergeFrom(ResponseRpcHandshake other) {
       if (other == null) {
         return;
       }
@@ -388,13 +390,13 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public RequestRpc(RequestRpc other) : this() {
-      entityType_ = other.entityType_;
-      entityId_ = other.entityId_;
+      actorType_ = other.actorType_;
+      actorId_ = other.actorId_;
       method_ = other.method_;
       args_ = other.args_;
-      host_ = other.host_;
+      srcServer_ = other.srcServer_;
+      srcRequestId_ = other.srcRequestId_;
       requestId_ = other.requestId_;
-      id_ = other.id_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -403,31 +405,40 @@ namespace F1.Message {
       return new RequestRpc(this);
     }
 
-    /// <summary>Field number for the "entity_type" field.</summary>
-    public const int EntityTypeFieldNumber = 1;
-    private int entityType_;
+    /// <summary>Field number for the "actor_type" field.</summary>
+    public const int ActorTypeFieldNumber = 1;
+    private string actorType_ = "";
+    /// <summary>
+    ///要求actor_type在一个扁平的空间内是唯一的
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int EntityType {
-      get { return entityType_; }
+    public string ActorType {
+      get { return actorType_; }
       set {
-        entityType_ = value;
+        actorType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "entity_id" field.</summary>
-    public const int EntityIdFieldNumber = 2;
-    private string entityId_ = "";
+    /// <summary>Field number for the "actor_id" field.</summary>
+    public const int ActorIdFieldNumber = 2;
+    private string actorId_ = "";
+    /// <summary>
+    ///该ID不要包含actor_type和domain信息
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string EntityId {
-      get { return entityId_; }
+    public string ActorId {
+      get { return actorId_; }
       set {
-        entityId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        actorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
     /// <summary>Field number for the "method" field.</summary>
     public const int MethodFieldNumber = 3;
     private string method_ = "";
+    /// <summary>
+    ///函数名
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string Method {
       get { return method_; }
@@ -439,6 +450,9 @@ namespace F1.Message {
     /// <summary>Field number for the "args" field.</summary>
     public const int ArgsFieldNumber = 4;
     private pb::ByteString args_ = pb::ByteString.Empty;
+    /// <summary>
+    ///收入参数(序列化暂时还未想好)
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Args {
       get { return args_; }
@@ -447,36 +461,39 @@ namespace F1.Message {
       }
     }
 
-    /// <summary>Field number for the "host" field.</summary>
-    public const int HostFieldNumber = 5;
-    private string host_ = "";
+    /// <summary>Field number for the "src_server" field.</summary>
+    public const int SrcServerFieldNumber = 6;
+    private ulong srcServer_;
+    /// <summary>
+    ///ServerID, TraceID两个组合起来决定了Request的可重入性
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Host {
-      get { return host_; }
+    public ulong SrcServer {
+      get { return srcServer_; }
       set {
-        host_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        srcServer_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "src_request_id" field.</summary>
+    public const int SrcRequestIdFieldNumber = 7;
+    private ulong srcRequestId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong SrcRequestId {
+      get { return srcRequestId_; }
+      set {
+        srcRequestId_ = value;
       }
     }
 
     /// <summary>Field number for the "request_id" field.</summary>
-    public const int RequestIdFieldNumber = 6;
-    private long requestId_;
+    public const int RequestIdFieldNumber = 8;
+    private ulong requestId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long RequestId {
+    public ulong RequestId {
       get { return requestId_; }
       set {
         requestId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 7;
-    private long id_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Id {
-      get { return id_; }
-      set {
-        id_ = value;
       }
     }
 
@@ -493,26 +510,26 @@ namespace F1.Message {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (EntityType != other.EntityType) return false;
-      if (EntityId != other.EntityId) return false;
+      if (ActorType != other.ActorType) return false;
+      if (ActorId != other.ActorId) return false;
       if (Method != other.Method) return false;
       if (Args != other.Args) return false;
-      if (Host != other.Host) return false;
+      if (SrcServer != other.SrcServer) return false;
+      if (SrcRequestId != other.SrcRequestId) return false;
       if (RequestId != other.RequestId) return false;
-      if (Id != other.Id) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (EntityType != 0) hash ^= EntityType.GetHashCode();
-      if (EntityId.Length != 0) hash ^= EntityId.GetHashCode();
+      if (ActorType.Length != 0) hash ^= ActorType.GetHashCode();
+      if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (Method.Length != 0) hash ^= Method.GetHashCode();
       if (Args.Length != 0) hash ^= Args.GetHashCode();
-      if (Host.Length != 0) hash ^= Host.GetHashCode();
-      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
-      if (Id != 0L) hash ^= Id.GetHashCode();
+      if (SrcServer != 0UL) hash ^= SrcServer.GetHashCode();
+      if (SrcRequestId != 0UL) hash ^= SrcRequestId.GetHashCode();
+      if (RequestId != 0UL) hash ^= RequestId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -526,13 +543,13 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (EntityType != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(EntityType);
+      if (ActorType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ActorType);
       }
-      if (EntityId.Length != 0) {
+      if (ActorId.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(EntityId);
+        output.WriteString(ActorId);
       }
       if (Method.Length != 0) {
         output.WriteRawTag(26);
@@ -542,17 +559,17 @@ namespace F1.Message {
         output.WriteRawTag(34);
         output.WriteBytes(Args);
       }
-      if (Host.Length != 0) {
-        output.WriteRawTag(42);
-        output.WriteString(Host);
+      if (SrcServer != 0UL) {
+        output.WriteRawTag(49);
+        output.WriteFixed64(SrcServer);
       }
-      if (RequestId != 0L) {
-        output.WriteRawTag(48);
-        output.WriteInt64(RequestId);
+      if (SrcRequestId != 0UL) {
+        output.WriteRawTag(57);
+        output.WriteFixed64(SrcRequestId);
       }
-      if (Id != 0L) {
-        output.WriteRawTag(56);
-        output.WriteInt64(Id);
+      if (RequestId != 0UL) {
+        output.WriteRawTag(65);
+        output.WriteFixed64(RequestId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -562,11 +579,11 @@ namespace F1.Message {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (EntityType != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(EntityType);
+      if (ActorType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorType);
       }
-      if (EntityId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(EntityId);
+      if (ActorId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
       }
       if (Method.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Method);
@@ -574,14 +591,14 @@ namespace F1.Message {
       if (Args.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Args);
       }
-      if (Host.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Host);
+      if (SrcServer != 0UL) {
+        size += 1 + 8;
       }
-      if (RequestId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(RequestId);
+      if (SrcRequestId != 0UL) {
+        size += 1 + 8;
       }
-      if (Id != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      if (RequestId != 0UL) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -594,11 +611,11 @@ namespace F1.Message {
       if (other == null) {
         return;
       }
-      if (other.EntityType != 0) {
-        EntityType = other.EntityType;
+      if (other.ActorType.Length != 0) {
+        ActorType = other.ActorType;
       }
-      if (other.EntityId.Length != 0) {
-        EntityId = other.EntityId;
+      if (other.ActorId.Length != 0) {
+        ActorId = other.ActorId;
       }
       if (other.Method.Length != 0) {
         Method = other.Method;
@@ -606,14 +623,14 @@ namespace F1.Message {
       if (other.Args.Length != 0) {
         Args = other.Args;
       }
-      if (other.Host.Length != 0) {
-        Host = other.Host;
+      if (other.SrcServer != 0UL) {
+        SrcServer = other.SrcServer;
       }
-      if (other.RequestId != 0L) {
+      if (other.SrcRequestId != 0UL) {
+        SrcRequestId = other.SrcRequestId;
+      }
+      if (other.RequestId != 0UL) {
         RequestId = other.RequestId;
-      }
-      if (other.Id != 0L) {
-        Id = other.Id;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -626,12 +643,12 @@ namespace F1.Message {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            EntityType = input.ReadInt32();
+          case 10: {
+            ActorType = input.ReadString();
             break;
           }
           case 18: {
-            EntityId = input.ReadString();
+            ActorId = input.ReadString();
             break;
           }
           case 26: {
@@ -642,16 +659,16 @@ namespace F1.Message {
             Args = input.ReadBytes();
             break;
           }
-          case 42: {
-            Host = input.ReadString();
+          case 49: {
+            SrcServer = input.ReadFixed64();
             break;
           }
-          case 48: {
-            RequestId = input.ReadInt64();
+          case 57: {
+            SrcRequestId = input.ReadFixed64();
             break;
           }
-          case 56: {
-            Id = input.ReadInt64();
+          case 65: {
+            RequestId = input.ReadFixed64();
             break;
           }
         }
@@ -685,10 +702,10 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ResponseRpc(ResponseRpc other) : this() {
-      id_ = other.id_;
+      requestId_ = other.requestId_;
       errorCode_ = other.errorCode_;
       errorMsg_ = other.errorMsg_;
-      ret_ = other.ret_;
+      response_ = other.response_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -697,14 +714,14 @@ namespace F1.Message {
       return new ResponseRpc(this);
     }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private long id_;
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 1;
+    private long requestId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Id {
-      get { return id_; }
+    public long RequestId {
+      get { return requestId_; }
       set {
-        id_ = value;
+        requestId_ = value;
       }
     }
 
@@ -730,14 +747,14 @@ namespace F1.Message {
       }
     }
 
-    /// <summary>Field number for the "ret" field.</summary>
-    public const int RetFieldNumber = 5;
-    private pb::ByteString ret_ = pb::ByteString.Empty;
+    /// <summary>Field number for the "response" field.</summary>
+    public const int ResponseFieldNumber = 4;
+    private pb::ByteString response_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString Ret {
-      get { return ret_; }
+    public pb::ByteString Response {
+      get { return response_; }
       set {
-        ret_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        response_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -754,20 +771,20 @@ namespace F1.Message {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Id != other.Id) return false;
+      if (RequestId != other.RequestId) return false;
       if (ErrorCode != other.ErrorCode) return false;
       if (ErrorMsg != other.ErrorMsg) return false;
-      if (Ret != other.Ret) return false;
+      if (Response != other.Response) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id != 0L) hash ^= Id.GetHashCode();
+      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
       if (ErrorCode != 0) hash ^= ErrorCode.GetHashCode();
       if (ErrorMsg.Length != 0) hash ^= ErrorMsg.GetHashCode();
-      if (Ret.Length != 0) hash ^= Ret.GetHashCode();
+      if (Response.Length != 0) hash ^= Response.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -781,9 +798,9 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Id != 0L) {
+      if (RequestId != 0L) {
         output.WriteRawTag(8);
-        output.WriteInt64(Id);
+        output.WriteInt64(RequestId);
       }
       if (ErrorCode != 0) {
         output.WriteRawTag(16);
@@ -793,9 +810,9 @@ namespace F1.Message {
         output.WriteRawTag(26);
         output.WriteString(ErrorMsg);
       }
-      if (Ret.Length != 0) {
-        output.WriteRawTag(42);
-        output.WriteBytes(Ret);
+      if (Response.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(Response);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -805,8 +822,8 @@ namespace F1.Message {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Id != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Id);
+      if (RequestId != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(RequestId);
       }
       if (ErrorCode != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ErrorCode);
@@ -814,8 +831,8 @@ namespace F1.Message {
       if (ErrorMsg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMsg);
       }
-      if (Ret.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Ret);
+      if (Response.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Response);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -828,8 +845,8 @@ namespace F1.Message {
       if (other == null) {
         return;
       }
-      if (other.Id != 0L) {
-        Id = other.Id;
+      if (other.RequestId != 0L) {
+        RequestId = other.RequestId;
       }
       if (other.ErrorCode != 0) {
         ErrorCode = other.ErrorCode;
@@ -837,8 +854,8 @@ namespace F1.Message {
       if (other.ErrorMsg.Length != 0) {
         ErrorMsg = other.ErrorMsg;
       }
-      if (other.Ret.Length != 0) {
-        Ret = other.Ret;
+      if (other.Response.Length != 0) {
+        Response = other.Response;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -852,7 +869,7 @@ namespace F1.Message {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Id = input.ReadInt64();
+            RequestId = input.ReadInt64();
             break;
           }
           case 16: {
@@ -863,8 +880,8 @@ namespace F1.Message {
             ErrorMsg = input.ReadString();
             break;
           }
-          case 42: {
-            Ret = input.ReadBytes();
+          case 34: {
+            Response = input.ReadBytes();
             break;
           }
         }
@@ -873,11 +890,11 @@ namespace F1.Message {
 
   }
 
-  public sealed partial class RequestHeartBeat : pb::IMessage<RequestHeartBeat> {
-    private static readonly pb::MessageParser<RequestHeartBeat> _parser = new pb::MessageParser<RequestHeartBeat>(() => new RequestHeartBeat());
+  public sealed partial class RequestRpcHeartBeat : pb::IMessage<RequestRpcHeartBeat> {
+    private static readonly pb::MessageParser<RequestRpcHeartBeat> _parser = new pb::MessageParser<RequestRpcHeartBeat>(() => new RequestRpcHeartBeat());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RequestHeartBeat> Parser { get { return _parser; } }
+    public static pb::MessageParser<RequestRpcHeartBeat> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -890,21 +907,21 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestHeartBeat() {
+    public RequestRpcHeartBeat() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestHeartBeat(RequestHeartBeat other) : this() {
+    public RequestRpcHeartBeat(RequestRpcHeartBeat other) : this() {
       milliSeconds_ = other.milliSeconds_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestHeartBeat Clone() {
-      return new RequestHeartBeat(this);
+    public RequestRpcHeartBeat Clone() {
+      return new RequestRpcHeartBeat(this);
     }
 
     /// <summary>Field number for the "milli_seconds" field.</summary>
@@ -920,11 +937,11 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as RequestHeartBeat);
+      return Equals(other as RequestRpcHeartBeat);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RequestHeartBeat other) {
+    public bool Equals(RequestRpcHeartBeat other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -974,7 +991,7 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RequestHeartBeat other) {
+    public void MergeFrom(RequestRpcHeartBeat other) {
       if (other == null) {
         return;
       }
@@ -1002,11 +1019,11 @@ namespace F1.Message {
 
   }
 
-  public sealed partial class ResponseHeartBeat : pb::IMessage<ResponseHeartBeat> {
-    private static readonly pb::MessageParser<ResponseHeartBeat> _parser = new pb::MessageParser<ResponseHeartBeat>(() => new ResponseHeartBeat());
+  public sealed partial class ResponseRpcHeartBeat : pb::IMessage<ResponseRpcHeartBeat> {
+    private static readonly pb::MessageParser<ResponseRpcHeartBeat> _parser = new pb::MessageParser<ResponseRpcHeartBeat>(() => new ResponseRpcHeartBeat());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ResponseHeartBeat> Parser { get { return _parser; } }
+    public static pb::MessageParser<ResponseRpcHeartBeat> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -1019,21 +1036,21 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseHeartBeat() {
+    public ResponseRpcHeartBeat() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseHeartBeat(ResponseHeartBeat other) : this() {
+    public ResponseRpcHeartBeat(ResponseRpcHeartBeat other) : this() {
       milliSeconds_ = other.milliSeconds_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseHeartBeat Clone() {
-      return new ResponseHeartBeat(this);
+    public ResponseRpcHeartBeat Clone() {
+      return new ResponseRpcHeartBeat(this);
     }
 
     /// <summary>Field number for the "milli_seconds" field.</summary>
@@ -1049,11 +1066,11 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as ResponseHeartBeat);
+      return Equals(other as ResponseRpcHeartBeat);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ResponseHeartBeat other) {
+    public bool Equals(ResponseRpcHeartBeat other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -1103,7 +1120,7 @@ namespace F1.Message {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ResponseHeartBeat other) {
+    public void MergeFrom(ResponseRpcHeartBeat other) {
       if (other == null) {
         return;
       }

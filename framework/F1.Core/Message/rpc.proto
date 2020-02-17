@@ -2,13 +2,13 @@ syntax="proto3";
 package F1.Message;
 
 
-message RequestPing
+message RequestRpcHandshake
 {
 int32 server_id     = 1;
 int64 start_time     = 2;
 }
 
-message ResponsePong
+message ResponseRpcHandshake
 {
 int32 server_id     = 1;
 int64 start_time     = 2;
@@ -16,30 +16,30 @@ int64 start_time     = 2;
 
 message RequestRpc
 {
-int32 entity_type    = 1;
-string entity_id    = 2;
-string method        = 3;
-bytes args            = 4;
+string actor_type	= 1;	//要求actor_type在一个扁平的空间内是唯一的
+string actor_id		= 2;	//该ID不要包含actor_type和domain信息
+string method       = 3;	//函数名
+bytes args          = 4;	//收入参数(序列化暂时还未想好)
 
-string host            = 5;
-int64 request_id    = 6;
-int64 id            = 7;
+fixed64 src_server		= 6;	//ServerID, TraceID两个组合起来决定了Request的可重入性
+fixed64 src_request_id	= 7;
+fixed64 request_id		= 8;
 }
 
 message ResponseRpc
 {
-int64 id            = 1;
+int64 request_id    = 1;
 int32 error_code    = 2;
 string error_msg    = 3;
-bytes ret            = 5;
+bytes response      = 4;
 }
 
-message RequestHeartBeat
+message RequestRpcHeartBeat
 {
 int64 milli_seconds = 1;
 }
 
-message ResponseHeartBeat
+message ResponseRpcHeartBeat
 {
 int64 milli_seconds = 1;
 }

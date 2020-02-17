@@ -15,7 +15,7 @@ namespace F1.Core.Test.Network
         [Fact]
         public void EmptyMessage()
         {
-            var msg = new RequestPing();
+            var msg = new RequestRpcHandshake();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var (length, msg1) = buffer.DecodeOneMessage();
@@ -29,7 +29,7 @@ namespace F1.Core.Test.Network
         [Fact]
         public void HalfPacket() 
         {
-            var msg = new RequestPing();
+            var msg = new RequestRpcHandshake();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var half = buffer.Slice(0, buffer.ReadableBytes - 1);
@@ -46,7 +46,7 @@ namespace F1.Core.Test.Network
         [Fact]
         public void RandomMessage() 
         {
-            var msg = new RequestPing();
+            var msg = new RequestRpcHandshake();
             msg.ServerId = random.Next(0, 1000000);
             var buffer = msg.ToByteBuffer(Allocator);
 
@@ -56,7 +56,7 @@ namespace F1.Core.Test.Network
             Assert.NotEqual(length, 0);
             Assert.NotNull(msg1);
             Assert.IsType(msg.GetType(), msg1);
-            Assert.Equal(msg, (msg1 as RequestPing));
+            Assert.Equal(msg, (msg1 as RequestRpcHandshake));
 
             ReferenceCountUtil.Release(buffer);
         }
@@ -64,10 +64,10 @@ namespace F1.Core.Test.Network
         [Fact]
         public void TowMessages()
         {
-            var input1 = new RequestPing();
+            var input1 = new RequestRpcHandshake();
             input1.ServerId = random.Next(0, 1000000);
 
-            var input2 = new ResponsePong();
+            var input2 = new ResponseRpcHandshake();
             input2.StartTime = random.Next(0, 10000000);
             input2.ServerId = random.Next(0, 100000);
 
@@ -86,11 +86,11 @@ namespace F1.Core.Test.Network
             Assert.NotEqual(length2, 0);
             Assert.NotNull(msg1);
             Assert.IsType(input1.GetType(), msg1);
-            Assert.Equal(input1, (msg1 as RequestPing));
+            Assert.Equal(input1, (msg1 as RequestRpcHandshake));
 
             Assert.NotNull(msg2);
             Assert.IsType(input2.GetType(), msg2);
-            Assert.Equal(input2, (msg2 as ResponsePong));
+            Assert.Equal(input2, (msg2 as ResponseRpcHandshake));
 
             ReferenceCountUtil.Release(buffer1);
             ReferenceCountUtil.Release(buffer2);
