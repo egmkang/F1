@@ -19,6 +19,10 @@ namespace F1.Abstractions.Placement
         /// </summary>
         public long LeaseID = 0;
         /// <summary>
+        /// 服务器的负载(运行时也就只有负载可变, 其他信息都不允许发生变化)
+        /// </summary>
+        public long Load = 0;
+        /// <summary>
         /// 服务器启动时间, 相对于UTC的毫秒数
         /// </summary>
         public long StartTime = 0;
@@ -144,7 +148,8 @@ namespace F1.Abstractions.Placement
         /// </summary>
         /// <param name="address">PD服务器的地址</param>
         /// <param name="domain">该framework的名字空间, 调试的时候用来做隔离</param>
-        void SetPlacementServerInfo(string address, string domain);
+        /// <param name="actorType">该服务器所能提供的Actor服务类型</param>
+        void SetPlacementServerInfo(string address, string domain, List<string> actorType);
         
         /// <summary>
         /// 生成一个新的服务器ID, 服务器每次启动的时候都需要向PD去申请新的ID
@@ -166,10 +171,8 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 注册当前服务器到PD里面去
         /// </summary>
-        /// <param name="serverID">服务器ID</param>
-        /// <param name="domain">服务器的命名空间</param>
         /// <returns>返回租约</returns>
-        Task<long> RegisterServerAsync(long serverID, string domain);
+        Task<long> RegisterServerAsync(PlacementActorHostInfo info);
         /// <summary>
         /// 给当前服务器续约, 维持其生命
         /// </summary>

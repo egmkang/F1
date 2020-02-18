@@ -36,5 +36,12 @@ namespace F1.Core.Utils
             var ElapsedMilliSeconds = (Stopwatch.GetTimestamp() - ServerStartTicks) * 1000 / Stopwatch.Frequency;
             return ServerStartMilliSeconds + ElapsedMilliSeconds;
         }
+
+
+        public static string GetLocalAddresss() 
+        {
+            //TODO
+            return "127.0.0.1";
+        }
     }
 }
