@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -11,6 +11,12 @@ using F1.Core.Utils;
 
 namespace F1.Core.Placement
 {
+    public static class Extensions
+    {
+        public static StringContent AsJson(this object o)
+            => new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");
+    }
+
     struct ResponseStatus 
     {
         public int ErrorCode { get; set; }
