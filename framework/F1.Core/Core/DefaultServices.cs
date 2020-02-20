@@ -7,6 +7,8 @@ using F1.Abstractions;
 using F1.Abstractions.Network;
 using F1.Core.Network;
 using F1.Core.Message;
+using F1.Abstractions.Placement;
+using F1.Core.Placement;
 
 namespace F1.Core.Core
 {
@@ -23,6 +25,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<IConnectionListener, ConnectionListener>();
             services.TryAddSingleton<IMessageCenter, MessageCenter>();
             services.TryAddSingleton<IMessageHandlerFactory, MessageHandlerFactory>();
+            services.TryAddSingleton<IPlacement, PDPlacement>();
         }
     }
 }

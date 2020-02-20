@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,35 +14,43 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 服务器唯一ID
         /// </summary>
+        [JsonProperty("server_id")]
         public long ServerID = 0;
         /// <summary>
         /// 租约
         /// </summary>
+        [JsonProperty("lease_id")]
         public long LeaseID = 0;
         /// <summary>
         /// 服务器的负载(运行时也就只有负载可变, 其他信息都不允许发生变化)
         /// </summary>
+        [JsonProperty("load")]
         public long Load = 0;
         /// <summary>
         /// 服务器启动时间, 相对于UTC的毫秒数
         /// </summary>
+        [JsonProperty("start_time")]
         public long StartTime = 0;
         /// <summary>
         /// 服务器的生存期
         /// </summary>
+        [JsonProperty("ttl")]
         public long TTL = 0;
         /// <summary>
         /// 服务器的地址
         /// </summary>
+        [JsonProperty("address")]
         public string Address = "";
         /// <summary>
         /// 服务器的名字空间, 用来做多组服务器隔离的, PD上面有名字空间, framework里面没有
         /// framework不允许多个名字空间的服务器进行交互
         /// </summary>
+        [JsonProperty("domain")]
         public string Domain = "";
         /// <summary>
         /// 服务器能提供的Actor对象类型, 即服务能力
         /// </summary>
+        [JsonProperty("actor_type")]
         public List<string> ActorType = new List<string>();
     }
 
@@ -53,14 +62,17 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 事件的事件
         /// </summary>
+        [JsonProperty("time")]
         public long Time = 0;
         /// <summary>
         /// 增加的服务器ID
         /// </summary>
+        [JsonProperty("add")]
         public List<long> Add = new List<long>();
         /// <summary>
         /// 删除的服务器ID
         /// </summary>
+        [JsonProperty("remove")]
         public List<long> Remove = new List<long>();
     }
 
@@ -72,10 +84,12 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 每次续约PD会将所有的服务器信息下发, 该framework所能处理的集群规模, 也就是百十来台, 所以将所有服务器下发没有问题
         /// </summary>
+        [JsonProperty("hosts")]
         public Dictionary<long, PlacementActorHostInfo> Hosts = new Dictionary<long, PlacementActorHostInfo>();
         /// <summary>
         /// 服务器最近的事件(增减和删除)
         /// </summary>
+        [JsonProperty("events")]
         public List<PlacementEvents> Events = new List<PlacementEvents>();
     }
 
@@ -87,19 +101,23 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 名字空间
         /// </summary>
+        [JsonProperty("domain")]
         public string Domain = "";
         /// <summary>
         /// Actor的类型, 参见ActorType
         /// </summary>
+        [JsonProperty("actor_type")]
         public string ActorType = "";
         /// <summary>
         /// Actor的ID, 在该ActorType下必须唯一
         /// </summary>
+        [JsonProperty("actor_id")]
         public string ActorID = "";
         /// <summary>
         /// Actor的生命周期, 通常为0, 那么Actor的宿主挂掉之后, PD会寻求再次分配新的位置
         /// 不为0时, 那么Actor的宿主挂掉之后, PD不会再次分配新的位置. 通常用来做一次性定位, 比如一场战斗, 战斗服务器挂掉后很难恢复.
         /// </summary>
+        [JsonProperty("ttl")]
         public long TTL = 0;
     }
 
@@ -111,31 +129,46 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 名字空间
         /// </summary>
+        [JsonProperty("domain")]
         public string Domain = "";
         /// <summary>
         /// Actor的类型, 参见ActorType
         /// </summary>
+        [JsonProperty("actor_type")]
         public string ActorType = "";
         /// <summary>
         /// ActorType类型下唯一的ID
         /// </summary>
+        [JsonProperty("actor_id")]
         public string ActorID = "";
         /// <summary>
         /// 生存期
         /// </summary>
+        [JsonProperty("ttl")]
         public long TTL = 0;
         /// <summary>
         /// Actor分配的时间
         /// </summary>
+        [JsonProperty("create_time")]
         public long CreateTime = 0;
         /// <summary>
         /// 宿主的唯一ID
         /// </summary>
+        [JsonProperty("server_id")]
         public long ServerID = 0;
         /// <summary>
         /// 宿主的地址
         /// </summary>
+        [JsonProperty("server_address")]
         public string ServerAddress = "";
+    }
+
+    public class PlacementVersionInfo 
+    {
+        [JsonProperty("version")]
+        public string Version;
+        [JsonProperty("last_heart_beat_time")]
+        public long LastHeartBeatTime;
     }
 
     public interface IPlacement
@@ -187,5 +220,10 @@ namespace F1.Abstractions.Placement
         /// <param name="request">actor定位所需要的信息</param>
         /// <returns>Actor所在的目标服务器信息</returns>
         Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request);
+        /// <summary>
+        /// 获取版本信息
+        /// </summary>
+        /// <returns>返回版本信息的字符串</returns>
+        Task<PlacementVersionInfo> GetVersionAsync();
     }
 }
