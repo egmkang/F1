@@ -69,5 +69,21 @@ namespace F1.Core.Test.Utils
             v = lru.Get(1);
             Assert.Equal(v, null);
         }
+
+
+        [Fact]
+        public void LruTryAdd() 
+        {
+            var lru = new LRU<int, string>(3);
+            lru.Add(1, "1");
+            lru.Add(2, "2");
+            lru.Add(3, "3");
+
+            var r1 = lru.TryAdd(1, "1");
+            Assert.False(r1);
+
+            var r2 = lru.TryAdd(4, "4");
+            Assert.True(r2);
+        }
     }
 }
