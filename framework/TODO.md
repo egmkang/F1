@@ -1,11 +1,14 @@
 C# Framework:
 
 * [ ] Placement SDK
-    * [ ] RegisterServer
-    * [ ] KeepAliveServer
-    * [ ] FindActorPositon
-    * [ ] ids/tokens
-    * [ ] ServerList
+    * [x] RegisterServer
+    * [x] KeepAliveServer
+    * [x] FindActorPositon
+    * [x] ids/tokens
+    * [x] ServerEvents:
+        * [x] Add
+        * [x] Remove
+        * [ ] Offline
 * [ ] Socket
     * [x] TcpServer
     * [x] TcpClient
@@ -14,6 +17,8 @@ C# Framework:
     * [x] MessageCenter
 * [ ] RPC
     * [ ] ClientManager
+        * [ ] Client Reconnect
+        * [ ] Client Add/Remove
     * [ ] Future/Promise
     * [ ] AsyncProxy
 * [ ] Actor
