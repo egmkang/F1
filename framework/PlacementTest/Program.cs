@@ -56,6 +56,28 @@ namespace PlacementTest
             logger.LogInformation("new token:{0}", await placement.GenerateNewTokenAsync());
             logger.LogInformation("new token:{0}", await placement.GenerateNewTokenAsync());
 
+
+            logger.LogInformation("register server");
+
+            var server_id = await placement.GenerateServerIDAsync();
+            var server_info = new PlacementActorHostInfo();
+            server_info.ServerID = server_id;
+            server_info.Domain = "tttt";
+            server_info.StartTime = 101001;
+            server_info.Address = "127.0.0.1:11111";
+            server_info.ActorType.Add("test type");
+
+            var lease_id = await placement.RegisterServerAsync(server_info);
+            logger.LogInformation("register server response, LeaseID:{0}", lease_id);
+
+            int count = 0;
+            while (count < 10) 
+            {
+                await Task.Delay(1000);
+                var response = await placement.KeepAliveServerAsync(server_id, lease_id, count);
+                logger.LogInformation("keep alive success, {0}, {1}", response.Hosts.Count, response.Events.Count);
+            }
+
             Console.WriteLine("Hello World!");
         }
     }

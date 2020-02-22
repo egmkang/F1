@@ -141,14 +141,41 @@ namespace F1.Core.Placement
             return response.id;
         }
 
-        public Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, int load)
+        public async Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, int load)
         {
-            throw new NotImplementedException();
+            var path = "/pd/api/v1/server/keep_alive";
+            var (code, str) = await this.PostAsync(path, new PlacementActorHostInfo()
+            {
+                ServerID = serverID,
+                LeaseID = leaseID,
+                Load = load,
+            });
+            if (code != (int)HttpStatusCode.OK) 
+            {
+                this.logger.LogError("KeepAliveServerAsync fail, ErrorMessage:{0}", str);
+                throw new PlacementException(code, str);
+            }
+            var response = JsonConvert.DeserializeObject<PlacementKeepAliveResponse>(str);
+            return response;
         }
 
-        public Task<long> RegisterServerAsync(PlacementActorHostInfo info)
+        class RegisterServerResponse 
         {
-            throw new NotImplementedException();
+            [JsonProperty("lease_id")]
+            public long LeaseID = 0;
+        }
+
+        public async Task<long> RegisterServerAsync(PlacementActorHostInfo info)
+        {
+            var path = "/pd/api/v1/server/register";
+            var (code, str) = await this.PostAsync(path, info);
+            if (code != (int)HttpStatusCode.OK) 
+            {
+                this.logger.LogError("RegisterServerAsync fail, ErrorMessage:{0}", str);
+                throw new PlacementException(code, str);
+            }
+            var response = JsonConvert.DeserializeObject<RegisterServerResponse>(str);
+            return response.LeaseID;
         }
 
         private bool IsActorPositionValid(PlacementFindActorPositionResponse info) 
