@@ -27,10 +27,12 @@ namespace F1.Core.Placement
             Proxy = null,
             UseProxy = false,
         });
+        const int ServerLRUSize = 1024;
         private readonly ILogger logger;
         private readonly LRU<string, PlacementFindActorPositionResponse> lru = new LRU<string, PlacementFindActorPositionResponse>(10 * 10000);
-        private readonly LRU<long, object> addedServer = new LRU<long, object>(1024);
-        private readonly LRU<long, object> removedServer = new LRU<long, object>(1024);
+        private readonly LRU<long, object> addedServer = new LRU<long, object>(ServerLRUSize);
+        private readonly LRU<long, object> removedServer = new LRU<long, object>(ServerLRUSize);
+        private readonly LRU<long, object> offlineServer = new LRU<long, object>(ServerLRUSize);
         private Dictionary<long, PlacementActorHostInfo> host = new Dictionary<long, PlacementActorHostInfo>(); //readonly
         private PlacementActorHostInfo currentServerInfo = new PlacementActorHostInfo();
         private OnAddServer onAddServer;
@@ -253,7 +255,29 @@ namespace F1.Core.Placement
                 ProcessAddServerEvent(newServerList, item);
                 ProcessRemoveServerEvent(item);
             }
+            this.ProcessServerOfflineEvent(newServerList);
             this.host = newServerList;
+        }
+
+        private void ProcessServerOfflineEvent(Dictionary<long, PlacementActorHostInfo> newServerList)
+        {
+            foreach (var (serverID, info) in newServerList)
+            {
+                if (info.TTL < 0)
+                {
+                    if (this.offlineServer.TryAdd(serverID, EmptyObject))
+                    {
+                        try
+                        {
+                            this.onServerOffline(info);
+                        }
+                        catch (Exception e)
+                        {
+                            this.logger.LogError("OnOfflineServer Exception:{0}", e.Message);
+                        }
+                    }
+                }
+            }
         }
 
         private void ProcessAddServerEvent(Dictionary<long, PlacementActorHostInfo> newServerList, PlacementEvents item)

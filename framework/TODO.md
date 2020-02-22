@@ -8,7 +8,7 @@ C# Framework:
     * [x] ServerEvents:
         * [x] Add
         * [x] Remove
-        * [ ] Offline
+        * [ ] Offline(LRU¸ÄÔì)
 * [ ] Socket
     * [x] TcpServer
     * [x] TcpClient
