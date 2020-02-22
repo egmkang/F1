@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -10,7 +11,6 @@ using F1.Abstractions.Placement;
 using F1.Core.Core;
 using F1.Core.Message;
 using F1.Core.Network;
-using System.Threading.Tasks;
 
 namespace PlacementTest
 {
@@ -31,7 +31,7 @@ namespace PlacementTest
             logger.LogInformation("1212");
 
             var placement = builder.ServiceProvider.GetRequiredService<IPlacement>();
-            placement.SetPlacementServerInfo("127.0.0.1:2379", "test", new List<string>());
+            placement.SetPlacementServerInfo("127.0.0.1:2379");
 
             var version = await placement.GetVersionAsync();
             logger.LogInformation("{0}, {1}", version.Version, version.LastHeartBeatTime);
@@ -70,14 +70,30 @@ namespace PlacementTest
             var lease_id = await placement.RegisterServerAsync(server_info);
             logger.LogInformation("register server response, LeaseID:{0}", lease_id);
 
+
+            placement.RegisterServerChangedEvent(
+                (add) => 
+                {
+                    logger.LogInformation("add : {0}", add);
+                },
+                (remove) => 
+                {
+                    logger.LogInformation("remove: : {0}", remove);
+                },
+                (offline) =>
+                {
+                    logger.LogInformation("offline : {0}", offline);
+                });
+
+            placement.StartPullingAsync();
             int count = 0;
-            while (count < 10) 
+            while (count < 20) 
             {
                 await Task.Delay(1000);
-                var response = await placement.KeepAliveServerAsync(server_id, lease_id, count);
-                logger.LogInformation("keep alive success, {0}, {1}", response.Hosts.Count, response.Events.Count);
+                count++;
             }
 
+            placement.StopPullingAsync();
             Console.WriteLine("Hello World!");
         }
     }

@@ -16,6 +16,28 @@ namespace F1.Core.Utils
             this.capacity = size;
         }
 
+        public bool TryAdd(K k, V v) 
+        {
+            lock (mutex)
+            {
+                if (this.dict.TryGetValue(k, out var vv))
+                {
+                    return false;
+                }
+                this.list.AddLast((k, v));
+                vv = this.list.Last;
+                this.dict.Add(k, vv);
+
+                if (this.dict.Count > this.capacity) 
+                {
+                    var delete = this.list.First;
+                    this.dict.Remove(delete.Value.Item1);
+                    this.list.Remove(delete);
+                }
+                return true;
+            }
+        }
+
         public void Add(K k, V v) 
         {
             lock (mutex) 

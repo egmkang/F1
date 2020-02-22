@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using F1.Abstractions.Placement;
 using F1.Core.Utils;
+using static F1.Abstractions.Placement.IPlacement;
 
 namespace F1.Core.Placement
 {
@@ -26,31 +29,34 @@ namespace F1.Core.Placement
         });
         private readonly ILogger logger;
         private readonly LRU<string, PlacementFindActorPositionResponse> lru = new LRU<string, PlacementFindActorPositionResponse>(10 * 10000);
-        private readonly PlacementActorHostInfo self = new PlacementActorHostInfo();
-        public string PlacementServerAddress { get; private set; }
+        private readonly LRU<long, object> addedServer = new LRU<long, object>(1024);
+        private readonly LRU<long, object> removedServer = new LRU<long, object>(1024);
+        private Dictionary<long, PlacementActorHostInfo> host = new Dictionary<long, PlacementActorHostInfo>(); //readonly
+        private PlacementActorHostInfo currentServerInfo = new PlacementActorHostInfo();
+        private OnAddServer onAddServer;
+        private OnRemoveServer onRemoveServer;
+        private OnServerOffline onServerOffline;
 
-        public string Domain => this.self.Domain;
+        public string PlacementServerAddress { get; private set; }
 
         public PDPlacement(ILoggerFactory loggerFactory) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Placement");
         }
 
-        public void SetPlacementServerInfo(string address, string domain, List<string> actorType)
+        public void SetPlacementServerInfo(string pdAddress)
         {
-            if (address.EndsWith("/")) 
+            if (pdAddress.EndsWith("/")) 
             {
-                address = address.Substring(0, address.Length - 1);
+                pdAddress = pdAddress.Substring(0, pdAddress.Length - 1);
             }
-            if (!address.StartsWith("http")) 
+            if (!pdAddress.StartsWith("http")) 
             {
-                address = "http://" + address;
+                pdAddress = "http://" + pdAddress;
             }
-            this.PlacementServerAddress = address;
+            this.PlacementServerAddress = pdAddress;
 
-            this.self.Domain = domain;
-            this.self.ActorType = actorType;
-            this.logger.LogInformation("SetPlacementServerInfo, Address:{0}, Domain:{1}", address, domain);
+            this.logger.LogInformation("SetPlacementServerInfo, Address:{0}", pdAddress);
         }
 
         private async Task<ValueTuple<int, string>> GetAsync(string path) 
@@ -141,7 +147,7 @@ namespace F1.Core.Placement
             return response.id;
         }
 
-        public async Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, int load)
+        public async Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, long load)
         {
             var path = "/pd/api/v1/server/keep_alive";
             var (code, str) = await this.PostAsync(path, new PlacementActorHostInfo()
@@ -167,6 +173,10 @@ namespace F1.Core.Placement
 
         public async Task<long> RegisterServerAsync(PlacementActorHostInfo info)
         {
+            if (info.TTL == 0) 
+            {
+                info.TTL = 15;
+            }
             var path = "/pd/api/v1/server/register";
             var (code, str) = await this.PostAsync(path, info);
             if (code != (int)HttpStatusCode.OK) 
@@ -175,6 +185,18 @@ namespace F1.Core.Placement
                 throw new PlacementException(code, str);
             }
             var response = JsonConvert.DeserializeObject<RegisterServerResponse>(str);
+            if (response.LeaseID != 0) 
+            {
+                this.currentServerInfo.ServerID = info.ServerID;
+                this.currentServerInfo.StartTime = info.StartTime;
+                this.currentServerInfo.Address = info.Address;
+                this.currentServerInfo.ActorType = info.ActorType.ToList();
+                this.currentServerInfo.Domain = info.Domain;
+                this.currentServerInfo.TTL = info.TTL;
+
+                this.currentServerInfo.LeaseID = response.LeaseID;
+                this.logger.LogInformation("RegisterServerAsync success, ServerID:{0}, LeaseID:{1}", info.ServerID, response.LeaseID);
+            }
             return response.LeaseID;
         }
 
@@ -195,6 +217,123 @@ namespace F1.Core.Placement
 
             var position = JsonConvert.DeserializeObject<PlacementVersionInfo>(str);
             return position;
+        }
+
+        public void RegisterServerChangedEvent(IPlacement.OnAddServer onAddServer, IPlacement.OnRemoveServer onRemoveServer, IPlacement.OnServerOffline onServerOffline)
+        {
+            this.onAddServer = onAddServer;
+            this.onRemoveServer = onRemoveServer;
+            this.onServerOffline = onServerOffline;
+        }
+
+        public void SetServerLoad(long load)
+        {
+            Interlocked.Exchange(ref this.currentServerInfo.Load, load);
+            if (this.logger.IsEnabled(LogLevel.Trace))
+            {
+                this.logger.LogTrace("UpdateServerLoad, Load:{0}", load);
+            }
+        }
+
+        private readonly CancellationTokenSource pullingCancelTokenSource = new CancellationTokenSource();
+
+        private async Task PullOnce(CancellationToken cancellationToken) 
+        {
+            if (cancellationToken.IsCancellationRequested) return;
+            var response = await this.KeepAliveServerAsync(this.currentServerInfo.ServerID, this.currentServerInfo.LeaseID, this.currentServerInfo.Load);
+
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                this.logger.LogTrace("KeepAliveServerAsync response, EventCount: {0}", response.Events.Count);
+            }
+
+            var newServerList = response.Hosts;
+            foreach (var item in response.Events)
+            {
+                ProcessAddServerEvent(newServerList, item);
+                ProcessRemoveServerEvent(item);
+            }
+            this.host = newServerList;
+        }
+
+        private void ProcessAddServerEvent(Dictionary<long, PlacementActorHostInfo> newServerList, PlacementEvents item)
+        {
+            foreach (var add in item.Add)
+            {
+                if (this.addedServer.TryAdd(add, EmptyObject))
+                {
+                    this.logger.LogInformation("PD Add Server, ServerID:{0}", add);
+                    if (newServerList.TryGetValue(add, out var s))
+                    {
+                        try
+                        {
+                            this.onAddServer(s);
+                        }
+                        catch (Exception e)
+                        {
+                            this.logger.LogError("OnAddServer Exception:{0}", e.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ProcessRemoveServerEvent(PlacementEvents item)
+        {
+            foreach (var remove in item.Remove)
+            {
+                if (this.removedServer.TryAdd(remove, EmptyObject))
+                {
+                    this.logger.LogInformation("PD Remove Server, ServerID:{0}", remove);
+                    if (this.host.TryGetValue(remove, out var s))
+                    {
+                        try
+                        {
+                            this.onRemoveServer(s);
+                        }
+                        catch (Exception e)
+                        {
+                            this.logger.LogError("OnRemoveServer Exception:{0}", e.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+        public Task StartPullingAsync()
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            var result = Task.Run(async () =>
+            {
+                var timerInterval = this.currentServerInfo.TTL / 3 * 1000;
+                var currentMilliSeconds = Platform.GetMilliSeconds();
+                var timerCount = 0;
+                while (!pullingCancelTokenSource.Token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await this.PullOnce(pullingCancelTokenSource.Token);
+                        timerCount++;
+                        var delay = (Platform.GetMilliSeconds() - currentMilliSeconds) - timerCount * timerInterval;
+                        if (delay > 0) 
+                        {
+                            await Task.Delay((int)delay);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        this.logger.LogError("PD KeepAlive PullOnce fail, Exception:{0}", e.Message);
+                    }
+                }
+            });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            return result;
+        }
+
+        public Task StopPullingAsync()
+        {
+            pullingCancelTokenSource.Cancel();
+            return Task.FromResult(0);
         }
     }
 }

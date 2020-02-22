@@ -173,16 +173,11 @@ namespace F1.Abstractions.Placement
 
     public interface IPlacement
     {
-        string PlacementServerAddress { get; }
-        string Domain { get; }
-
         /// <summary>
         /// 设置PlacementDriver服务器的信息
         /// </summary>
         /// <param name="address">PD服务器的地址</param>
-        /// <param name="domain">该framework的名字空间, 调试的时候用来做隔离</param>
-        /// <param name="actorType">该服务器所能提供的Actor服务类型</param>
-        void SetPlacementServerInfo(string address, string domain, List<string> actorType);
+        void SetPlacementServerInfo(string address);
         
         /// <summary>
         /// 生成一个新的服务器ID, 服务器每次启动的时候都需要向PD去申请新的ID
@@ -213,7 +208,7 @@ namespace F1.Abstractions.Placement
         /// <param name="leaseID">租约ID</param>
         /// <param name="load">服务器当前的负载</param>
         /// <returns>返回PD上面最新的事件</returns>
-        Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, int load);
+        Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, long load);
         /// <summary>
         /// 找到Actor所在的服务器信息
         /// </summary>
@@ -225,5 +220,32 @@ namespace F1.Abstractions.Placement
         /// </summary>
         /// <returns>返回版本信息的字符串</returns>
         Task<PlacementVersionInfo> GetVersionAsync();
+
+        delegate void OnAddServer(PlacementActorHostInfo serverInfo);
+        delegate void OnRemoveServer(PlacementActorHostInfo serverInfo);
+        delegate void OnServerOffline(PlacementActorHostInfo serverInfo);
+
+        /// <summary>
+        /// 获取服务器列表变动事件
+        /// </summary>
+        /// <param name="onAddServer">添加新的服务器</param>
+        /// <param name="onRemoveServer">删除老的服务器</param>
+        /// <param name="onServerOffline">服务器即将做下线处理</param>
+        void RegisterServerChangedEvent(OnAddServer onAddServer,
+                                        OnRemoveServer onRemoveServer,
+                                        OnServerOffline onServerOffline);
+        /// <summary>
+        /// 设置服务器的负载, 0表示无负载, 数字越大表示负载越大, -1表示服务器将要下线
+        /// </summary>
+        /// <param name="load">负载</param>
+        void SetServerLoad(long load);
+        /// <summary>
+        /// 开启轮训续约的异步任务
+        /// </summary>
+        Task StartPullingAsync();
+        /// <summary>
+        /// 停止轮训续约
+        /// </summary>
+        Task StopPullingAsync();
     }
 }
