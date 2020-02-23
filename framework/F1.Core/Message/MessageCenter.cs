@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Network;
 using F1.Core.Utils;
-using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Message
 {

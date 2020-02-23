@@ -47,7 +47,7 @@ namespace F1.Core.Test.Network
             var connectionSessionInfoFactory = builder.ServiceProvider.GetRequiredService<IConnectionSessionInfoFactory>();
             Assert.NotNull(connectionSessionInfoFactory);
 
-            var connectionFactory = builder.ServiceProvider.GetRequiredService<IConnectionFactory>();
+            var connectionFactory = builder.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
             Assert.NotNull(connectionFactory);
 
             var connectionListener = builder.ServiceProvider.GetRequiredService<IConnectionListener>();
@@ -77,7 +77,7 @@ namespace F1.Core.Test.Network
             var connectionSessionInfoFactory = builder.ServiceProvider.GetRequiredService<IConnectionSessionInfoFactory>();
             Assert.NotNull(connectionSessionInfoFactory);
 
-            var connectionFactory = builder.ServiceProvider.GetRequiredService<IConnectionFactory>();
+            var connectionFactory = builder.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
             Assert.NotNull(connectionFactory);
 
             var connectionListener = builder.ServiceProvider.GetRequiredService<IConnectionListener>();

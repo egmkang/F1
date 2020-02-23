@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 
 namespace F1.Core.Utils
@@ -11,6 +13,7 @@ namespace F1.Core.Utils
         private static long ServerStartSeconds = 0;
         private static long ServerStartMilliSeconds = 0;
         private static long ServerStartTicks = 0;
+        private static string LocalIpAddress = "";
 
         static Platform() 
         {
@@ -40,8 +43,12 @@ namespace F1.Core.Utils
 
         public static string GetLocalAddresss() 
         {
-            //TODO
-            return "127.0.0.1";
+            if (!string.IsNullOrEmpty(LocalIpAddress)) return LocalIpAddress;
+            var udpClient = new UdpClient();
+            udpClient.Connect("8.8.8.8", 80);
+            var localEndPoint = udpClient.Client.LocalEndPoint as IPEndPoint;
+            LocalIpAddress = localEndPoint.Address.ToString();
+            return LocalIpAddress;
         }
     }
 }

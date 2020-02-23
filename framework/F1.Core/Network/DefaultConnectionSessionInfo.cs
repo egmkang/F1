@@ -38,6 +38,8 @@ namespace F1.Core.Network
 
         public long ActiveTime { get => activeTime; set => activeTime = value; }
         public IPEndPoint RemoteAddress { get => address; set => address = value; }
+        public long ServerID { get; set; }
+
         public int PutOutboundMessage(IOutboundMessage msg)
         {
             if (!this.inboundMessageQueue.PushMessage(msg)) 

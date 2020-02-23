@@ -20,7 +20,7 @@ namespace F1.Core.Placement
             => new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");
     }
 
-    public class PDPlacement : IPlacement
+    public sealed class PDPlacement : IPlacement
     {
         private readonly HttpClient httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -256,8 +256,30 @@ namespace F1.Core.Placement
                 ProcessRemoveServerEvent(item);
             }
             this.ProcessServerOfflineEvent(newServerList);
+            this.ProcessDiffTwoServerList(newServerList);
+        }
+
+        private void ProcessDiffTwoServerList(Dictionary<long, PlacementActorHostInfo> newServerList)
+        {
+            foreach (var (serverID, info) in newServerList) 
+            {
+                if (this.host.ContainsKey(serverID)) continue;
+                if (this.addedServer.TryAdd(serverID, EmptyObject))
+                {
+                    this.logger.LogInformation("PD Add Server, ServerID:{0}", serverID);
+                    try
+                    {
+                        this.onAddServer(info);
+                    }
+                    catch (Exception e)
+                    {
+                        this.logger.LogError("OnAddServer Exception:{0}", e.Message);
+                    }
+                }
+            }
             this.host = newServerList;
         }
+
 
         private void ProcessServerOfflineEvent(Dictionary<long, PlacementActorHostInfo> newServerList)
         {

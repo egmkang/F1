@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace F1.Message {
+namespace RpcMessage {
 
   /// <summary>Holder for reflection information generated from Message/rpc.proto</summary>
   public static partial class RpcReflection {
@@ -24,7 +24,7 @@ namespace F1.Message {
     static RpcReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFNZXNzYWdlL3JwYy5wcm90bxIKRjEuTWVzc2FnZSI8ChNSZXF1ZXN0UnBj",
+            "ChFNZXNzYWdlL3JwYy5wcm90bxIKUnBjTWVzc2FnZSI8ChNSZXF1ZXN0UnBj",
             "SGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEoBRISCgpzdGFydF90aW1lGAIg",
             "ASgDIj0KFFJlc3BvbnNlUnBjSGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEo",
             "BRISCgpzdGFydF90aW1lGAIgASgDIpABCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
@@ -39,12 +39,12 @@ namespace F1.Message {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpcHandshake), global::F1.Message.RequestRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpcHandshake), global::F1.Message.ResponseRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpc), global::F1.Message.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpc), global::F1.Message.ResponseRpc.Parser, new[]{ "RequestId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.RequestRpcHeartBeat), global::F1.Message.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::F1.Message.ResponseRpcHeartBeat), global::F1.Message.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHandshake), global::RpcMessage.RequestRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHandshake), global::RpcMessage.ResponseRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpc), global::RpcMessage.ResponseRpc.Parser, new[]{ "RequestId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHeartBeat), global::RpcMessage.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHeartBeat), global::RpcMessage.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
           }));
     }
     #endregion
@@ -59,7 +59,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[0]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -216,7 +216,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[1]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -373,7 +373,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[2]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -685,7 +685,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[3]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -898,7 +898,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[4]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1027,7 +1027,7 @@ namespace F1.Message {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::F1.Message.RpcReflection.Descriptor.MessageTypes[5]; }
+      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

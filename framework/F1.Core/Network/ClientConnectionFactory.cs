@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Network
 {
-    public sealed class ConnectionFactory : IConnectionFactory
+    public sealed class ClientConnectionFactory : IClientConnectionFactory
     {
         private MultithreadEventLoopGroup group;
         private NetworkConfiguration config;
@@ -26,7 +26,7 @@ namespace F1.Core.Network
 
         public IServiceProvider ServiceProvider { get; private set; }
 
-        public ConnectionFactory(IServiceProvider provider,
+        public ClientConnectionFactory(IServiceProvider provider,
             ILoggerFactory loggerFactory,
             IConnectionManager connectionManager,
             IConnectionSessionInfoFactory channelSessionInfoFactory)

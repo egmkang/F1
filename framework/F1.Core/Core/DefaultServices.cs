@@ -21,7 +21,7 @@ namespace F1.Core.Core
             services.AddLogging();
             services.TryAddSingleton<IConnectionManager, ConnectionManager>();
             services.TryAddSingleton<IConnectionSessionInfoFactory, DefaultConnectionSessionInfoFactory>();
-            services.TryAddSingleton<IConnectionFactory, ConnectionFactory>();
+            services.TryAddSingleton<IClientConnectionFactory, ClientConnectionFactory>();
             services.TryAddSingleton<IConnectionListener, ConnectionListener>();
             services.TryAddSingleton<IMessageCenter, MessageCenter>();
             services.TryAddSingleton<IMessageHandlerFactory, MessageHandlerFactory>();

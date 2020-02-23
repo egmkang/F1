@@ -10,6 +10,7 @@ namespace F1.Abstractions.Network
     public interface IConnectionSessionInfo
     {
         long SessionID { get; }
+        long ServerID { get; set; }
         long ActiveTime { get; set; }
         IPEndPoint RemoteAddress { get; set; }
 

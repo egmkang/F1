@@ -42,7 +42,7 @@ namespace sample
 
             var connectionSessionInfoFactory = builder.ServiceProvider.GetRequiredService<IConnectionSessionInfoFactory>();
 
-            var connectionFactory = builder.ServiceProvider.GetRequiredService<IConnectionFactory>();
+            var connectionFactory = builder.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
 
             var connectionListener = builder.ServiceProvider.GetRequiredService<IConnectionListener>();
 

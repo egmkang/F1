@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace F1.Abstractions.Network
 {
-    public interface IConnectionFactory
+    public interface IClientConnectionFactory
     {
         void Init(NetworkConfiguration config);
         Task<IChannel> ConnectAsync(EndPoint address, IMessageHandlerFactory factory);

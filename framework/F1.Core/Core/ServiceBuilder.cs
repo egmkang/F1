@@ -25,7 +25,7 @@ namespace F1.Core.Core
         {
             var listener = this.serviceProvider.GetRequiredService<IConnectionListener>();
             listener.ShutdDownAsync().Wait();
-            var connectionFactory = this.serviceProvider.GetRequiredService<IConnectionFactory>();
+            var connectionFactory = this.serviceProvider.GetRequiredService<IClientConnectionFactory>();
             connectionFactory.ShutdDownAsync().Wait();
         }
     }

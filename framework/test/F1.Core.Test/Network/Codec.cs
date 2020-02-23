@@ -2,8 +2,8 @@ using System;
 using Xunit;
 using DotNetty.Buffers;
 using DotNetty.Common.Utilities;
-using F1.Message;
 using F1.Core.Message;
+using RpcMessage;
 
 namespace F1.Core.Test.Network
 {

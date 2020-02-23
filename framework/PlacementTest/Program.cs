@@ -11,6 +11,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Core;
 using F1.Core.Message;
 using F1.Core.Network;
+using F1.Core.Utils;
 
 namespace PlacementTest
 {
@@ -59,12 +60,14 @@ namespace PlacementTest
 
             logger.LogInformation("register server");
 
+            logger.LogInformation("local ip:{0}", Platform.GetLocalAddresss());
+
             var server_id = await placement.GenerateServerIDAsync();
             var server_info = new PlacementActorHostInfo();
             server_info.ServerID = server_id;
             server_info.Domain = "tttt";
             server_info.StartTime = 101001;
-            server_info.Address = "127.0.0.1:11111";
+            server_info.Address = Platform.GetLocalAddresss() + ":1111";
             server_info.ActorType.Add("test type");
 
             var lease_id = await placement.RegisterServerAsync(server_info);
@@ -74,15 +77,15 @@ namespace PlacementTest
             placement.RegisterServerChangedEvent(
                 (add) => 
                 {
-                    logger.LogInformation("add : {0}", add);
+                    logger.LogInformation("add : {0}", add.ServerID);
                 },
                 (remove) => 
                 {
-                    logger.LogInformation("remove: : {0}", remove);
+                    logger.LogInformation("remove: : {0}", remove.ServerID);
                 },
                 (offline) =>
                 {
-                    logger.LogInformation("offline : {0}", offline);
+                    logger.LogInformation("offline : {0}", offline.ServerID);
                 });
 
             placement.StartPullingAsync();
