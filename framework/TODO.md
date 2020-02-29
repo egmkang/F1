@@ -20,7 +20,9 @@ C# Framework:
         * [ ] Client Reconnect
         * [ ] Client Add/Remove
     * [ ] Future/Promise
-    * [ ] AsyncProxy
+    * [ ] ClientProxy
+    * [x] ServerInvoker
+    * [ ] ObjectSerializer
 * [ ] Actor
     * [ ] Actor
     * [ ] ActorManager
