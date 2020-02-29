@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F1.Core.Test", "test\F1.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EchoServer", "EchoServer\EchoServer.csproj", "{BF2AD43E-3242-4D15-A7C1-FA83FE142D37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlacementTest", "PlacementTest\PlacementTest.csproj", "{1C670D22-21C2-46F4-BF6E-3F269DE628DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlacementTest", "PlacementTest\PlacementTest.csproj", "{1C670D22-21C2-46F4-BF6E-3F269DE628DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspectCore", "AspectCore\AspectCore.csproj", "{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{1C670D22-21C2-46F4-BF6E-3F269DE628DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C670D22-21C2-46F4-BF6E-3F269DE628DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C670D22-21C2-46F4-BF6E-3F269DE628DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +55,7 @@ Global
 		{963528FA-24C5-40A1-A620-4CD09DDA9CF9} = {E61DAF94-43DA-400A-ACED-864C038EDDCB}
 		{BF2AD43E-3242-4D15-A7C1-FA83FE142D37} = {E61DAF94-43DA-400A-ACED-864C038EDDCB}
 		{1C670D22-21C2-46F4-BF6E-3F269DE628DC} = {E61DAF94-43DA-400A-ACED-864C038EDDCB}
+		{F426981B-8BAA-46DE-B24B-C7BD91FFFEB3} = {E61DAF94-43DA-400A-ACED-864C038EDDCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDB2727E-4C1C-4939-B83D-EE6B77A62B85}

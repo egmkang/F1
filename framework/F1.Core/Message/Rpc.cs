@@ -27,21 +27,21 @@ namespace RpcMessage {
             "ChFNZXNzYWdlL3JwYy5wcm90bxIKUnBjTWVzc2FnZSI8ChNSZXF1ZXN0UnBj",
             "SGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEoBRISCgpzdGFydF90aW1lGAIg",
             "ASgDIj0KFFJlc3BvbnNlUnBjSGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEo",
-            "BRISCgpzdGFydF90aW1lGAIgASgDIpABCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
+            "BRISCgpzdGFydF90aW1lGAIgASgDIqUBCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
             "X3R5cGUYASABKAkSEAoIYWN0b3JfaWQYAiABKAkSDgoGbWV0aG9kGAMgASgJ",
-            "EgwKBGFyZ3MYBCABKAwSEgoKc3JjX3NlcnZlchgGIAEoBhIWCg5zcmNfcmVx",
-            "dWVzdF9pZBgHIAEoBhISCgpyZXF1ZXN0X2lkGAggASgGIloKC1Jlc3BvbnNl",
-            "UnBjEhIKCnJlcXVlc3RfaWQYASABKAMSEgoKZXJyb3JfY29kZRgCIAEoBRIR",
-            "CgllcnJvcl9tc2cYAyABKAkSEAoIcmVzcG9uc2UYBCABKAwiLAoTUmVxdWVz",
-            "dFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgDIi0KFFJlc3Bv",
-            "bnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxpX3NlY29uZHMYASABKANiBnByb3Rv",
-            "Mw=="));
+            "EgwKBGFyZ3MYBCABKAwSEwoLbmVlZF9yZXN1bHQYBSABKAgSEgoKc3JjX3Nl",
+            "cnZlchgGIAEoBhIWCg5zcmNfcmVxdWVzdF9pZBgHIAEoBhISCgpyZXF1ZXN0",
+            "X2lkGAggASgGIloKC1Jlc3BvbnNlUnBjEhIKCnJlcXVlc3RfaWQYASABKAMS",
+            "EgoKZXJyb3JfY29kZRgCIAEoBRIRCgllcnJvcl9tc2cYAyABKAkSEAoIcmVz",
+            "cG9uc2UYBCABKAwiLAoTUmVxdWVzdFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9z",
+            "ZWNvbmRzGAEgASgDIi0KFFJlc3BvbnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxp",
+            "X3NlY29uZHMYASABKANiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHandshake), global::RpcMessage.RequestRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHandshake), global::RpcMessage.ResponseRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "NeedResult", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpc), global::RpcMessage.ResponseRpc.Parser, new[]{ "RequestId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHeartBeat), global::RpcMessage.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHeartBeat), global::RpcMessage.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
@@ -394,6 +394,7 @@ namespace RpcMessage {
       actorId_ = other.actorId_;
       method_ = other.method_;
       args_ = other.args_;
+      needResult_ = other.needResult_;
       srcServer_ = other.srcServer_;
       srcRequestId_ = other.srcRequestId_;
       requestId_ = other.requestId_;
@@ -461,6 +462,20 @@ namespace RpcMessage {
       }
     }
 
+    /// <summary>Field number for the "need_result" field.</summary>
+    public const int NeedResultFieldNumber = 5;
+    private bool needResult_;
+    /// <summary>
+    ///是否需要返回值
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool NeedResult {
+      get { return needResult_; }
+      set {
+        needResult_ = value;
+      }
+    }
+
     /// <summary>Field number for the "src_server" field.</summary>
     public const int SrcServerFieldNumber = 6;
     private ulong srcServer_;
@@ -514,6 +529,7 @@ namespace RpcMessage {
       if (ActorId != other.ActorId) return false;
       if (Method != other.Method) return false;
       if (Args != other.Args) return false;
+      if (NeedResult != other.NeedResult) return false;
       if (SrcServer != other.SrcServer) return false;
       if (SrcRequestId != other.SrcRequestId) return false;
       if (RequestId != other.RequestId) return false;
@@ -527,6 +543,7 @@ namespace RpcMessage {
       if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (Method.Length != 0) hash ^= Method.GetHashCode();
       if (Args.Length != 0) hash ^= Args.GetHashCode();
+      if (NeedResult != false) hash ^= NeedResult.GetHashCode();
       if (SrcServer != 0UL) hash ^= SrcServer.GetHashCode();
       if (SrcRequestId != 0UL) hash ^= SrcRequestId.GetHashCode();
       if (RequestId != 0UL) hash ^= RequestId.GetHashCode();
@@ -558,6 +575,10 @@ namespace RpcMessage {
       if (Args.Length != 0) {
         output.WriteRawTag(34);
         output.WriteBytes(Args);
+      }
+      if (NeedResult != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(NeedResult);
       }
       if (SrcServer != 0UL) {
         output.WriteRawTag(49);
@@ -591,6 +612,9 @@ namespace RpcMessage {
       if (Args.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Args);
       }
+      if (NeedResult != false) {
+        size += 1 + 1;
+      }
       if (SrcServer != 0UL) {
         size += 1 + 8;
       }
@@ -622,6 +646,9 @@ namespace RpcMessage {
       }
       if (other.Args.Length != 0) {
         Args = other.Args;
+      }
+      if (other.NeedResult != false) {
+        NeedResult = other.NeedResult;
       }
       if (other.SrcServer != 0UL) {
         SrcServer = other.SrcServer;
@@ -657,6 +684,10 @@ namespace RpcMessage {
           }
           case 34: {
             Args = input.ReadBytes();
+            break;
+          }
+          case 40: {
+            NeedResult = input.ReadBool();
             break;
           }
           case 49: {
