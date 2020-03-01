@@ -9,6 +9,8 @@ using F1.Core.Network;
 using F1.Core.Message;
 using F1.Abstractions.Placement;
 using F1.Core.Placement;
+using F1.Core.Utils;
+using F1.Core.RPC;
 
 namespace F1.Core.Core
 {
@@ -26,6 +28,10 @@ namespace F1.Core.Core
             services.TryAddSingleton<IMessageCenter, MessageCenter>();
             services.TryAddSingleton<IMessageHandlerFactory, MessageHandlerFactory>();
             services.TryAddSingleton<IPlacement, PDPlacement>();
+            services.TryAddSingleton<UniqueSequence>();
+            services.TryAddSingleton<RpcMetadata>();
+            services.TryAddSingleton<RequestDispatchProxyFactory>();
+            services.TryAddSingleton<RequestDispatchHandler>();
         }
     }
 }
