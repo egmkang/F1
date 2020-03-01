@@ -1,4 +1,5 @@
-﻿using System;
+﻿using F1.Core.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace F1.Core.RPC
         void WithException(Exception e);
 
         Task GetTask();
+
+        long ID { get; set; }
     }
 
     internal class GenericCompletionSource<T> : TaskCompletionSource<T>, IGenericCompletionSource
@@ -27,5 +30,7 @@ namespace F1.Core.RPC
         {
             this.SetResult((T)o);
         }
+
+        public long ID { get; set; }
     }
 }

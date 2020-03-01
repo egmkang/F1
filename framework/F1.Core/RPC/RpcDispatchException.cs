@@ -8,4 +8,9 @@ namespace F1.Core.RPC
     {
         public RpcDispatchException(string message) : base(message) { }
     }
+
+    public class RpcTimeOutException : Exception
+    {
+        public RpcTimeOutException() : base("timeout") { }
+    }
 }

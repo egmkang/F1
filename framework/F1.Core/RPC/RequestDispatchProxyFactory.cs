@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
-
+using F1.Core.Utils;
 
 namespace F1.Core.RPC
 {
@@ -26,14 +26,17 @@ namespace F1.Core.RPC
         private readonly ILogger logger;
         private readonly IServiceProvider serviceProvider;
         private readonly RpcMetadata metadata;
+        private readonly UniqueSequence uniqueSequence;
         private readonly Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler> newCompletionSourceDict = new Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler>();
 
         public RequestDispatchProxyFactory(ILoggerFactory loggerFactory,
                                             IServiceProvider serviceProvider,
-                                            RpcMetadata metadata)
+                                            RpcMetadata metadata,
+                                            UniqueSequence uniqueSequence)
         {
             this.metadata = metadata;
             this.serviceProvider = serviceProvider;
+            this.uniqueSequence = uniqueSequence;
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
 
             this.RegisterClientProxyHandler();
@@ -89,6 +92,11 @@ namespace F1.Core.RPC
             return v;
         }
 
+        public long GetNewSequence() 
+        {
+            return this.uniqueSequence.GetNewSequence();
+        }
+
         private void RegisterClientProxyHandler()
         {
             foreach (var item in this.metadata.RpcClientTypes)
@@ -106,7 +114,12 @@ namespace F1.Core.RPC
                     var taskType = this.GetTaskType(method.ReturnType);
                     var completionSourceType = this.MakeTaskCompletionSource(taskType);
 
-                    var handler = new RequestDisptachProxyClientHandler(() => (IGenericCompletionSource)Activator.CreateInstance(completionSourceType), isOneway);
+                    var handler = new RequestDisptachProxyClientHandler(() =>
+                    {
+                        var o = (IGenericCompletionSource)Activator.CreateInstance(completionSourceType);
+                        o.ID = this.GetNewSequence();
+                        return o;
+                    }, isOneway);
 
                     newCompletionSourceDict.TryAdd(key, handler);
 
