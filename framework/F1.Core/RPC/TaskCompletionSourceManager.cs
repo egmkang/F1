@@ -19,12 +19,15 @@ namespace F1.Core.RPC
             private readonly CompletionSourceQueue queue2 = new CompletionSourceQueue();
             private readonly CompletionSourceQueue queue3 = new CompletionSourceQueue();
             private readonly RpcTimeOutException Exception = new RpcTimeOutException();
+            private readonly AtomicInt64 next = new AtomicInt64();
+            private readonly AtomicInt64 count = new AtomicInt64();
 
-            private long next = 0;
+            public long Count => count;
 
             public void Push(IGenericCompletionSource completionSource)
             {
-                var index = Interlocked.Increment(ref this.next) % 4;
+                this.count.Inc();
+                var index = this.next.Inc() % 4;
                 var s = new WeakCompletionSource(completionSource);
                 switch (index)
                 {
@@ -102,6 +105,8 @@ namespace F1.Core.RPC
         {
             await Util.RunTaskTimer(() =>
             {
+                if (this.currentGroup.Count == 0) return;
+
                 this.queue.Enqueue(this.currentGroup);
                 var q = new QueueGroup();
                 this.currentGroup = q;

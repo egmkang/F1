@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
 using System.Threading;
 
@@ -16,9 +17,10 @@ namespace F1.Core.Utils
 
         public void SetHighPart(int h)
         {
+            Contract.Assert(h * HighPartShift > Interlocked.Read(ref sequence));
+
             var highPart = ((long)h) * HighPartShift;
-            var s = Interlocked.Read(ref sequence);
-            Interlocked.Add(ref sequence, highPart - s);
+            Interlocked.Add(ref sequence, highPart);
         }
 
         private long sequence;
