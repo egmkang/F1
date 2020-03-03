@@ -22,7 +22,7 @@ C# Framework:
     * [ ] Future/Promise
     * [ ] ClientProxy
     * [x] ServerInvoker
-    * [ ] ObjectSerializer
+    * [x] ObjectSerializer
 * [ ] Actor
     * [ ] Actor
     * [ ] ActorManager
