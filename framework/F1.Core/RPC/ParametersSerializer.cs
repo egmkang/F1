@@ -6,31 +6,45 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Google.Protobuf;
 using MessagePack;
+using Ceras;
+using F1.Abstractions.RPC;
 
 namespace F1.Core.RPC
 {
-    public class ParametersSerializerBinary
+    public class ParametersSerializerCeras  : IParametersSerializer
     {
-        private readonly IFormatter formatter = new BinaryFormatter();
-        public byte[] Serializer(object[] p) 
+        private readonly CerasSerializer serializer = new CerasSerializer();
+
+        public ParametersSerializerCeras() 
         {
-            using var stream = new MemoryStream(128);
-            this.formatter.Serialize(stream, p);
-            stream.Flush();
-            return stream.ToArray();
+            this.serializer.GetConfig().VersionTolerance.Mode = VersionToleranceMode.Extended;
         }
 
-        public object[] Deserialize(byte[] p)
+        public byte[] Serialize(object[] p, Type[] types) 
         {
-            using var stream = new MemoryStream(p);
-            return (object[])this.formatter.Deserialize(stream);
+            return this.serializer.Serialize(p);
+        }
+
+        public object[] Deserialize(byte[] bytes, Type[] types)
+        {
+            return this.serializer.Deserialize<object[]>(bytes);
+        }
+
+        public byte[] Serialize(object p, Type type)
+        {
+            return this.serializer.Serialize(p);
+        }
+
+        public object Deserialize(byte[] bytes, Type type)
+        {
+            return this.serializer.Deserialize<object>(bytes);
         }
     }
 
-    public class ParametersSerializerMsgPack 
+    public class ParametersSerializerMsgPack : IParametersSerializer
     {
         static byte[] Empty = new byte[0];
-        public byte[] Serializer(object[] p) 
+        public byte[] Serialize(object[] p, Type[] types) 
         {
             using var memoryStream = new MemoryStream(128);
             using var stream = new CodedOutputStream(memoryStream);
@@ -38,7 +52,7 @@ namespace F1.Core.RPC
             stream.WriteInt32(p.Length);
             for (int i = 0; i < p.Length; ++i)
             {
-                var data = p[i] == null ? Empty : MessagePackSerializer.Serialize(p[i].GetType(), p[i]);
+                var data = p[i] == null ? Empty : MessagePackSerializer.Serialize(types[i], p[i]);
                 stream.WriteBytes(ByteString.CopyFrom(data));
             }
             stream.Flush();
@@ -47,7 +61,7 @@ namespace F1.Core.RPC
             return memoryStream.ToArray();
         }
 
-        public object[] Deserialize(byte[] p, Type[] t)
+        public object[] Deserialize(byte[] p, Type[] types)
         {
             using var memoryStream = new MemoryStream(p);
             using var stream = new CodedInputStream(memoryStream);
@@ -57,10 +71,21 @@ namespace F1.Core.RPC
             for (int i = 0; i < length; ++i)
             {
                 var bytes = stream.ReadBytes().ToByteArray();
-                o[i] = bytes.Length == 0 ? null : MessagePackSerializer.Deserialize(t[i], bytes);
+                o[i] = bytes.Length == 0 ? null : MessagePackSerializer.Deserialize(types[i], bytes);
             }
 
             return o;
+        }
+
+        public byte[] Serialize(object p, Type type)
+        {
+            if (p == null) return Empty;
+            return MessagePackSerializer.Serialize(type, p);
+        }
+
+        public object Deserialize(byte[] bytes, Type type)
+        {
+            return MessagePackSerializer.Deserialize(type, bytes);
         }
     }
 }

@@ -7,7 +7,7 @@ using MessagePack;
 
 namespace F1.UnitTest.RPC
 {
-    public class ParametersSerializerTest
+    public class ParametersSerializerMsgPackTest
     {
         private readonly ParametersSerializerMsgPack serializer = new ParametersSerializerMsgPack();
 
@@ -16,24 +16,24 @@ namespace F1.UnitTest.RPC
             XXXXXXXX = 10000,
         }
 
-        Type[] GetTypes(object[] a) 
+        [Fact]
+        public void Response() 
         {
-            var array = new Type[a.Length];
-            for (int i = 0; i < a.Length; ++i) 
-            {
-                array[i] = a[i].GetType();
-            }
+            var o1 = 1;
+            var bytes = this.serializer.Serialize(o1, o1.GetType());
 
-            return array;
+            var o2 = this.serializer.Deserialize(bytes, o1.GetType());
+            Assert.Equal(o1, o2);
         }
 
         [Fact]
         public void SimpleType()
         {
             var o1 = new object[] { 1, 1.0, "1.1", XXXX1.XXXXXXXX };
-            var bytes = this.serializer.Serializer(o1);
 
-            var types = GetTypes(o1);
+            var types = new Type[] { o1[0].GetType(), o1[1].GetType(), o1[2].GetType(), o1[3].GetType() };
+            var bytes = this.serializer.Serialize(o1, types);
+
             var o2 = this.serializer.Deserialize(bytes, types);
             Assert.Equal(o1, o2);
         }
@@ -42,9 +42,8 @@ namespace F1.UnitTest.RPC
         public void NullArgs()
         {
             var o1 = new object[] { 1, 1.0, "1.1", null};
-            var bytes = this.serializer.Serializer(o1);
-
             var types = new Type[] { o1[0].GetType(), o1[1].GetType(), o1[2].GetType(), typeof(string) };
+            var bytes = this.serializer.Serialize(o1, types);
             var o2 = this.serializer.Deserialize(bytes, types);
             Assert.Equal(o1, o2);
         }
@@ -62,9 +61,10 @@ namespace F1.UnitTest.RPC
                     {"2211", 121212},
                 },
             };
-            var bytes = this.serializer.Serializer(o1);
 
-            var types = GetTypes(o1);
+            var types = new Type[] { typeof(int[]), typeof(List<string>), typeof(Dictionary<string, float>) };
+            var bytes = this.serializer.Serialize(o1, types);
+
             var o2 = this.serializer.Deserialize(bytes, types);
             Assert.Equal(o1, o2);
         }
@@ -100,9 +100,9 @@ namespace F1.UnitTest.RPC
                     },
                 },
             };
-            var bytes = this.serializer.Serializer(o1);
+            var types = new Type[] { typeof(UserDefined1) };
+            var bytes = this.serializer.Serialize(o1, types);
 
-            var types = GetTypes(o1);
             var o2 = this.serializer.Deserialize(bytes, types);
             Assert.Equal(((UserDefined1)o1[0]).s1, ((UserDefined1)o2[0]).s1);
             Assert.Equal(((UserDefined1)o1[0]).i2, ((UserDefined1)o2[0]).i2);

@@ -11,6 +11,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Placement;
 using F1.Core.Utils;
 using F1.Core.RPC;
+using F1.Abstractions.RPC;
 
 namespace F1.Core.Core
 {
@@ -32,6 +33,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<RpcMetadata>();
             services.TryAddSingleton<RequestDispatchProxyFactory>();
             services.TryAddSingleton<RequestDispatchHandler>();
+            services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
         }
     }
 }
