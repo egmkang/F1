@@ -29,7 +29,7 @@ namespace F1.Core.Placement
         });
         const int ServerLRUSize = 1024;
         private readonly ILogger logger;
-        private readonly LRU<string, PlacementFindActorPositionResponse> lru = new LRU<string, PlacementFindActorPositionResponse>(10 * 10000);
+        private readonly LRU<string, PlacementFindActorPositionResponse> positionLru = new LRU<string, PlacementFindActorPositionResponse>(10 * 10000);
         private readonly LRU<long, object> addedServer = new LRU<long, object>(ServerLRUSize);
         private readonly LRU<long, object> removedServer = new LRU<long, object>(ServerLRUSize);
         private readonly LRU<long, object> offlineServer = new LRU<long, object>(ServerLRUSize);
@@ -77,10 +77,22 @@ namespace F1.Core.Placement
             return new ValueTuple<int, string>((int)response.StatusCode, str);
         }
 
+        private bool IsServerValid(long serverID) 
+        {
+            return this.host.TryGetValue(serverID, out var _);
+        }
+
         public async Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request)
         {
-            //TODO
             //check actor position cache
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+
+            var pos = this.positionLru.Get(uniqueName);
+            if (pos != null && this.IsServerValid(pos.ServerID))
+            {
+                return pos;
+            }
+            this.positionLru.Remove(uniqueName);
 
             var (code, str) = await this.PostAsync("/pd/api/v1/actor/find_position", request);
             if (code != (int)HttpStatusCode.OK) 
@@ -92,8 +104,7 @@ namespace F1.Core.Placement
 
             var position = JsonConvert.DeserializeObject<PlacementFindActorPositionResponse>(str);
 
-            //TODO
-            //update cache
+            this.positionLru.Add(uniqueName, position);
             return position;
         }
 

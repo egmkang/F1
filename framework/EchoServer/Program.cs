@@ -56,13 +56,6 @@ namespace sample
             var count = 0;
 
             messageCenter.RegsiterEvent(
-                (inboundMessage) =>
-                {
-                    var channel = inboundMessage.SourceConnection;
-                    var outboundMessage = new OutboundMessage(channel, inboundMessage.Inner);
-                    messageCenter.SendMessage(outboundMessage);
-                    count++;
-                },
                 (channel) =>
                 {
                     logger.LogError("Channel Closed, SessionID:{0}", channel.GetSessionInfo().SessionID);
@@ -70,6 +63,15 @@ namespace sample
                 (outboundMessage) =>
                 {
                     logger.LogError("Message Dropped, Dest SessionID:{0}", outboundMessage.DestConnection.GetSessionInfo().SessionID);
+                });
+
+            messageCenter.RegisterMessageProc("",
+                (inboundMessage) =>
+                {
+                    var channel = inboundMessage.SourceConnection;
+                    var outboundMessage = new OutboundMessage(channel, inboundMessage.Inner);
+                    messageCenter.SendMessage(outboundMessage);
+                    count++;
                 });
 
             connectionListener.Init(config);

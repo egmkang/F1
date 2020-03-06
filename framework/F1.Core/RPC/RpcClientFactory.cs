@@ -12,6 +12,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Utils;
 using F1.Core.Network;
 using RpcMessage;
+using System.Diagnostics.Contracts;
 
 namespace F1.Core.RPC
 {
@@ -23,6 +24,7 @@ namespace F1.Core.RPC
         private readonly ILogger logger;
         private readonly IClientConnectionFactory connectionFactory;
         private readonly IMessageHandlerFactory messageHandlerFactory;
+        private readonly UniqueSequence uniqueSequence;
         private readonly LRU<long, PlacementActorHostInfo> recentRemovedServer = new LRU<long, PlacementActorHostInfo>(1024);
         private readonly ConcurrentDictionary<long, IChannel> clients = new ConcurrentDictionary<long, IChannel>();
 
@@ -30,17 +32,23 @@ namespace F1.Core.RPC
             IMessageCenter messageCenter,
             IPlacement placement,
             IClientConnectionFactory connectionFactory,
-            IMessageHandlerFactory messageHandlerFactory) 
+            IMessageHandlerFactory messageHandlerFactory,
+            UniqueSequence uniqueSequence) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
             this.placement = placement;
             this.connectionFactory = connectionFactory;
             this.messageHandlerFactory = messageHandlerFactory;
+            this.uniqueSequence = uniqueSequence;
 
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
+
+            this.messageCenter.RegisterMessageProc(typeof(ResponseRpc).FullName, this.ProcessRpcResponse);
         }
+
+        private long NewSequenceID => this.uniqueSequence.GetNewSequence();
 
         private void OnAddServer(PlacementActorHostInfo server) 
         {
@@ -125,15 +133,25 @@ namespace F1.Core.RPC
             return null;
         }
 
-        public bool SendRpcRequest(long serverID, RequestRpc request)
+        public async void TrySendRpcMessage(long serverID, object message) 
         {
-            if (this.clients.TryGetValue(serverID, out var channel))
-            {
-                var outboundMessage = new OutboundMessage(channel, request);
-                this.messageCenter.SendMessage(outboundMessage);
-                return true;
-            }
-            return false;
+            var request = message as RequestRpc;
+        }
+
+        public void SendRpcMessage(IChannel channel, object message)
+        {
+            var request = message as RequestRpc;
+            Contract.Assert(request != null);
+            Contract.Assert(channel != null);
+
+            var outboundMessage = new OutboundMessage(channel, message);
+            this.messageCenter.SendMessage(outboundMessage);
+        }
+
+        private void ProcessRpcResponse(IInboundMessage message)
+        {
+            //TODO:
+            //处理response
         }
     }
 }

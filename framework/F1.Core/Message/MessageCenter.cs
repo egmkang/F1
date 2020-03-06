@@ -18,10 +18,11 @@ namespace F1.Core.Message
         private readonly ILogger logger;
         private readonly IConnectionManager connectionManager;
         private readonly AsyncMessageQueue<IInboundMessage> inboundMessageQueue;
+        private readonly Dictionary<string, Action<IInboundMessage>> inboudMessageProc = new Dictionary<string, Action<IInboundMessage>>();
 
-        private Action<IInboundMessage> inboundMessageProc;
         private Action<IChannel> channelClosedProc;
         private Action<IOutboundMessage> failMessageProc;
+        private Action<IInboundMessage> defaultInboundMessageProc;
 
         public MessageCenter(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IConnectionManager connectionManager) 
         {
@@ -35,11 +36,9 @@ namespace F1.Core.Message
             this.StartAsync();
         }
 
-        public void RegsiterEvent(Action<IInboundMessage> inboundMessageProc,
-            Action<IChannel> channelClosedProc,
+        public void RegsiterEvent(Action<IChannel> channelClosedProc,
             Action<IOutboundMessage> failMessageProc) 
         {
-            this.inboundMessageProc = inboundMessageProc;
             this.channelClosedProc = channelClosedProc;
             this.failMessageProc = failMessageProc;
         }
@@ -63,7 +62,7 @@ namespace F1.Core.Message
                         this.inboundMessageQueue.QueueCount--;
                         try
                         {
-                            this.inboundMessageProc(message);
+                            this.ProcessInboundMessage(message);
                         }
                         catch (Exception e)
                         {
@@ -132,6 +131,42 @@ namespace F1.Core.Message
             {
                 this.logger.LogWarning("SessionID:{0}, SendingQueueCount:{1}",
                    sessionInfo.SessionID, size);
+            }
+        }
+
+        public void RegisterMessageProc(string messageName, Action<IInboundMessage> action)
+        {
+            if (string.IsNullOrEmpty(messageName)) 
+            {
+                this.defaultInboundMessageProc = action;
+                this.logger.LogInformation("RegisterMessageProc default proc");
+                return;
+            }
+            if (!this.inboudMessageProc.TryAdd(messageName, action))
+            {
+                this.logger.LogError("RegisterMessageProc, MessageName:{0} exists", messageName);
+            }
+        }
+
+        private void ProcessInboundMessage(IInboundMessage message) 
+        {
+            if (this.defaultInboundMessageProc == null) 
+            {
+                this.logger.LogError("ProcessInboundMessage but DefaultInboundMessageProc is null");
+                return;
+            }
+            if (string.IsNullOrEmpty(message.MessageName)) 
+            {
+                this.defaultInboundMessageProc(message);
+                return;
+            }
+            if (this.inboudMessageProc.TryGetValue(message.MessageName, out var proc))
+            {
+                proc(message);
+            }
+            else 
+            {
+                this.defaultInboundMessageProc(message);
             }
         }
     }

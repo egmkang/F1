@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
+using F1.Abstractions.Placement;
 
 namespace F1.Core.RPC
 {
@@ -24,6 +25,8 @@ namespace F1.Core.RPC
         /// Proxy的interface类型
         /// </summary>
         public Type Type { get; internal set; }
+
+        public PlacementFindActorPositionRequest PositionRequest { get; internal set; }
 
         public ILogger Logger { get; internal set; }
         public IServiceProvider ServiceProvider { get; internal set; }

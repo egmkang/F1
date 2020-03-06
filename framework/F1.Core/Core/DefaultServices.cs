@@ -34,6 +34,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<RequestDispatchProxyFactory>();
             services.TryAddSingleton<RequestDispatchHandler>();
             services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
+            services.TryAddSingleton<TaskCompletionSourceManager>();
         }
     }
 }

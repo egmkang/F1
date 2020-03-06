@@ -51,6 +51,12 @@ namespace F1.Core.RPC
             proxy.DispatchProxyFactory = this;
             proxy.Logger = this.logger;
 
+            proxy.PositionRequest = new Abstractions.Placement.PlacementFindActorPositionRequest()
+            {
+                ActorType = typeof(T).Name,
+                ActorID = actor,
+                TTL = 0,
+            };
             proxy.ActorUniqueID = actor;
             proxy.Context = context;
             proxy.Type = typeof(T);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Net;
+using System.Threading;
 using Xunit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,9 +10,7 @@ using F1.Abstractions;
 using F1.Core.Core;
 using F1.Abstractions.Network;
 using F1.Core.Message;
-using System.Net;
 using F1.Core.Network;
-using System.Threading;
 
 namespace F1.UnitTest.Network
 {
@@ -96,13 +96,6 @@ namespace F1.UnitTest.Network
             var count = 0;
 
             messageCenter.RegsiterEvent(
-                (inboundMessage) =>
-                {
-                    var channel = inboundMessage.SourceConnection;
-                    var outboundMessage = new OutboundMessage(channel, inboundMessage.Inner);
-                    messageCenter.SendMessage(outboundMessage);
-                    count++;
-                },
                 (channel) =>
                 {
                     Console.WriteLine("channel closed");
@@ -110,6 +103,14 @@ namespace F1.UnitTest.Network
                 (outboundMessage) =>
                 {
                     Console.WriteLine("message dropped");
+                });
+            messageCenter.RegisterMessageProc("", 
+                (inboundMessage) =>
+                {
+                    var channel = inboundMessage.SourceConnection;
+                    var outboundMessage = new OutboundMessage(channel, inboundMessage.Inner);
+                    messageCenter.SendMessage(outboundMessage);
+                    count++;
                 });
 
             connectionListener.Init(config);
