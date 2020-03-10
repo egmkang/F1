@@ -60,6 +60,7 @@ namespace F1.Core.Message
                 }
                 if (input.ReadableBytes < length - Constants.HeaderLength) 
                 {
+                    input.ResetReaderIndex();
                     return (0, null);
                 }
                 var messageNameLength = input.ReadByte();
@@ -81,6 +82,7 @@ namespace F1.Core.Message
                 }
             }
 
+            input.ResetReaderIndex();
             return (0, null);
         }
     }
