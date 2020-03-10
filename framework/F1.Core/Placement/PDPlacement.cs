@@ -213,11 +213,6 @@ namespace F1.Core.Placement
             return response.LeaseID;
         }
 
-        private bool IsActorPositionValid(PlacementFindActorPositionResponse info) 
-        {
-            return false;
-        }
-
         public async Task<PlacementVersionInfo> GetVersionAsync()
         {
             var (code, str) = await this.GetAsync("/pd/api/v1/version");
@@ -391,6 +386,13 @@ namespace F1.Core.Placement
         {
             pullingCancelTokenSource.Cancel();
             return Task.FromResult(0);
+        }
+
+        public void ClearActorPositionCache(PlacementFindActorPositionRequest request)
+        {
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+            this.positionLru.Remove(uniqueName);
+            this.logger.LogInformation("ClearActorPosition, UniqueName:{0}", uniqueName);
         }
     }
 }

@@ -27,22 +27,24 @@ namespace RpcMessage {
             "ChFNZXNzYWdlL3JwYy5wcm90bxIKUnBjTWVzc2FnZSI8ChNSZXF1ZXN0UnBj",
             "SGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEoBRISCgpzdGFydF90aW1lGAIg",
             "ASgDIj0KFFJlc3BvbnNlUnBjSGFuZHNoYWtlEhEKCXNlcnZlcl9pZBgBIAEo",
-            "BRISCgpzdGFydF90aW1lGAIgASgDIqUBCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
+            "BRISCgpzdGFydF90aW1lGAIgASgDIroBCgpSZXF1ZXN0UnBjEhIKCmFjdG9y",
             "X3R5cGUYASABKAkSEAoIYWN0b3JfaWQYAiABKAkSDgoGbWV0aG9kGAMgASgJ",
             "EgwKBGFyZ3MYBCABKAwSEwoLbmVlZF9yZXN1bHQYBSABKAgSEgoKc3JjX3Nl",
-            "cnZlchgGIAEoBhIWCg5zcmNfcmVxdWVzdF9pZBgHIAEoBhISCgpyZXF1ZXN0",
-            "X2lkGAggASgGIloKC1Jlc3BvbnNlUnBjEhIKCnJlcXVlc3RfaWQYASABKAMS",
-            "EgoKZXJyb3JfY29kZRgCIAEoBRIRCgllcnJvcl9tc2cYAyABKAkSEAoIcmVz",
-            "cG9uc2UYBCABKAwiLAoTUmVxdWVzdFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9z",
-            "ZWNvbmRzGAEgASgDIi0KFFJlc3BvbnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxp",
-            "X3NlY29uZHMYASABKANiBnByb3RvMw=="));
+            "cnZlchgGIAEoEBIWCg5zcmNfcmVxdWVzdF9pZBgHIAEoEBISCgpyZXF1ZXN0",
+            "X2lkGAggASgQEhMKC3Jlc3BvbnNlX2lkGAkgASgQIpgBCgtSZXNwb25zZVJw",
+            "YxInCgdyZXF1ZXN0GAEgASgLMhYuUnBjTWVzc2FnZS5SZXF1ZXN0UnBjEhIK",
+            "CnJlcXVlc3RfaWQYCiABKBASEwoLcmVzcG9uc2VfaWQYCyABKBASEgoKZXJy",
+            "b3JfY29kZRgMIAEoBRIRCgllcnJvcl9tc2cYDSABKAkSEAoIcmVzcG9uc2UY",
+            "DiABKAwiLAoTUmVxdWVzdFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRz",
+            "GAEgASgDIi0KFFJlc3BvbnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxpX3NlY29u",
+            "ZHMYASABKANiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHandshake), global::RpcMessage.RequestRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHandshake), global::RpcMessage.ResponseRpcHandshake.Parser, new[]{ "ServerId", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "NeedResult", "SrcServer", "SrcRequestId", "RequestId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpc), global::RpcMessage.ResponseRpc.Parser, new[]{ "RequestId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "NeedResult", "SrcServer", "SrcRequestId", "RequestId", "ResponseId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpc), global::RpcMessage.ResponseRpc.Parser, new[]{ "Request", "RequestId", "ResponseId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHeartBeat), global::RpcMessage.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHeartBeat), global::RpcMessage.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
           }));
@@ -398,6 +400,7 @@ namespace RpcMessage {
       srcServer_ = other.srcServer_;
       srcRequestId_ = other.srcRequestId_;
       requestId_ = other.requestId_;
+      responseId_ = other.responseId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -478,12 +481,12 @@ namespace RpcMessage {
 
     /// <summary>Field number for the "src_server" field.</summary>
     public const int SrcServerFieldNumber = 6;
-    private ulong srcServer_;
+    private long srcServer_;
     /// <summary>
     ///ServerID, TraceID两个组合起来决定了Request的可重入性
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SrcServer {
+    public long SrcServer {
       get { return srcServer_; }
       set {
         srcServer_ = value;
@@ -492,9 +495,9 @@ namespace RpcMessage {
 
     /// <summary>Field number for the "src_request_id" field.</summary>
     public const int SrcRequestIdFieldNumber = 7;
-    private ulong srcRequestId_;
+    private long srcRequestId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SrcRequestId {
+    public long SrcRequestId {
       get { return srcRequestId_; }
       set {
         srcRequestId_ = value;
@@ -503,12 +506,29 @@ namespace RpcMessage {
 
     /// <summary>Field number for the "request_id" field.</summary>
     public const int RequestIdFieldNumber = 8;
-    private ulong requestId_;
+    private long requestId_;
+    /// <summary>
+    ///proxy call的id
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong RequestId {
+    public long RequestId {
       get { return requestId_; }
       set {
         requestId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "response_id" field.</summary>
+    public const int ResponseIdFieldNumber = 9;
+    private long responseId_;
+    /// <summary>
+    ///req/resp的id
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ResponseId {
+      get { return responseId_; }
+      set {
+        responseId_ = value;
       }
     }
 
@@ -533,6 +553,7 @@ namespace RpcMessage {
       if (SrcServer != other.SrcServer) return false;
       if (SrcRequestId != other.SrcRequestId) return false;
       if (RequestId != other.RequestId) return false;
+      if (ResponseId != other.ResponseId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -544,9 +565,10 @@ namespace RpcMessage {
       if (Method.Length != 0) hash ^= Method.GetHashCode();
       if (Args.Length != 0) hash ^= Args.GetHashCode();
       if (NeedResult != false) hash ^= NeedResult.GetHashCode();
-      if (SrcServer != 0UL) hash ^= SrcServer.GetHashCode();
-      if (SrcRequestId != 0UL) hash ^= SrcRequestId.GetHashCode();
-      if (RequestId != 0UL) hash ^= RequestId.GetHashCode();
+      if (SrcServer != 0L) hash ^= SrcServer.GetHashCode();
+      if (SrcRequestId != 0L) hash ^= SrcRequestId.GetHashCode();
+      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
+      if (ResponseId != 0L) hash ^= ResponseId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -580,17 +602,21 @@ namespace RpcMessage {
         output.WriteRawTag(40);
         output.WriteBool(NeedResult);
       }
-      if (SrcServer != 0UL) {
+      if (SrcServer != 0L) {
         output.WriteRawTag(49);
-        output.WriteFixed64(SrcServer);
+        output.WriteSFixed64(SrcServer);
       }
-      if (SrcRequestId != 0UL) {
+      if (SrcRequestId != 0L) {
         output.WriteRawTag(57);
-        output.WriteFixed64(SrcRequestId);
+        output.WriteSFixed64(SrcRequestId);
       }
-      if (RequestId != 0UL) {
+      if (RequestId != 0L) {
         output.WriteRawTag(65);
-        output.WriteFixed64(RequestId);
+        output.WriteSFixed64(RequestId);
+      }
+      if (ResponseId != 0L) {
+        output.WriteRawTag(73);
+        output.WriteSFixed64(ResponseId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -615,13 +641,16 @@ namespace RpcMessage {
       if (NeedResult != false) {
         size += 1 + 1;
       }
-      if (SrcServer != 0UL) {
+      if (SrcServer != 0L) {
         size += 1 + 8;
       }
-      if (SrcRequestId != 0UL) {
+      if (SrcRequestId != 0L) {
         size += 1 + 8;
       }
-      if (RequestId != 0UL) {
+      if (RequestId != 0L) {
+        size += 1 + 8;
+      }
+      if (ResponseId != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -650,14 +679,17 @@ namespace RpcMessage {
       if (other.NeedResult != false) {
         NeedResult = other.NeedResult;
       }
-      if (other.SrcServer != 0UL) {
+      if (other.SrcServer != 0L) {
         SrcServer = other.SrcServer;
       }
-      if (other.SrcRequestId != 0UL) {
+      if (other.SrcRequestId != 0L) {
         SrcRequestId = other.SrcRequestId;
       }
-      if (other.RequestId != 0UL) {
+      if (other.RequestId != 0L) {
         RequestId = other.RequestId;
+      }
+      if (other.ResponseId != 0L) {
+        ResponseId = other.ResponseId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -691,15 +723,19 @@ namespace RpcMessage {
             break;
           }
           case 49: {
-            SrcServer = input.ReadFixed64();
+            SrcServer = input.ReadSFixed64();
             break;
           }
           case 57: {
-            SrcRequestId = input.ReadFixed64();
+            SrcRequestId = input.ReadSFixed64();
             break;
           }
           case 65: {
-            RequestId = input.ReadFixed64();
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 73: {
+            ResponseId = input.ReadSFixed64();
             break;
           }
         }
@@ -733,7 +769,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public ResponseRpc(ResponseRpc other) : this() {
+      request_ = other.request_ != null ? other.request_.Clone() : null;
       requestId_ = other.requestId_;
+      responseId_ = other.responseId_;
       errorCode_ = other.errorCode_;
       errorMsg_ = other.errorMsg_;
       response_ = other.response_;
@@ -745,8 +783,22 @@ namespace RpcMessage {
       return new ResponseRpc(this);
     }
 
+    /// <summary>Field number for the "request" field.</summary>
+    public const int RequestFieldNumber = 1;
+    private global::RpcMessage.RequestRpc request_;
+    /// <summary>
+    ///失败的时候会携带这个信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::RpcMessage.RequestRpc Request {
+      get { return request_; }
+      set {
+        request_ = value;
+      }
+    }
+
     /// <summary>Field number for the "request_id" field.</summary>
-    public const int RequestIdFieldNumber = 1;
+    public const int RequestIdFieldNumber = 10;
     private long requestId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long RequestId {
@@ -756,8 +808,19 @@ namespace RpcMessage {
       }
     }
 
+    /// <summary>Field number for the "response_id" field.</summary>
+    public const int ResponseIdFieldNumber = 11;
+    private long responseId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ResponseId {
+      get { return responseId_; }
+      set {
+        responseId_ = value;
+      }
+    }
+
     /// <summary>Field number for the "error_code" field.</summary>
-    public const int ErrorCodeFieldNumber = 2;
+    public const int ErrorCodeFieldNumber = 12;
     private int errorCode_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int ErrorCode {
@@ -768,7 +831,7 @@ namespace RpcMessage {
     }
 
     /// <summary>Field number for the "error_msg" field.</summary>
-    public const int ErrorMsgFieldNumber = 3;
+    public const int ErrorMsgFieldNumber = 13;
     private string errorMsg_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string ErrorMsg {
@@ -779,7 +842,7 @@ namespace RpcMessage {
     }
 
     /// <summary>Field number for the "response" field.</summary>
-    public const int ResponseFieldNumber = 4;
+    public const int ResponseFieldNumber = 14;
     private pb::ByteString response_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Response {
@@ -802,7 +865,9 @@ namespace RpcMessage {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (!object.Equals(Request, other.Request)) return false;
       if (RequestId != other.RequestId) return false;
+      if (ResponseId != other.ResponseId) return false;
       if (ErrorCode != other.ErrorCode) return false;
       if (ErrorMsg != other.ErrorMsg) return false;
       if (Response != other.Response) return false;
@@ -812,7 +877,9 @@ namespace RpcMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (request_ != null) hash ^= Request.GetHashCode();
       if (RequestId != 0L) hash ^= RequestId.GetHashCode();
+      if (ResponseId != 0L) hash ^= ResponseId.GetHashCode();
       if (ErrorCode != 0) hash ^= ErrorCode.GetHashCode();
       if (ErrorMsg.Length != 0) hash ^= ErrorMsg.GetHashCode();
       if (Response.Length != 0) hash ^= Response.GetHashCode();
@@ -829,20 +896,28 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (request_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Request);
+      }
       if (RequestId != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(RequestId);
+        output.WriteRawTag(81);
+        output.WriteSFixed64(RequestId);
+      }
+      if (ResponseId != 0L) {
+        output.WriteRawTag(89);
+        output.WriteSFixed64(ResponseId);
       }
       if (ErrorCode != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(96);
         output.WriteInt32(ErrorCode);
       }
       if (ErrorMsg.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(106);
         output.WriteString(ErrorMsg);
       }
       if (Response.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(114);
         output.WriteBytes(Response);
       }
       if (_unknownFields != null) {
@@ -853,8 +928,14 @@ namespace RpcMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (request_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Request);
+      }
       if (RequestId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(RequestId);
+        size += 1 + 8;
+      }
+      if (ResponseId != 0L) {
+        size += 1 + 8;
       }
       if (ErrorCode != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ErrorCode);
@@ -876,8 +957,17 @@ namespace RpcMessage {
       if (other == null) {
         return;
       }
+      if (other.request_ != null) {
+        if (request_ == null) {
+          Request = new global::RpcMessage.RequestRpc();
+        }
+        Request.MergeFrom(other.Request);
+      }
       if (other.RequestId != 0L) {
         RequestId = other.RequestId;
+      }
+      if (other.ResponseId != 0L) {
+        ResponseId = other.ResponseId;
       }
       if (other.ErrorCode != 0) {
         ErrorCode = other.ErrorCode;
@@ -899,19 +989,30 @@ namespace RpcMessage {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            RequestId = input.ReadInt64();
+          case 10: {
+            if (request_ == null) {
+              Request = new global::RpcMessage.RequestRpc();
+            }
+            input.ReadMessage(Request);
             break;
           }
-          case 16: {
+          case 81: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 89: {
+            ResponseId = input.ReadSFixed64();
+            break;
+          }
+          case 96: {
             ErrorCode = input.ReadInt32();
             break;
           }
-          case 26: {
+          case 106: {
             ErrorMsg = input.ReadString();
             break;
           }
-          case 34: {
+          case 114: {
             Response = input.ReadBytes();
             break;
           }

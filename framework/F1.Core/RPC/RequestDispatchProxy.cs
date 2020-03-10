@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
 using F1.Abstractions.Placement;
+using RpcMessage;
 
 namespace F1.Core.RPC
 {
@@ -30,6 +31,7 @@ namespace F1.Core.RPC
 
         public ILogger Logger { get; internal set; }
         public IServiceProvider ServiceProvider { get; internal set; }
+        internal RpcClientFactory RpcClientFactory { get; set; }
         public RequestDispatchProxyFactory DispatchProxyFactory { get; internal set; }
 
 
@@ -44,26 +46,48 @@ namespace F1.Core.RPC
 
             var taskCompletionSource = handler.NewCompletionSource();
 
+            var request = new RequestRpc() 
+            {
+                ActorType = this.PositionRequest.ActorType,
+                ActorId = this.PositionRequest.ActorID,
+                Method = handler.Name,
 
-            this.TrySendRpcRequest(taskCompletionSource);
+                //TODO:
+                //args
+
+                NeedResult = !handler.IsOneWay,
+
+                RequestId = taskCompletionSource.ID,
+
+                //TODO:
+                //context
+            };
+
+            _ = this.TrySendRpcRequest(request, taskCompletionSource);
 
             return taskCompletionSource.GetTask();
         }
 
-        private async void TrySendRpcRequest(IGenericCompletionSource completionSource) 
+        private static object Empty = new object();
+        private async Task TrySendRpcRequest(RequestRpc request, IGenericCompletionSource completionSource) 
         {
             try 
-            { 
-                //TODO:
-                //1. find position
-                //2. make request 
-                //3. make TaskCompletionSource and await Response
-                //4. analysis response, and consider retry
+            {
+                var response = await this.RpcClientFactory.TrySendRpcRequest(this.PositionRequest, request, false);
+                if (response != null) 
+                {
+                    if (response.Response == null || response.Response.Length == 0) 
+                    {
+                        completionSource.WithResult(Empty);
+                    }
+                    //TODO:
+                    //decode response, and try set result
+                }
             }
             catch (Exception e) 
             {
+                completionSource.WithException(e);
             }
-            await Task.CompletedTask;
         }
     }
 }

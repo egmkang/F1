@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using AspectCore.Extensions.Reflection;
 using F1.Core.Utils;
 
@@ -11,14 +12,16 @@ namespace F1.Core.RPC
 {
     internal class RequestDisptachProxyClientHandler
     {
-        public RequestDisptachProxyClientHandler(Func<IGenericCompletionSource> f, bool isOneWay) 
+        public RequestDisptachProxyClientHandler(Func<IGenericCompletionSource> f, bool isOneWay, string name) 
         {
             this.NewCompletionSource = f;
             this.IsOneWay = isOneWay;
+            this.Name = name;
         }
 
         public Func<IGenericCompletionSource> NewCompletionSource { get; private set; }
         public bool IsOneWay { get; private set; }
+        public string Name { get; private set; }
     }
 
     public class RequestDispatchProxyFactory
@@ -27,6 +30,7 @@ namespace F1.Core.RPC
         private readonly IServiceProvider serviceProvider;
         private readonly RpcMetadata metadata;
         private readonly UniqueSequence uniqueSequence;
+        private RpcClientFactory rpcClientFactory;
         private readonly Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler> newCompletionSourceDict = new Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler>();
 
         public RequestDispatchProxyFactory(ILoggerFactory loggerFactory,
@@ -37,6 +41,7 @@ namespace F1.Core.RPC
             this.metadata = metadata;
             this.serviceProvider = serviceProvider;
             this.uniqueSequence = uniqueSequence;
+            this.rpcClientFactory = serviceProvider.GetService<RpcClientFactory>();
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
 
             this.RegisterClientProxyHandler();
@@ -49,6 +54,7 @@ namespace F1.Core.RPC
 
             proxy.ServiceProvider = this.serviceProvider;
             proxy.DispatchProxyFactory = this;
+            proxy.RpcClientFactory = this.rpcClientFactory;
             proxy.Logger = this.logger;
 
             proxy.PositionRequest = new Abstractions.Placement.PlacementFindActorPositionRequest()
@@ -125,7 +131,7 @@ namespace F1.Core.RPC
                         var o = (IGenericCompletionSource)Activator.CreateInstance(completionSourceType);
                         o.ID = this.GetNewSequence();
                         return o;
-                    }, isOneway);
+                    }, isOneway, $"{item.Value.Name}.{method.Name}");
 
                     newCompletionSourceDict.TryAdd(key, handler);
 

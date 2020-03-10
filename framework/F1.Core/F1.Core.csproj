@@ -36,4 +36,8 @@
   <ItemGroup>
     <ProjectReference Include="..\F1.Abstractions\F1.Abstractions.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Actor\" />
+  </ItemGroup>
 </Project>

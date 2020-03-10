@@ -25,15 +25,18 @@ namespace F1.Core.RPC
         private readonly IClientConnectionFactory connectionFactory;
         private readonly IMessageHandlerFactory messageHandlerFactory;
         private readonly UniqueSequence uniqueSequence;
+        private readonly TaskCompletionSourceManager taskCompletionSourceManager;
         private readonly LRU<long, PlacementActorHostInfo> recentRemovedServer = new LRU<long, PlacementActorHostInfo>(1024);
-        private readonly ConcurrentDictionary<long, IChannel> clients = new ConcurrentDictionary<long, IChannel>();
+        //ServerID => IChannel
+        private readonly ConcurrentDictionary<long, WeakReference<IChannel>> clients = new ConcurrentDictionary<long, WeakReference<IChannel>>();
 
         public RpcClientFactory(ILoggerFactory loggerFactory,
             IMessageCenter messageCenter,
             IPlacement placement,
             IClientConnectionFactory connectionFactory,
             IMessageHandlerFactory messageHandlerFactory,
-            UniqueSequence uniqueSequence) 
+            UniqueSequence uniqueSequence,
+            TaskCompletionSourceManager taskCompletionSourceManager) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
@@ -41,6 +44,7 @@ namespace F1.Core.RPC
             this.connectionFactory = connectionFactory;
             this.messageHandlerFactory = messageHandlerFactory;
             this.uniqueSequence = uniqueSequence;
+            this.taskCompletionSourceManager = taskCompletionSourceManager;
 
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
@@ -86,7 +90,8 @@ namespace F1.Core.RPC
                             server.ServerID, server.Address, sessionInfo.SessionID);
 
                         sessionInfo.ServerID = server.ServerID;
-                        this.clients.AddOrUpdate(server.ServerID, channel, (_1, _2) => channel);
+                        var weak = new WeakReference<IChannel>(channel);
+                        this.clients.AddOrUpdate(server.ServerID, weak, (_1, _2) => weak);
                         break;
                     }
                     catch (Exception e)
@@ -105,7 +110,7 @@ namespace F1.Core.RPC
         {
             try
             {
-                if (this.clients.TryGetValue(serverID, out var channel))
+                if (this.clients.TryGetValue(serverID, out var c) && c.TryGetTarget(out var channel))
                 {
                     this.logger.LogInformation("TryCloseCurrentClient, ServerID:{1} SessionID:{0}",
                         channel.GetSessionInfo().SessionID, serverID);
@@ -124,34 +129,118 @@ namespace F1.Core.RPC
             }
         }
 
-        public WeakReference<IChannel> GetChannelByServerID(long serverID) 
+        public async Task<ResponseRpc> TrySendRpcRequest(PlacementFindActorPositionRequest actor,
+                                                        object message,
+                                                        bool needClearPosition) 
         {
-            if (this.clients.TryGetValue(serverID, out var channel)) 
+            if (needClearPosition) this.placement.ClearActorPositionCache(actor);
+            for (int i = 0; i < 2; ++i) 
             {
-                return new WeakReference<IChannel>(channel);
+                try
+                {
+                    var position = await this.placement.FindActorPositonAsync(actor);
+                    if (position != null) 
+                    {
+                        var server = this.GetChannelByServerID(position.ServerID);
+                        if (server != null) 
+                        {
+                            return await this.SendRpcMessage(server, message);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (e.GetType() == typeof(PlacementException)) 
+                    {
+                        await Task.Delay(1000);
+                    }
+                    this.logger.LogError("TrySendRpcRequest, Actor:{0}/{1}, Exception:{2}",
+                        actor.ActorType, actor.ActorID, e.Message);
+                }
+            }
+
+            throw new Exception("TrySendRpcRequest more then 2 times");
+        }
+
+        public IChannel GetChannelByServerID(long serverID) 
+        {
+            if (this.clients.TryGetValue(serverID, out var c) && c.TryGetTarget(out var channel)) 
+            {
+                return channel;
             }
             return null;
         }
 
-        public async void TrySendRpcMessage(long serverID, object message) 
-        {
-            var request = message as RequestRpc;
-        }
-
-        public void SendRpcMessage(IChannel channel, object message)
+        public Task<ResponseRpc> SendRpcMessage(IChannel channel, object message)
         {
             var request = message as RequestRpc;
             Contract.Assert(request != null);
             Contract.Assert(channel != null);
 
+            request.ResponseId = this.NewSequenceID;
+
             var outboundMessage = new OutboundMessage(channel, message);
             this.messageCenter.SendMessage(outboundMessage);
+
+            if (!request.NeedResult) 
+            {
+                return Task.FromResult(new ResponseRpc());
+            }
+
+            var completionSource = new GenericCompletionSource<ResponseRpc>();
+            completionSource.ID = request.ResponseId;
+            this.taskCompletionSourceManager.Push(completionSource);
+            return completionSource.GetTask() as Task<ResponseRpc>;
+        }
+
+        private void ProcessRpcResponseError(ResponseRpc msg, IGenericCompletionSource completionSource) 
+        {
+            if (msg.ErrorCode == (int)RpcErrorCode.ActorHasNewPosition)
+            {
+                var actorInfo = new PlacementFindActorPositionRequest()
+                {
+                    ActorID = msg.Request.ActorId,
+                    ActorType = msg.Request.ActorType,
+                    TTL = 0,
+                };
+
+                //这边要看错误是否可以通过重试解决
+                _ = this.TrySendRpcRequest(actorInfo, msg, true);
+            }
+            else if (msg.ErrorCode == (int)RpcErrorCode.MethodNotFound)
+            {
+                completionSource.WithException(new RpcDispatchException("Method Not Found"));
+            }
+            else 
+            {
+                completionSource.WithException(new Exception(msg.ErrorMsg));
+            }
         }
 
         private void ProcessRpcResponse(IInboundMessage message)
         {
-            //TODO:
-            //处理response
+            var msg = message.Inner as ResponseRpc;
+            if (msg == null)
+            {
+                this.logger.LogError("ProcessRpcResponse input message type:{0}", message.GetType());
+                return;
+            }
+
+            var completionSource = this.taskCompletionSourceManager.GetCompletionSource(msg.ResponseId);
+            if (completionSource == null) 
+            {
+                this.logger.LogWarning("ProcessRpcResponseSuccess, ResponseID:{0}", msg.ResponseId);
+                return;
+            }
+
+            if (msg.ErrorCode != 0) 
+            {
+                this.ProcessRpcResponseError(msg, completionSource);
+                return;
+            }
+
+
+            completionSource.WithResult(msg);
         }
     }
 }

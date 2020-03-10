@@ -23,12 +23,12 @@ namespace F1.Core.RPC
 
         public void WithException(Exception e)
         {
-            this.SetException(e);
+            this.TrySetException(e);
         }
 
         public void WithResult(object o)
         {
-            this.SetResult((T)o);
+            this.TrySetResult((T)o);
         }
 
         public long ID { get; set; }

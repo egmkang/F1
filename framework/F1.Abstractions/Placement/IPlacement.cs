@@ -216,6 +216,11 @@ namespace F1.Abstractions.Placement
         /// <returns>Actor所在的目标服务器信息</returns>
         Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request);
         /// <summary>
+        /// 清空Actor的位置缓存
+        /// </summary>
+        /// <param name="request">actor信息</param>
+        void ClearActorPositionCache(PlacementFindActorPositionRequest request);
+        /// <summary>
         /// 获取版本信息
         /// </summary>
         /// <returns>返回版本信息的字符串</returns>

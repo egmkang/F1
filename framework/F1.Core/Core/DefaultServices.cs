@@ -35,6 +35,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<RequestDispatchHandler>();
             services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
             services.TryAddSingleton<TaskCompletionSourceManager>();
+            services.TryAddSingleton<RpcClientFactory>();
         }
     }
 }

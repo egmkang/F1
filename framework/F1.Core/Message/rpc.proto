@@ -22,17 +22,21 @@ string method       = 3;	//函数名
 bytes args          = 4;	//收入参数(序列化暂时还未想好)
 bool need_result	= 5;	//是否需要返回值
 
-fixed64 src_server		= 6;	//ServerID, TraceID两个组合起来决定了Request的可重入性
-fixed64 src_request_id	= 7;
-fixed64 request_id		= 8;
+sfixed64 src_server		= 6;	//ServerID, TraceID两个组合起来决定了Request的可重入性
+sfixed64 src_request_id	= 7;
+sfixed64 request_id		= 8;	//proxy call的id
+sfixed64 response_id    = 9;	//req/resp的id
 }
 
 message ResponseRpc
 {
-int64 request_id    = 1;
-int32 error_code    = 2;
-string error_msg    = 3;
-bytes response      = 4;
+RequestRpc request  = 1;	//失败的时候会携带这个信息
+
+sfixed64 request_id = 10;
+sfixed64 response_id= 11;
+int32 error_code    = 12;
+string error_msg    = 13;
+bytes response      = 14;
 }
 
 message RequestRpcHeartBeat
