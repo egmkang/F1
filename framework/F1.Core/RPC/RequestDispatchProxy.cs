@@ -7,9 +7,18 @@ using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
 using F1.Abstractions.Placement;
 using RpcMessage;
+using F1.Abstractions.RPC;
+using Google.Protobuf;
 
 namespace F1.Core.RPC
 {
+    /// <summary>
+    /// 用来做hook用(单元测试), 其他的地方不用
+    /// </summary>
+    public delegate Task<ResponseRpc> TrySendRpcRequestFunc(PlacementFindActorPositionRequest actor,
+                                                 object message,
+                                                 bool needClearPosition);
+
     public class RequestDispatchProxy : DispatchProxy
     {
         /// <summary>
@@ -33,7 +42,8 @@ namespace F1.Core.RPC
         public IServiceProvider ServiceProvider { get; internal set; }
         internal RpcClientFactory RpcClientFactory { get; set; }
         public RequestDispatchProxyFactory DispatchProxyFactory { get; internal set; }
-
+        public IParametersSerializer Serializer { get; internal set; }
+        public TrySendRpcRequestFunc SendHook { get; set; }
 
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
@@ -46,42 +56,49 @@ namespace F1.Core.RPC
 
             var taskCompletionSource = handler.NewCompletionSource();
 
-            var request = new RequestRpc() 
+            var request = new RequestRpc()
             {
                 ActorType = this.PositionRequest.ActorType,
                 ActorId = this.PositionRequest.ActorID,
                 Method = handler.Name,
 
-                //TODO:
-                //args
-
+                Args = ByteString.CopyFrom(this.Serializer.Serialize(args, handler.ParametersType)),
                 NeedResult = !handler.IsOneWay,
-
                 RequestId = taskCompletionSource.ID,
-
                 //TODO:
                 //context
             };
 
-            _ = this.TrySendRpcRequest(request, taskCompletionSource);
-
+            _ = this.TrySendRpcRequest(request, taskCompletionSource, handler);
             return taskCompletionSource.GetTask();
         }
 
         private static object Empty = new object();
-        private async Task TrySendRpcRequest(RequestRpc request, IGenericCompletionSource completionSource) 
+        private async Task TrySendRpcRequest(RequestRpc request,
+                                            IGenericCompletionSource completionSource,
+                                            RequestDisptachProxyClientHandler handler) 
         {
             try 
             {
-                var response = await this.RpcClientFactory.TrySendRpcRequest(this.PositionRequest, request, false);
+                ResponseRpc response;
+
+                if (this.SendHook != null)
+                {
+                    response = await this.SendHook(this.PositionRequest, request, false);
+                }
+                else 
+                {
+                    response = await this.RpcClientFactory.TrySendRpcRequest(this.PositionRequest, request, false);
+                }
+
                 if (response != null) 
                 {
                     if (response.Response == null || response.Response.Length == 0) 
                     {
                         completionSource.WithResult(Empty);
                     }
-                    //TODO:
-                    //decode response, and try set result
+                    var o = this.Serializer.Deserialize(response.Response.ToByteArray(), handler.ReturnType);
+                    completionSource.WithResult(o);
                 }
             }
             catch (Exception e) 

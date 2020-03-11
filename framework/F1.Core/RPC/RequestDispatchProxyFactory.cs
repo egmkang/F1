@@ -7,21 +7,30 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using AspectCore.Extensions.Reflection;
 using F1.Core.Utils;
+using F1.Abstractions.RPC;
 
 namespace F1.Core.RPC
 {
     internal class RequestDisptachProxyClientHandler
     {
-        public RequestDisptachProxyClientHandler(Func<IGenericCompletionSource> f, bool isOneWay, string name) 
+        public RequestDisptachProxyClientHandler(Func<IGenericCompletionSource> f,
+            bool isOneWay,
+            string name,
+            Type[] paramsType,
+            Type returnType) 
         {
             this.NewCompletionSource = f;
             this.IsOneWay = isOneWay;
             this.Name = name;
+            this.ParametersType = paramsType;
+            this.ReturnType = returnType;
         }
 
         public Func<IGenericCompletionSource> NewCompletionSource { get; private set; }
         public bool IsOneWay { get; private set; }
         public string Name { get; private set; }
+        public Type ReturnType { get; private set; }
+        public Type[] ParametersType { get; private set; }
     }
 
     public class RequestDispatchProxyFactory
@@ -31,10 +40,12 @@ namespace F1.Core.RPC
         private readonly RpcMetadata metadata;
         private readonly UniqueSequence uniqueSequence;
         private RpcClientFactory rpcClientFactory;
+        private readonly IParametersSerializer serializer;
         private readonly Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler> newCompletionSourceDict = new Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler>();
 
         public RequestDispatchProxyFactory(ILoggerFactory loggerFactory,
                                             IServiceProvider serviceProvider,
+                                            IParametersSerializer serializer,
                                             RpcMetadata metadata,
                                             UniqueSequence uniqueSequence)
         {
@@ -42,6 +53,7 @@ namespace F1.Core.RPC
             this.serviceProvider = serviceProvider;
             this.uniqueSequence = uniqueSequence;
             this.rpcClientFactory = serviceProvider.GetService<RpcClientFactory>();
+            this.serializer = serializer;
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
 
             this.RegisterClientProxyHandler();
@@ -56,6 +68,7 @@ namespace F1.Core.RPC
             proxy.DispatchProxyFactory = this;
             proxy.RpcClientFactory = this.rpcClientFactory;
             proxy.Logger = this.logger;
+            proxy.Serializer = this.serializer;
 
             proxy.PositionRequest = new Abstractions.Placement.PlacementFindActorPositionRequest()
             {
@@ -84,7 +97,17 @@ namespace F1.Core.RPC
                 return genericType.MakeGenericType(typeof(object));
         }
 
-        private Type GetTaskType(Type t)
+        private Type[] GetParamsType(ParameterInfo[] ps) 
+        {
+            var types = new Type[ps.Length];
+            for (int i = 0; i < ps.Length; ++i) 
+            {
+                types[i] = ps[i].ParameterType;
+            }
+            return types;
+        }
+
+        private Type GetTaskInnerType(Type t)
         {
             if (t.BaseType == typeof(Task) ||
                 t == typeof(Task))
@@ -111,6 +134,8 @@ namespace F1.Core.RPC
 
         private void RegisterClientProxyHandler()
         {
+            this.metadata.LoadAllTypes();
+
             foreach (var item in this.metadata.RpcClientTypes)
             {
                 foreach (var method in item.Value.GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -123,15 +148,16 @@ namespace F1.Core.RPC
                     }
 
                     var isOneway = method.GetReflector().IsDefined<OnewayAttribute>();
-                    var taskType = this.GetTaskType(method.ReturnType);
-                    var completionSourceType = this.MakeTaskCompletionSource(taskType);
+                    var taskInnerType = this.GetTaskInnerType(method.ReturnType);
+                    var paramsType = this.GetParamsType(method.GetParameters());
+                    var completionSourceType = this.MakeTaskCompletionSource(taskInnerType);
 
                     var handler = new RequestDisptachProxyClientHandler(() =>
                     {
                         var o = (IGenericCompletionSource)Activator.CreateInstance(completionSourceType);
                         o.ID = this.GetNewSequence();
                         return o;
-                    }, isOneway, $"{item.Value.Name}.{method.Name}");
+                    }, isOneway, $"{item.Value.Name}.{method.Name}", paramsType, taskInnerType);
 
                     newCompletionSourceDict.TryAdd(key, handler);
 

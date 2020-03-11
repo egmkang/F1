@@ -11,6 +11,7 @@ using F1.Core.Core;
 using F1.Abstractions.Network;
 using F1.Core.Message;
 using F1.Core.Network;
+using F1.Core.RPC;
 
 namespace F1.UnitTest.Network
 {
@@ -59,6 +60,7 @@ namespace F1.UnitTest.Network
 
             var messageHandlerFactory = builder.ServiceProvider.GetRequiredService<IMessageHandlerFactory>();
             Assert.NotNull(messageHandlerFactory);
+
 
             builder.ShutDown();
         }

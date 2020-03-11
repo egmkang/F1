@@ -10,7 +10,7 @@ namespace F1.Core.RPC
     using WeakCompletionSource = WeakReference<IGenericCompletionSource>;
     using CompletionSourceQueue = ConcurrentQueue<WeakReference<IGenericCompletionSource>>;
 
-    internal class TaskCompletionSourceManager
+    public class TaskCompletionSourceManager
     {
         class QueueGroup
         {

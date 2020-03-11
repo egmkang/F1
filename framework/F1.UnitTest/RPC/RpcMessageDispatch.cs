@@ -5,7 +5,7 @@ using F1.Core.RPC;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace F1.UnitTest.Rpc
+namespace F1.UnitTest.RPC
 {
     [Rpc]
     public interface IRpcRquestDispatchHandlerTest

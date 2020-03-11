@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace F1.Core.RPC
 {
-    internal interface IGenericCompletionSource
+    public interface IGenericCompletionSource
     {
         void WithResult(object o);
 
