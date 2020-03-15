@@ -17,7 +17,7 @@ namespace F1.Core.RPC
         long ID { get; set; }
     }
 
-    internal class GenericCompletionSource<T> : TaskCompletionSource<T>, IGenericCompletionSource
+    public class GenericCompletionSource<T> : TaskCompletionSource<T>, IGenericCompletionSource
     {
         public Task GetTask() { return this.Task;  }
 
