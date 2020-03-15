@@ -15,13 +15,13 @@ namespace F1.UnitTest.Network
         [Fact]
         public void EmptyMessage()
         {
-            var msg = new RequestRpcHandshake();
+            var msg = new RequestRpcHeartBeat();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var (length, msg1) = buffer.DecodeOneMessage();
 
-            Assert.Equal(buffer.ReadableBytes, 0);
-            Assert.NotEqual(length, 0);
+            Assert.Equal(0, buffer.ReadableBytes);
+            Assert.NotEqual(0, length);
 
             ReferenceCountUtil.Release(buffer);
         }
@@ -29,15 +29,15 @@ namespace F1.UnitTest.Network
         [Fact]
         public void HalfPacket() 
         {
-            var msg = new RequestRpcHandshake();
+            var msg = new RequestRpcHeartBeat();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var half = buffer.Slice(0, buffer.ReadableBytes - 1);
 
             var (length, msg1) = half.DecodeOneMessage();
 
-            Assert.NotEqual(half.ReadableBytes, 0);
-            Assert.Equal(length, 0);
+            Assert.NotEqual(0, half.ReadableBytes);
+            Assert.Equal(0, length);
             Assert.Null(msg1);
 
             ReferenceCountUtil.Release(buffer);
@@ -46,17 +46,17 @@ namespace F1.UnitTest.Network
         [Fact]
         public void RandomMessage() 
         {
-            var msg = new RequestRpcHandshake();
-            msg.ServerId = random.Next(0, 1000000);
+            var msg = new RequestRpcHeartBeat();
+            msg.MilliSeconds = random.Next(0, 1000000);
             var buffer = msg.ToByteBuffer(Allocator);
 
             var (length, msg1) = buffer.DecodeOneMessage();
 
-            Assert.Equal(buffer.ReadableBytes, 0);
-            Assert.NotEqual(length, 0);
+            Assert.Equal(0, buffer.ReadableBytes);
+            Assert.NotEqual(0, length);
             Assert.NotNull(msg1);
             Assert.IsType(msg.GetType(), msg1);
-            Assert.Equal(msg, (msg1 as RequestRpcHandshake));
+            Assert.Equal(msg, (msg1 as RequestRpcHeartBeat));
 
             ReferenceCountUtil.Release(buffer);
         }
@@ -64,12 +64,11 @@ namespace F1.UnitTest.Network
         [Fact]
         public void TowMessages()
         {
-            var input1 = new RequestRpcHandshake();
-            input1.ServerId = random.Next(0, 1000000);
+            var input1 = new RequestRpcHeartBeat();
+            input1.MilliSeconds = random.Next(0, 1000000);
 
-            var input2 = new ResponseRpcHandshake();
-            input2.StartTime = random.Next(0, 10000000);
-            input2.ServerId = random.Next(0, 100000);
+            var input2 = new RequestRpcHeartBeat();
+            input2.MilliSeconds = random.Next(0, 10000000);
 
             var buffer1 = input1.ToByteBuffer(Allocator);
             var buffer2 = input2.ToByteBuffer(Allocator);
@@ -81,16 +80,16 @@ namespace F1.UnitTest.Network
             var (length1, msg1) = buffer.DecodeOneMessage();
             var (length2, msg2) = buffer.DecodeOneMessage();
 
-            Assert.Equal(buffer.ReadableBytes, 0);
-            Assert.NotEqual(length1, 0);
-            Assert.NotEqual(length2, 0);
+            Assert.Equal(0, buffer.ReadableBytes);
+            Assert.NotEqual(0, length1);
+            Assert.NotEqual(0, length2);
             Assert.NotNull(msg1);
             Assert.IsType(input1.GetType(), msg1);
-            Assert.Equal(input1, (msg1 as RequestRpcHandshake));
+            Assert.Equal(input1, (msg1 as RequestRpcHeartBeat));
 
             Assert.NotNull(msg2);
             Assert.IsType(input2.GetType(), msg2);
-            Assert.Equal(input2, (msg2 as ResponseRpcHandshake));
+            Assert.Equal(input2, (msg2 as RequestRpcHeartBeat));
 
             ReferenceCountUtil.Release(buffer1);
             ReferenceCountUtil.Release(buffer2);

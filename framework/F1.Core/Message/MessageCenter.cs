@@ -85,7 +85,6 @@ namespace F1.Core.Message
             this.connectionManager.RemoveConnection(channel);
             try
             {
-                sessionInfo.ShutDown();
                 this.channelClosedProc(channel);
             }
             catch (Exception e)

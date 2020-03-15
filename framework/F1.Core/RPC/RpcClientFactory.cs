@@ -4,6 +4,7 @@ using System.Text;
 using System.Net;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using F1.Abstractions.Network;
@@ -12,7 +13,6 @@ using F1.Abstractions.Placement;
 using F1.Core.Utils;
 using F1.Core.Network;
 using RpcMessage;
-using System.Diagnostics.Contracts;
 
 namespace F1.Core.RPC
 {
@@ -50,6 +50,7 @@ namespace F1.Core.RPC
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
 
             this.messageCenter.RegisterMessageProc(typeof(ResponseRpc).FullName, this.ProcessRpcResponse);
+            this.messageCenter.RegisterMessageProc(typeof(ResponseRpcHeartBeat).FullName, this.ProcessRpcHeartBeatResponse);
         }
 
         private long NewSequenceID => this.uniqueSequence.GetNewSequence();
@@ -66,6 +67,34 @@ namespace F1.Core.RPC
         }
         private void OnOfflineServer(PlacementActorHostInfo server)
         {
+            //TODO, 服务器要下线, 要把所有在这个服务器上的玩家清掉
+            //但是自己的不能清掉
+        }
+
+        const int HeartBeatInterval = 5000;
+        private async void TrySendHeatBeat(IChannel channel) 
+        {
+            var sessionInfo = channel.GetSessionInfo();
+
+            while (sessionInfo.IsActive)
+            {
+                if (Platform.GetMilliSeconds() - sessionInfo.ActiveTime > 3 * HeartBeatInterval) 
+                {
+                    this.logger.LogError("HearBeatTimeOut, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, TimeOut:{3}",
+                        sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, Platform.GetMilliSeconds() - sessionInfo.ActiveTime);
+
+                    this.TryCloseCurrentClient(sessionInfo.ServerID);
+                    break;
+                }
+
+                var msg = new OutboundMessage(channel, new RequestRpcHeartBeat() 
+                {
+                     MilliSeconds = Platform.GetMilliSeconds(),
+                });
+                sessionInfo.PutOutboundMessage(msg);
+
+                await Task.Delay(HeartBeatInterval);
+            }
         }
 
         private void TryConnectAsync(PlacementActorHostInfo server)
@@ -92,6 +121,8 @@ namespace F1.Core.RPC
                         sessionInfo.ServerID = server.ServerID;
                         var weak = new WeakReference<IChannel>(channel);
                         this.clients.AddOrUpdate(server.ServerID, weak, (_1, _2) => weak);
+
+                        this.TrySendHeatBeat(channel);
                         break;
                     }
                     catch (Exception e)
@@ -178,6 +209,7 @@ namespace F1.Core.RPC
             Contract.Assert(channel != null);
 
             request.ResponseId = this.NewSequenceID;
+            request.DestServerId = channel.GetSessionInfo().ServerID;
 
             var outboundMessage = new OutboundMessage(channel, message);
             this.messageCenter.SendMessage(outboundMessage);
@@ -214,6 +246,23 @@ namespace F1.Core.RPC
             else 
             {
                 completionSource.WithException(new Exception(msg.ErrorMsg));
+            }
+        }
+
+        private void ProcessRpcHeartBeatResponse(IInboundMessage message) 
+        {
+            var msg = message.Inner as ResponseRpcHeartBeat;
+            if (msg == null) 
+            {
+                this.logger.LogError("ProcessRpcHeartBeat input message type:{0}", message.GetType());
+                return;
+            }
+            var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSeconds;
+            if (elapsedTime > 100) 
+            {
+                var sessionInfo = message.SourceConnection.GetSessionInfo();
+                this.logger.LogWarning("ProcessRpcHearBeat, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, Elapsed Time:{3}ms",
+                    sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, elapsedTime);
             }
         }
 

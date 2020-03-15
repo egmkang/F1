@@ -32,6 +32,8 @@ namespace F1.Core.Network
             this.codec = codec;
 
             this.inboundMessageQueue = new AsyncMessageQueue<IOutboundMessage>(this.logger);
+
+            this.ActiveTime = Platform.GetMilliSeconds();
         }
 
         public long SessionID => sessionID;
@@ -39,6 +41,7 @@ namespace F1.Core.Network
         public long ActiveTime { get => activeTime; set => activeTime = value; }
         public IPEndPoint RemoteAddress { get => address; set => address = value; }
         public long ServerID { get; set; }
+        public bool IsActive => !this.stop;
 
         public int PutOutboundMessage(IOutboundMessage msg)
         {
@@ -48,6 +51,7 @@ namespace F1.Core.Network
             }
             return this.inboundMessageQueue.QueueCount;
         }
+
         public void ShutDown() 
         {
             this.stop = true;

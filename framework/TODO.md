@@ -16,18 +16,22 @@ C# Framework:
     * [x] ConnectionManager
     * [x] MessageCenter
 * [ ] RPC
-    * [ ] ClientManager
+    * [x] ClientManager
         * [ ] Client Reconnect
-        * [ ] Client Add/Remove
-    * [ ] Future/Promise
-    * [ ] ClientProxy
+        * [x] Client Add/Remove
+        * [x] HeartBeat
+    * [x] Future/Promise
+    * [x] ClientProxy
     * [x] ServerInvoker
     * [x] ObjectSerializer
 * [ ] Actor
+    * [ ] ServerContext
     * [ ] Actor
+    * [ ] ActorContext
     * [ ] ActorManager
     * [ ] ActorMessageLoop
     * [ ] ActorLifeTime
+    * [ ] ActorProxyManager
 * [ ] Virtual Actor
     * [ ] impl
     * [ ] sample

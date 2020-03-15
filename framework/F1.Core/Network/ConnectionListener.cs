@@ -83,7 +83,6 @@ namespace F1.Core.Network
                     {
                         info.RemoteAddress = channel.RemoteAddress as IPEndPoint;
                     }
-                    info.ActiveTime = Platform.GetMilliSeconds();
 
                     this.connectionManager.AddConnection(channel);
                     info.RunSendingLoopAsync(channel);

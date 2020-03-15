@@ -13,6 +13,7 @@ namespace F1.Abstractions.Network
         long ServerID { get; set; }
         long ActiveTime { get; set; }
         IPEndPoint RemoteAddress { get; set; }
+        bool IsActive { get; }
 
         int PutOutboundMessage(IOutboundMessage msg);
         void RunSendingLoopAsync(IChannel channel);
