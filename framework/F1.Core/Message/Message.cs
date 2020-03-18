@@ -7,18 +7,19 @@ using F1.Core.Utils;
 
 namespace F1.Core.Message
 {
-    public sealed class InboundMessage : IInboundMessage
+    public struct InboundMessage : IInboundMessage
     {
         private object innerMessage;
         private string typeName;
         private IChannel channel;
-        private long milliSecond = Platform.GetMilliSeconds();
+        private long milliSecond;
 
         public InboundMessage(IChannel channel, string typeName, object message) 
         {
             this.channel = channel;
             this.typeName = typeName;
             this.innerMessage = message;
+            this.milliSecond = Platform.GetMilliSeconds();
         }
 
         public string MessageName => this.typeName;
@@ -30,7 +31,7 @@ namespace F1.Core.Message
         public object Inner => this.innerMessage;
     }
 
-    public sealed class OutboundMessage : IOutboundMessage
+    public struct OutboundMessage : IOutboundMessage
     {
         private object innerMessage;
         private IChannel channel;
