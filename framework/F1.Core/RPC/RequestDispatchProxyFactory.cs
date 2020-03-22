@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using AspectCore.Extensions.Reflection;
 using F1.Core.Utils;
 using F1.Abstractions.RPC;
+using F1.Abstractions.Actor;
 
 namespace F1.Core.RPC
 {
@@ -59,7 +60,7 @@ namespace F1.Core.RPC
             this.RegisterClientProxyHandler();
         }
 
-        public T CreateProxy<T>(string actor = null, object context = null)
+        public T CreateProxy<T>(string actor = null, IActorContext context = null)
         {
             var o = DispatchProxy.Create<T, RequestDispatchProxy>();
             var proxy = o as RequestDispatchProxy;

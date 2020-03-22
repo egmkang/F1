@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
-using F1.Abstractions.Placement;
-using RpcMessage;
-using F1.Abstractions.RPC;
 using Google.Protobuf;
+using RpcMessage;
+using F1.Abstractions.Placement;
+using F1.Abstractions.RPC;
+using F1.Abstractions.Actor;
 
 namespace F1.Core.RPC
 {
@@ -24,7 +25,7 @@ namespace F1.Core.RPC
         /// <summary>
         /// Actor的上下文
         /// </summary>
-        public object Context { get; set; }
+        public IActorContext Context { get; set; }
 
         /// <summary>
         /// Actor的ID
@@ -56,6 +57,8 @@ namespace F1.Core.RPC
 
             var taskCompletionSource = handler.NewCompletionSource();
 
+            //实际上Context是不能为空的
+            var currentRequest = this.Context == null ? (0, 0) : this.Context.CurrentRequest;
             var request = new RequestRpc()
             {
                 ActorType = this.PositionRequest.ActorType,
@@ -65,8 +68,9 @@ namespace F1.Core.RPC
                 Args = ByteString.CopyFrom(this.Serializer.Serialize(args, handler.ParametersType)),
                 NeedResult = !handler.IsOneWay,
                 RequestId = taskCompletionSource.ID,
-                //TODO:
-                //context
+
+                SrcServer = currentRequest.ServerID,
+                SrcRequestId = currentRequest.RequestID,
             };
 
             _ = this.TrySendRpcRequest(request, taskCompletionSource, handler);

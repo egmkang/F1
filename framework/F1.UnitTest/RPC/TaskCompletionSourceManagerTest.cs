@@ -9,7 +9,6 @@ namespace F1.UnitTest.RPC
 {
     public class TaskCompletionSourceManagerTest
     {
-        //TODO
         [Fact]
         public async Task CompletionSourceTimeout()
         {
