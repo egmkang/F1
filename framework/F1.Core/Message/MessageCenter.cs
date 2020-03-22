@@ -17,12 +17,12 @@ namespace F1.Core.Message
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger logger;
         private readonly IConnectionManager connectionManager;
-        private readonly AsyncMessageQueue<IInboundMessage> inboundMessageQueue;
-        private readonly Dictionary<string, Action<IInboundMessage>> inboudMessageProc = new Dictionary<string, Action<IInboundMessage>>();
+        private readonly AsyncMessageQueue<InboundMessage> inboundMessageQueue;
+        private readonly Dictionary<string, Action<InboundMessage>> inboudMessageProc = new Dictionary<string, Action<InboundMessage>>();
 
         private Action<IChannel> channelClosedProc;
-        private Action<IOutboundMessage> failMessageProc;
-        private Action<IInboundMessage> defaultInboundMessageProc;
+        private Action<OutboundMessage> failMessageProc;
+        private Action<InboundMessage> defaultInboundMessageProc;
 
         public MessageCenter(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IConnectionManager connectionManager) 
         {
@@ -31,13 +31,13 @@ namespace F1.Core.Message
             this.connectionManager = connectionManager;
             this.logger = this.loggerFactory.CreateLogger("F1.MessageCenter");
 
-            this.inboundMessageQueue = new AsyncMessageQueue<IInboundMessage>(this.logger);
+            this.inboundMessageQueue = new AsyncMessageQueue<InboundMessage>(this.logger);
 
             this.StartAsync();
         }
 
         public void RegsiterEvent(Action<IChannel> channelClosedProc,
-            Action<IOutboundMessage> failMessageProc) 
+            Action<OutboundMessage> failMessageProc) 
         {
             this.channelClosedProc = channelClosedProc;
             this.failMessageProc = failMessageProc;
@@ -56,8 +56,8 @@ namespace F1.Core.Message
                         break;
                     }
 
-                    IInboundMessage message = default;
-                    while (reader.TryRead(out message) && message != null)
+                    InboundMessage message = default;
+                    while (reader.TryRead(out message) && message.Inner != null)
                     {
                         this.inboundMessageQueue.QueueCount--;
                         try
@@ -76,7 +76,7 @@ namespace F1.Core.Message
 
         public void StopAsync()
         {
-            this.inboundMessageQueue.ShutDown();
+            this.inboundMessageQueue.ShutDown(InboundMessage.Empty);
         }
 
         public void OnConnectionClosed(IChannel channel)
@@ -94,7 +94,7 @@ namespace F1.Core.Message
             }
         }
 
-        public void OnMessageFail(IOutboundMessage message)
+        public void OnMessageFail(OutboundMessage message)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace F1.Core.Message
             }
         }
 
-        public void OnReceivedMessage(IInboundMessage message)
+        public void OnReceivedMessage(InboundMessage message)
         {
             if (this.logger.IsEnabled(LogLevel.Trace)) 
             {
@@ -122,7 +122,7 @@ namespace F1.Core.Message
             }
         }
 
-        public void SendMessage(IOutboundMessage message)
+        public void SendMessage(OutboundMessage message)
         {
             var sessionInfo = message.DestConnection.GetSessionInfo();
             var size = 0;
@@ -133,7 +133,7 @@ namespace F1.Core.Message
             }
         }
 
-        public void RegisterMessageProc(string messageName, Action<IInboundMessage> action)
+        public void RegisterMessageProc(string messageName, Action<InboundMessage> action)
         {
             if (string.IsNullOrEmpty(messageName)) 
             {
@@ -147,7 +147,7 @@ namespace F1.Core.Message
             }
         }
 
-        private void ProcessInboundMessage(IInboundMessage message) 
+        private void ProcessInboundMessage(InboundMessage message) 
         {
             if (this.defaultInboundMessageProc == null) 
             {

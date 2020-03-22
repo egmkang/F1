@@ -19,7 +19,7 @@ namespace F1.Core.Network
         private long activeTime;
         private bool stop = false;
         private IPEndPoint address;
-        private readonly AsyncMessageQueue<IOutboundMessage> inboundMessageQueue;
+        private readonly AsyncMessageQueue<OutboundMessage> inboundMessageQueue;
         private readonly ILogger logger;
         private readonly IMessageCenter messageCenter;
         private readonly IMessageCodec codec;
@@ -31,7 +31,7 @@ namespace F1.Core.Network
             this.messageCenter = messageCenter;
             this.codec = codec;
 
-            this.inboundMessageQueue = new AsyncMessageQueue<IOutboundMessage>(this.logger);
+            this.inboundMessageQueue = new AsyncMessageQueue<OutboundMessage>(this.logger);
 
             this.ActiveTime = Platform.GetMilliSeconds();
         }
@@ -43,7 +43,7 @@ namespace F1.Core.Network
         public long ServerID { get; set; }
         public bool IsActive => !this.stop;
 
-        public int PutOutboundMessage(IOutboundMessage msg)
+        public int PutOutboundMessage(OutboundMessage msg)
         {
             if (!this.inboundMessageQueue.PushMessage(msg)) 
             {
@@ -55,8 +55,7 @@ namespace F1.Core.Network
         public void ShutDown() 
         {
             this.stop = true;
-            this.inboundMessageQueue.PushMessage(null);
-            this.inboundMessageQueue.ShutDown();
+            this.inboundMessageQueue.ShutDown(OutboundMessage.Empty);
         }
 
         public void RunSendingLoopAsync(IChannel channel)
@@ -73,11 +72,11 @@ namespace F1.Core.Network
                         break;
                     }
 
-                    IOutboundMessage message = default;
+                    OutboundMessage message;
                     var number = 0;
                     try 
                     {
-                        while (number < 4 && reader.TryRead(out message) && message != null)
+                        while (number < 4 && reader.TryRead(out message) && message.Inner != null)
                         {
                             this.inboundMessageQueue.QueueCount--;
                             var buffer = this.codec.Encode(allocator, message.Inner);
@@ -93,7 +92,7 @@ namespace F1.Core.Network
                         }
                         number = 0;
                     }
-                    catch (Exception e)  when(message != default)
+                    catch (Exception e)  when(message.Inner != default)
                     {
                         logger.LogError("SendOutboundMessage Fail, SessionID:{0}, Exception:{1}",
                             this.sessionID, e.Message);

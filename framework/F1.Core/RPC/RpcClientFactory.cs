@@ -249,7 +249,7 @@ namespace F1.Core.RPC
             }
         }
 
-        private void ProcessRpcHeartBeatResponse(IInboundMessage message) 
+        private void ProcessRpcHeartBeatResponse(InboundMessage message) 
         {
             var msg = message.Inner as ResponseRpcHeartBeat;
             if (msg == null) 
@@ -266,7 +266,7 @@ namespace F1.Core.RPC
             }
         }
 
-        private void ProcessRpcResponse(IInboundMessage message)
+        private void ProcessRpcResponse(InboundMessage message)
         {
             var msg = message.Inner as ResponseRpc;
             if (msg == null)

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Utils
 {
-    internal class AsyncMessageQueue<T> where T : class
+    internal class AsyncMessageQueue<T>
     {
         private readonly Channel<T> channel = Channel.CreateUnbounded<T>(new UnboundedChannelOptions()
         {
@@ -37,10 +37,10 @@ namespace F1.Core.Utils
             return true;
         }
 
-        public void ShutDown() 
+        public void ShutDown(T empty) 
         {
             this.Valid = false;
-            this.channel.Writer.TryWrite(default(T));
+            this.channel.Writer.TryWrite(empty);
             this.channel.Writer.Complete();
         }
 

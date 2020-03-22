@@ -15,7 +15,7 @@ namespace F1.Abstractions.Network
         IPEndPoint RemoteAddress { get; set; }
         bool IsActive { get; }
 
-        int PutOutboundMessage(IOutboundMessage msg);
+        int PutOutboundMessage(OutboundMessage msg);
         void RunSendingLoopAsync(IChannel channel);
         void ShutDown();
     }
