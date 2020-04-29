@@ -31,7 +31,7 @@ namespace F1.Core.Network
             this.messageCenter = messageCenter;
             this.codec = codec;
 
-            this.inboundMessageQueue = new AsyncMessageQueue<OutboundMessage>(this.logger);
+            this.inboundMessageQueue = new AsyncMessageQueue<OutboundMessage>();
 
             this.ActiveTime = Platform.GetMilliSeconds();
         }
@@ -80,9 +80,7 @@ namespace F1.Core.Network
                         {
                             this.inboundMessageQueue.QueueCount--;
                             var buffer = this.codec.Encode(allocator, message.Inner);
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                            channel.WriteAsync(buffer);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                            _ = channel.WriteAsync(buffer);
                             number++;
                         }
                         channel.Flush();
@@ -98,6 +96,8 @@ namespace F1.Core.Network
                             this.sessionID, e.Message);
                         this.messageCenter.OnMessageFail(message);
                     }
+
+                    await Task.Yield();
                 }
                 this.logger.LogInformation("SessionID:{0}, SendingLoop Exit", this.sessionID);
             });

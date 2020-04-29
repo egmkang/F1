@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
-using Microsoft.Extensions.Logging;
 
 
 namespace F1.Core.Utils
@@ -17,13 +16,11 @@ namespace F1.Core.Utils
             AllowSynchronousContinuations = false,
         });
 
-        private readonly ILogger logger;
         private int queueCount = 0;
 
-        public AsyncMessageQueue(ILogger logger) 
+        public AsyncMessageQueue() 
         {
             this.Valid = true;
-            this.logger = logger;
         }
 
         public bool PushMessage(T message) 

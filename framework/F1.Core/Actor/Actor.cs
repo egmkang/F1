@@ -1,26 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using F1.Abstractions.Actor;
+using F1.Abstractions.Network;
 
 namespace F1.Core.Actor
 {
     public abstract class Actor : IActor
     {
-        private readonly Type type;
-        private readonly string id;
+        public Type ActorType { get; private set; }
+        public string ID { get; private set; }
+        internal IActorContext Context { get; set; }
+        public ILogger Logger { get; internal set; }
 
-        public Actor(Type t, string id) 
+        internal void InitActor(Type type, string id, IActorContext context)
         {
-            this.type = t;
-            this.id = id;
+            this.ActorType = type;
+            this.ID = id;
+            this.Context = context;
         }
 
-        public Type ActorType => this.type;
-        public string ID => this.id;
-        public IActorContext Context { get; internal set; }
+        protected virtual Task OnActivateAsync() 
+        {
+            return Task.CompletedTask;
+        }
 
-        protected abstract void On();
-        protected abstract void Off();
+        protected virtual Task OnDeactivateASync() 
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task ProcessInputMessage(InboundMessage msg) 
+        {
+            return Task.CompletedTask;
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace F1.Core.Message
             this.connectionManager = connectionManager;
             this.logger = this.loggerFactory.CreateLogger("F1.MessageCenter");
 
-            this.inboundMessageQueue = new AsyncMessageQueue<InboundMessage>(this.logger);
+            this.inboundMessageQueue = new AsyncMessageQueue<InboundMessage>();
 
             this.StartAsync();
         }
