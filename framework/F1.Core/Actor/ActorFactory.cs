@@ -10,6 +10,7 @@ namespace F1.Core.Actor
     internal class ActorFactory
     {
         private Dictionary<Type, Func<Actor>> ActorConstructor = new Dictionary<Type, Func<Actor>>();
+        private readonly object mutex = new object();
         private readonly Dictionary<Type, Func<Actor>> ActorConStuctorCache = new Dictionary<Type, Func<Actor>>();
         private readonly ILogger logger;
 
@@ -22,9 +23,12 @@ namespace F1.Core.Actor
         {
             if (ActorConstructor.TryGetValue(t, out var v)) return v;
 
-            v = Expression.Lambda<Func<Actor>>(Expression.New(t.GetConstructor(Type.EmptyTypes))).Compile();
-            ActorConStuctorCache.TryAdd(t, v);
-            ActorConstructor = new Dictionary<Type, Func<Actor>>(ActorConStuctorCache);
+            lock (mutex) 
+            {
+                v = Expression.Lambda<Func<Actor>>(Expression.New(t.GetConstructor(Type.EmptyTypes))).Compile();
+                ActorConStuctorCache.TryAdd(t, v);
+                ActorConstructor = new Dictionary<Type, Func<Actor>>(ActorConStuctorCache);
+            }
             return v;
         }
 
