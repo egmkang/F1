@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using F1.Core.RPC;
 
 namespace F1.Core.Actor
 {
@@ -13,10 +14,14 @@ namespace F1.Core.Actor
         private readonly object mutex = new object();
         private readonly Dictionary<Type, Func<Actor>> ActorConStuctorCache = new Dictionary<Type, Func<Actor>>();
         private readonly ILogger logger;
+        private readonly RequestDispatchProxyFactory proxyFactory;
+        private readonly RequestDispatchHandler requestDispatchHandler;
 
-        public ActorFactory(ILoggerFactory loggerFactory) 
+        public ActorFactory(ILoggerFactory loggerFactory, RequestDispatchProxyFactory proxyFactory, RequestDispatchHandler requestDispatchHandler) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
+            this.proxyFactory = proxyFactory;
+            this.requestDispatchHandler = requestDispatchHandler;
         }
 
         private Func<Actor> GetConstructor(Type t)
@@ -41,10 +46,12 @@ namespace F1.Core.Actor
             var context = new ActorContext(actor, this.logger);
             actor.InitActor(type, id, context);
             actor.Logger = this.logger;
+            actor.ProxyFactory = this.proxyFactory;
+            context.Dispatcher = this.requestDispatchHandler;
 
-            //TODO:
-            //run
+            this.logger.LogInformation("CreateActor, Type:{0}, ID:{1}", type.Name, id);
 
+            context.Run();
             return actor;
         }
     }

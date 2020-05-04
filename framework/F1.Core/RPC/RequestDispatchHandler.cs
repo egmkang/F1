@@ -58,7 +58,7 @@ namespace F1.Core.RPC
     {
         private readonly RpcMetadata metadata;
         private readonly Dictionary<string, ServerInvoker> invokersMap = new Dictionary<string, ServerInvoker>();
-        private readonly Dictionary<string, GetTaskResult> returnValuesMap = new Dictionary<string, GetTaskResult>();
+        private readonly Dictionary<string, (Type[] InputArgsType, GetTaskResult GetReturnValueAction)> argsMap = new Dictionary<string, (Type[], GetTaskResult)>();
 
         private readonly ILogger logger;
 
@@ -78,6 +78,16 @@ namespace F1.Core.RPC
             this.CreateRpcFunc();
         }
 
+        private Type[] GetParamsType(ParameterInfo[] ps)
+        {
+            var types = new Type[ps.Length];
+            for (int i = 0; i < ps.Length; ++i)
+            {
+                types[i] = ps[i].ParameterType;
+            }
+            return types;
+        }
+
         private void CreateRpcFunc() 
         {
             foreach (var item in this.metadata.RpcClientTypes)
@@ -95,6 +105,9 @@ namespace F1.Core.RPC
                     }
                     var refector = method.GetReflector();
 
+                    var paramsType = this.GetParamsType(method.GetParameters());
+                    var getReturnValue = null as GetTaskResult;
+
                     var returnType = method.ReturnType;
                     if (returnType.BaseType == typeof(Task) ||
                         returnType == typeof(Task))
@@ -103,19 +116,17 @@ namespace F1.Core.RPC
                         if (resultProperty != null)
                         {
                             var reflector = resultProperty.GetReflector();
-                            returnValuesMap.Add(uniqueName, (o) =>
-                            {
-                                return reflector.GetValue(o);
-                            });
+                            getReturnValue = (o) => reflector.GetValue(o);
                         }
                     }
 
-                    returnValuesMap.TryGetValue(uniqueName, out var taskProperty); 
+                    argsMap.TryAdd(uniqueName, (paramsType, getReturnValue));
+                    argsMap.TryGetValue(uniqueName, out var argsInfo); 
 
                     invokersMap.Add(uniqueName, (instance, param) => 
                     {
                         var ret = refector.Invoke(instance, param);
-                        return new AsyncReturnValue(ret, taskProperty);
+                        return new AsyncReturnValue(ret, argsInfo.GetReturnValueAction);
                     });
 
                     this.logger.LogTrace("Register ServerHandler, {0}", uniqueName);
@@ -123,9 +134,15 @@ namespace F1.Core.RPC
             }
         }
 
+        public Type[] GetInputArgsType(string name) 
+        {
+            this.argsMap.TryGetValue(name, out var argsInfo);
+            return argsInfo.InputArgsType;
+        }
+
         public AsyncReturnValue Invoke(string name, object instance, object[] param)
         {
-            this.invokersMap.TryGetValue(name , out var func);
+            this.invokersMap.TryGetValue(name, out var func);
             if (func != null) 
             {
                 return func(instance, param);

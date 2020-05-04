@@ -271,7 +271,7 @@ namespace F1.Core.RPC
             var msg = message.Inner as ResponseRpc;
             if (msg == null)
             {
-                this.logger.LogError("ProcessRpcResponse input message type:{0}", message.GetType());
+                this.logger.LogError("ProcessRpcResponse input message type:{0}", message.Inner.GetType());
                 return;
             }
 
