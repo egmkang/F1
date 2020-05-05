@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using F1.Abstractions.Network;
 using F1.Abstractions.RPC;
+using Google.Protobuf;
 using RpcMessage;
 
 namespace F1.Core.Actor
@@ -26,7 +27,15 @@ namespace F1.Core.Actor
 
         public static void SendResponseRpc(InboundMessage inboundMessage, IMessageCenter messageCenter, object returnValue, IParametersSerializer serializer)
         {
-            //TODO
+            var request = inboundMessage.Inner as RequestRpc;
+
+            var response = new ResponseRpc();
+            response.RequestId = request.RequestId;
+            response.ResponseId = request.ResponseId;
+            response.Response = ByteString.CopyFrom(serializer.Serialize(returnValue, typeof(object)));
+
+            var outboundMessage = new OutboundMessage(inboundMessage.SourceConnection, response);
+            messageCenter.SendMessage(outboundMessage);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace F1.Core.Actor
     {
         public Type ActorType { get; private set; }
         public string ID { get; private set; }
+        public string UniqueID { get; private set; }
         internal IActorContext Context { get; set; }
         internal RequestDispatchProxyFactory ProxyFactory { get; set; }
         public ILogger Logger { get; internal set; }
@@ -22,6 +23,7 @@ namespace F1.Core.Actor
             this.ActorType = type;
             this.ID = id;
             this.Context = context;
+            this.UniqueID = $"{this.ActorType.Name}@{this.ID}";
         }
 
         internal async Task ActivateAsync() 
@@ -29,11 +31,11 @@ namespace F1.Core.Actor
             try 
             {
                 await this.OnActivateAsync();
-                this.Logger.LogInformation("ActorActiveAsync success, Type:{0}, ID:{1}", this.ActorType.Name, this.ID);
+                this.Logger.LogInformation("ActorActiveAsync success, ID:{0}", this.UniqueID);
             }
             catch (Exception e) 
             {
-                this.Logger.LogError("ActorActivateAsync fail, Type:{0}, ID:{1}, Exception:{2}", this.ActorType.Name, this.ID, e.ToString());
+                this.Logger.LogError("ActorActivateAsync fail, ID:{0}, Exception:{1}", this.UniqueID, e.ToString());
             }
         }
         protected virtual Task OnActivateAsync() 
@@ -46,11 +48,11 @@ namespace F1.Core.Actor
             try 
             {
                 await this.OnDeactivateASync();
-                this.Logger.LogInformation("ActorDeactivateAsync success, Type:{0}, ID:{1}", this.ActorType.Name, this.ID);
+                this.Logger.LogInformation("ActorDeactivateAsync success, ID:{0}", this.UniqueID);
             }
             catch (Exception e)
             {
-                this.Logger.LogError("ActorDeactivateAsync fail, Type:{0}, ID:{1}, Exception:{2}", this.ActorType.Name, this.ID, e.ToString());
+                this.Logger.LogError("ActorDeactivateAsync fail, ID:{0}, Exception:{1}", this.UniqueID, e.ToString());
             }
         }
         protected virtual Task OnDeactivateASync() 

@@ -8,6 +8,8 @@ using Google.Protobuf;
 using F1.Core.RPC;
 using F1.Abstractions.Network;
 using RpcMessage;
+using F1.Core.Utils;
+using System.Threading.Tasks;
 
 namespace F1.Core.Actor
 {
@@ -32,6 +34,8 @@ namespace F1.Core.Actor
             this.messageCenter = messageCenter;
 
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
+
+            _ = Util.RunTaskTimer(this.ActorGC, 60 * 1000);
         }
 
         public Actor GetActor(string type, string uniqueID) 
@@ -64,8 +68,25 @@ namespace F1.Core.Actor
             }
         }
 
+        private void ActorGC() 
+        {
+            //暂定1分钟做一次GC
+            //关掉半个小时内还未活跃的Actor
+        }
+
+        private async Task ProcessRequestRpcSlowPath(InboundMessage inboundMessage) 
+        {
+            //TODO
+            //慢路径, 需要到pd里面查询是否没问题
+            await Task.CompletedTask;
+        }
+
         private void ProcessRequestRpc(InboundMessage inboundMessage) 
         {
+            //TODO
+            //这边要处理Actor的位置, 万一Actor的位置发生变化
+            //那么需要告诉对端重新请求
+
             var requestRpc = inboundMessage.Inner as RequestRpc;
             if (requestRpc == null) 
             {
@@ -77,7 +98,7 @@ namespace F1.Core.Actor
                 var actor = this.GetActor(requestRpc.ActorType, requestRpc.ActorId);
                 if (actor == null)
                 {
-                    this.logger.LogError("ProcessRequestRpc Actor not found, Type:{0}, ID:{1}", requestRpc.ActorType, requestRpc.ActorId);
+                    this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ActorType, requestRpc.ActorId);
                     ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, 100, "GetActor fail");
                     return;
                 }
@@ -85,7 +106,7 @@ namespace F1.Core.Actor
             }
             catch (Exception e) 
             {
-                this.logger.LogError("ProcessRequestRpc, Type:{0}, ID:{1}, Exception:{2}",
+                this.logger.LogError("ProcessRequestRpc, ID:{0}@{1}, Exception:{2}",
                     requestRpc.ActorType, requestRpc.ActorId, e.ToString());
 
                 ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, 100, e.ToString());

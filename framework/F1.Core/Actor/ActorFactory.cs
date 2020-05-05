@@ -49,7 +49,7 @@ namespace F1.Core.Actor
             actor.ProxyFactory = this.proxyFactory;
             context.Dispatcher = this.requestDispatchHandler;
 
-            this.logger.LogInformation("CreateActor, Type:{0}, ID:{1}", type.Name, id);
+            this.logger.LogInformation("CreateActor, ID:{0}", actor.UniqueID);
 
             context.Run();
             return actor;

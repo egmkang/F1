@@ -78,15 +78,15 @@ namespace F1.Core.Actor
                 {
                     var asyncReturnValue = this.Dispatcher.Invoke(requestRpc.Method, this.Actor, inputArgs);
                     var value = await asyncReturnValue.GetReturnValueAsync();
-                    //TODO
-                    //这边拿到了最终的结果, 可以发送返回
                     ActorUtils.SendResponseRpc(inboundMessage, this.MessageCenter, value, this.Serializer);
+                    this.LastMessageTime = Platform.GetMilliSeconds();
                 }
                 catch (Exception e) 
                 {
-                    this.logger.LogError("DispatchMessage Fail, Type:{0}, ID:{1}, Exception:{2}",
-                        this.Actor.ActorType, this.Actor.ID, e.ToString());
-                    //TODO
+                    this.logger.LogError("DispatchMessage Fail, ID:{0}, Exception:{1}",
+                        this.Actor.UniqueID, e.ToString());
+
+                    ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, 100, e.ToString());
                 }
             }
             else 
@@ -118,8 +118,8 @@ namespace F1.Core.Actor
                     }
                     catch (Exception e) 
                     {
-                        this.logger.LogError("ActorMessageLoop, Type:{0}, ID:{1}, Exception:{2}",
-                            this.Actor.ActorType.Name, this.Actor.ID, e.ToString());
+                        this.logger.LogError("ActorMessageLoop, ID:{0}, Exception:{1}",
+                            this.Actor.UniqueID, e.ToString());
                     }
                 }
             }
