@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using F1.Abstractions;
 using F1.Abstractions.Network;
+using System.Threading.Tasks;
+using F1.Core.Actor;
 
 namespace F1.Core.Core
 {
@@ -13,12 +15,17 @@ namespace F1.Core.Core
         private IServiceProvider serviceProvider;
         public IServiceProvider ServiceProvider => this.serviceProvider;
         public IServiceCollection ServiceCollection => this.serviceCollection;
-        private IMessageCenter messageCenter;
 
         public IServiceBuilder Build()
         {
             this.serviceProvider = serviceCollection.BuildServiceProvider();
             return this;
+        }
+
+        public async Task InitAsync() 
+        {
+            var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
+            await runtime.InitActorRuntime();
         }
 
         public void ShutDown()

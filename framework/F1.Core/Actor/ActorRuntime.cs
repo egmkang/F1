@@ -22,6 +22,7 @@ namespace F1.Core.Actor
 
         public IActorContext Context { get; internal set; }
 
+        #region ServerSequenceContext
         private class ServerSequenceContext : IActorContext
         {
             public bool Loaded => throw new NotImplementedException();
@@ -52,6 +53,7 @@ namespace F1.Core.Actor
             {
             }
         }
+        #endregion
 
         public ActorRuntime(IServiceProvider serviceProvider, 
                             UniqueSequence uniqueSequence,
@@ -79,7 +81,6 @@ namespace F1.Core.Actor
             {
                 this.logger.LogCritical("Init ActorHost fail. Exception:{0}", e.ToString());
             }
-
         }
     }
 }
