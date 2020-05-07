@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using RpcMessage;
 using F1.Core.RPC;
 using F1.Abstractions.RPC;
+using Google.Protobuf;
+using System.Reflection;
 
 namespace F1.Core.Actor
 {
@@ -36,6 +38,8 @@ namespace F1.Core.Actor
 
             this.LastMessageTime = Platform.GetMilliSeconds();
             this.Loaded = false;
+
+            InitByteStringData();
         }
 
         public void SendMail(InboundMessage inboundMessage)
@@ -63,17 +67,34 @@ namespace F1.Core.Actor
             _ = this.RunningLoop();
         }
 
+        delegate byte[] GetByteStringDataFn(ByteString bytes);
+        private static GetByteStringDataFn getByteStringData = null;
+
+        private static void InitByteStringData() 
+        {
+            if (getByteStringData == null) 
+            {
+                //减少一次拷贝
+                FieldInfo field = typeof(ByteString).GetField("bytes", BindingFlags.NonPublic | BindingFlags.Instance);
+                getByteStringData = (data) => 
+                {
+                    var d = field.GetValue(data);
+                    return d as Byte[];
+                };
+            }
+        }
         private async Task DispatchMessage(InboundMessage inboundMessage) 
         {
+
             //TODO
             //timer目前还未处理
             //actor只处理rpc请求和timer请求
             if (inboundMessage.Inner is RequestRpc requestRpc)
             {
+                this.CurrentRequest = (requestRpc.SrcServer, requestRpc.SrcRequestId);
+
                 var inputTypes = this.Dispatcher.GetInputArgsType(requestRpc.Method);
-                //TODO
-                //这边需要优化, 多拷贝了一次
-                var inputArgs = this.Serializer.Deserialize(requestRpc.Args.ToByteArray(), inputTypes);
+                var inputArgs = this.Serializer.Deserialize(getByteStringData(requestRpc.Args), inputTypes);
                 try
                 {
                     var asyncReturnValue = this.Dispatcher.Invoke(requestRpc.Method, this.Actor, inputArgs);
@@ -81,12 +102,23 @@ namespace F1.Core.Actor
                     ActorUtils.SendResponseRpc(inboundMessage, this.MessageCenter, value, this.Serializer);
                     this.LastMessageTime = Platform.GetMilliSeconds();
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     this.logger.LogError("DispatchMessage Fail, ID:{0}, Exception:{1}",
                         this.Actor.UniqueID, e.ToString());
 
-                    ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, 100, e.ToString());
+                    if (e is RpcDispatchException)
+                    {
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, RpcErrorCode.MethodNotFound, e.ToString());
+                    }
+                    else 
+                    {
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, RpcErrorCode.Others, e.ToString());
+                    }
+                }
+                finally 
+                {
+                    this.CurrentRequest = (0, 0);
                 }
             }
             else 

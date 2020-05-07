@@ -99,7 +99,7 @@ namespace F1.Core.Actor
                 if (actor == null)
                 {
                     this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ActorType, requestRpc.ActorId);
-                    ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, 100, "GetActor fail");
+                    ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, "GetActor fail");
                     return;
                 }
                 actor.Context.SendMail(inboundMessage);
@@ -109,7 +109,7 @@ namespace F1.Core.Actor
                 this.logger.LogError("ProcessRequestRpc, ID:{0}@{1}, Exception:{2}",
                     requestRpc.ActorType, requestRpc.ActorId, e.ToString());
 
-                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, 100, e.ToString());
+                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, e.ToString());
             }
         }
     }
