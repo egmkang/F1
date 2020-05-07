@@ -92,7 +92,7 @@ namespace F1.Core.Utils
         }
 
         private Int64 value = 0L;
-        private Int64 _1, _2, _3, _4;
+        private readonly Int64 _1, _2, _3, _4, _5;
     }
 
 }

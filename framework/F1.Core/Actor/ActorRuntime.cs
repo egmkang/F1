@@ -81,6 +81,9 @@ namespace F1.Core.Actor
             {
                 this.logger.LogCritical("Init ActorHost fail. Exception:{0}", e.ToString());
             }
+            //TODO
+            //这边要生成服务器的信息
+            //监听服务器, 然后续约啥的
         }
     }
 }

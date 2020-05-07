@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using F1.Abstractions;
 using F1.Abstractions.Network;
-using System.Threading.Tasks;
 using F1.Core.Actor;
+using F1.Abstractions.Placement;
 
 namespace F1.Core.Core
 {
@@ -22,8 +23,10 @@ namespace F1.Core.Core
             return this;
         }
 
-        public async Task InitAsync() 
+        public async Task InitAsync(string pdAddress) 
         {
+            var placement = this.serviceProvider.GetRequiredService<IPlacement>();
+            placement.SetPlacementServerInfo(pdAddress);
             var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
             await runtime.InitActorRuntime();
         }

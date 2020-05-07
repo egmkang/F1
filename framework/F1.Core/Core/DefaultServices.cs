@@ -40,6 +40,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<ActorFactory>();
             services.TryAddSingleton<ActorManager>();
             services.TryAddSingleton<ActorClientFactory>();
+            services.TryAddSingleton<ActorRuntime>();
         }
     }
 }
