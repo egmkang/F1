@@ -57,7 +57,7 @@ namespace F1.UnitTest.RPC
             var service = new ServiceCollection();
             service
                 .AddSingleton<RpcMetadata>()
-                .AddSingleton<IRpcRequestDispatchHandler, DispatchHandler>()
+                .AddSingleton<IRpcDispatchHandler, DispatchHandler>()
                 .AddLogging(j => j.AddConsole());
             var provider = service.BuildServiceProvider();
 
@@ -69,7 +69,7 @@ namespace F1.UnitTest.RPC
         {
             var instance1 = new RpcRequestDispatchHandlerTestImpl(100);
 
-            var aspectCore = Provider.GetService<IRpcRequestDispatchHandler>();
+            var aspectCore = Provider.GetService<IRpcDispatchHandler>();
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnInt", instance1, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();
@@ -86,7 +86,7 @@ namespace F1.UnitTest.RPC
         {
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
-            var aspectCore = Provider.GetService<IRpcRequestDispatchHandler>();
+            var aspectCore = Provider.GetService<IRpcDispatchHandler>();
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.SleepAddInt", instance, new object[1] { 100 });
 
             var result = await returnValue.GetReturnValueAsync();
@@ -98,7 +98,7 @@ namespace F1.UnitTest.RPC
         {
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
-            var aspectCore = Provider.GetService<IRpcRequestDispatchHandler>();
+            var aspectCore = Provider.GetService<IRpcDispatchHandler>();
 
             Assert.Throws<RpcDispatchException>(() =>
             {
@@ -111,7 +111,7 @@ namespace F1.UnitTest.RPC
         {
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
-            var aspectCore = Provider.GetService<IRpcRequestDispatchHandler>();
+            var aspectCore = Provider.GetService<IRpcDispatchHandler>();
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnNothing", instance, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();

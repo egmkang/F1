@@ -9,7 +9,7 @@ using AspectCore.Extensions.Reflection;
 
 namespace F1.Core.RPC
 {
-    public interface IRpcRequestDispatchHandler 
+    public interface IRpcDispatchHandler 
     {
         /// <summary>
         /// 在服务端侧调用具体的实现, 通过name来定位到handler, 然后执行获取返回值
@@ -54,7 +54,7 @@ namespace F1.Core.RPC
 
     public delegate object GetTaskResult(Task t);
 
-    public class DispatchHandler : IRpcRequestDispatchHandler
+    public class DispatchHandler : IRpcDispatchHandler
     {
         private readonly RpcMetadata metadata;
         private readonly Dictionary<string, ServerInvoker> invokersMap = new Dictionary<string, ServerInvoker>();
