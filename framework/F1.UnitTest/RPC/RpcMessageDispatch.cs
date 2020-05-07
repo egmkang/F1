@@ -57,7 +57,7 @@ namespace F1.UnitTest.RPC
             var service = new ServiceCollection();
             service
                 .AddSingleton<RpcMetadata>()
-                .AddSingleton<IRpcRequestDispatchHandler, RequestDispatchHandler>()
+                .AddSingleton<IRpcRequestDispatchHandler, DispatchHandler>()
                 .AddLogging(j => j.AddConsole());
             var provider = service.BuildServiceProvider();
 

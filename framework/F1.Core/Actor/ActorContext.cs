@@ -20,7 +20,7 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         internal Actor Actor { get; set; }
         internal IParametersSerializer Serializer { get; set; }
-        internal RequestDispatchHandler Dispatcher { get; set; }
+        internal DispatchHandler Dispatcher { get; set; }
         internal IMessageCenter MessageCenter { get; set; }
 
         public (long ServerID, long RequestID) CurrentRequest { get; internal set; }

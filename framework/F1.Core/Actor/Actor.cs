@@ -15,7 +15,7 @@ namespace F1.Core.Actor
         public string ID { get; private set; }
         public string UniqueID { get; private set; }
         internal IActorContext Context { get; set; }
-        internal RequestDispatchProxyFactory ProxyFactory { get; set; }
+        internal RpcDispatchProxyFactory ProxyFactory { get; set; }
         public ILogger Logger { get; internal set; }
 
         internal void InitActor(Type type, string id, IActorContext context)
@@ -65,7 +65,7 @@ namespace F1.Core.Actor
             return Task.CompletedTask;
         }
 
-        public T GetProxy<T>(string name) 
+        public T GetActorProxy<T>(string name) 
         {
             return this.ProxyFactory.CreateProxy<T>(name, this.Context);
         }

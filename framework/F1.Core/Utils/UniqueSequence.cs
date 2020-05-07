@@ -8,14 +8,14 @@ namespace F1.Core.Utils
 {
     public class UniqueSequence
     {
-        const long HighPartShift = 10000000000;
+        const long HighPartShift = 1_000_000_000_000;
 
         public long GetNewSequence() 
         {
             return Interlocked.Increment(ref sequence);
         }
 
-        public void SetHighPart(int h)
+        public void SetHighPart(long h)
         {
             Contract.Assert(h * HighPartShift > Interlocked.Read(ref sequence));
 

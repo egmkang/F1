@@ -14,10 +14,10 @@ namespace F1.Core.Actor
         private readonly object mutex = new object();
         private readonly Dictionary<Type, Func<Actor>> ActorConStuctorCache = new Dictionary<Type, Func<Actor>>();
         private readonly ILogger logger;
-        private readonly RequestDispatchProxyFactory proxyFactory;
-        private readonly RequestDispatchHandler requestDispatchHandler;
+        private readonly RpcDispatchProxyFactory proxyFactory;
+        private readonly DispatchHandler requestDispatchHandler;
 
-        public ActorFactory(ILoggerFactory loggerFactory, RequestDispatchProxyFactory proxyFactory, RequestDispatchHandler requestDispatchHandler) 
+        public ActorFactory(ILoggerFactory loggerFactory, RpcDispatchProxyFactory proxyFactory, DispatchHandler requestDispatchHandler) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
             this.proxyFactory = proxyFactory;

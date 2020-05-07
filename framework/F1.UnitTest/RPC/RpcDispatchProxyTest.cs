@@ -71,7 +71,7 @@ namespace F1.UnitTest.RPC
     public class RpcDispatchProxyTest
     {
         IServiceProvider Provider;
-        RequestDispatchProxyFactory ProxyFactory;
+        RpcDispatchProxyFactory ProxyFactory;
         IParametersSerializer Serializer;
 
         public RpcDispatchProxyTest()
@@ -80,14 +80,14 @@ namespace F1.UnitTest.RPC
             service
                 .AddSingleton<RpcMetadata>()
                 .AddSingleton<IParametersSerializer, ParametersSerializerCeras>()
-                .AddSingleton<RequestDispatchProxyFactory>()
+                .AddSingleton<RpcDispatchProxyFactory>()
                 .AddSingleton<UniqueSequence>()
                 .AddLogging(j => j.AddConsole());
             var provider = service.BuildServiceProvider();
 
             Provider = provider;
             Serializer = Provider.GetRequiredService<IParametersSerializer>();
-            ProxyFactory = Provider.GetRequiredService<RequestDispatchProxyFactory>();
+            ProxyFactory = Provider.GetRequiredService<RpcDispatchProxyFactory>();
         }
 
         public TrySendRpcRequestFunc MakeSimpleResponse(byte[] bytes, int delay = 0, Exception e = null)
@@ -110,7 +110,7 @@ namespace F1.UnitTest.RPC
         public async Task NormalCall() 
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null));
 
             Assert.NotNull(proxy);
@@ -121,7 +121,7 @@ namespace F1.UnitTest.RPC
         public async Task TimeoutExceptionCall()
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null), 1000, new RpcTimeOutException());
 
             Exception E = null;
@@ -141,7 +141,7 @@ namespace F1.UnitTest.RPC
         {
             var expected = $"{1212}.{2232}.asas.dddd";
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(expected, typeof(string)));
 
             var s = await proxy.InputMany(1212, 2232, "asas", "dddd");
@@ -152,7 +152,7 @@ namespace F1.UnitTest.RPC
         public async Task VoidFuncCall() 
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null));
 
             await proxy.VoidFunc();
@@ -162,7 +162,7 @@ namespace F1.UnitTest.RPC
         public async Task SimpleReturnInt() 
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(1111, typeof(int)));
 
             var result = await proxy.ReturnInt();
@@ -183,7 +183,7 @@ namespace F1.UnitTest.RPC
         public async Task ReturnManyCall() 
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
-            var inner = proxy as RequestDispatchProxy;
+            var inner = proxy as RpcDispatchProxy;
 
 
             var args = new (int a, int b)[] 

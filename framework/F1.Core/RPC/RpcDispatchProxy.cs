@@ -20,7 +20,7 @@ namespace F1.Core.RPC
                                                  object message,
                                                  bool needClearPosition);
 
-    public class RequestDispatchProxy : DispatchProxy
+    public class RpcDispatchProxy : DispatchProxy
     {
         /// <summary>
         /// Actor的上下文
@@ -42,7 +42,7 @@ namespace F1.Core.RPC
         public ILogger Logger { get; internal set; }
         public IServiceProvider ServiceProvider { get; internal set; }
         internal RpcClientFactory RpcClientFactory { get; set; }
-        public RequestDispatchProxyFactory DispatchProxyFactory { get; internal set; }
+        public RpcDispatchProxyFactory DispatchProxyFactory { get; internal set; }
         public IParametersSerializer Serializer { get; internal set; }
         public TrySendRpcRequestFunc SendHook { get; set; }
 

@@ -9,6 +9,7 @@ using AspectCore.Extensions.Reflection;
 using F1.Core.Utils;
 using F1.Abstractions.RPC;
 using F1.Abstractions.Actor;
+using F1.Abstractions.Placement;
 
 namespace F1.Core.RPC
 {
@@ -34,7 +35,7 @@ namespace F1.Core.RPC
         public Type[] ParametersType { get; private set; }
     }
 
-    public class RequestDispatchProxyFactory
+    public class RpcDispatchProxyFactory
     {
         private readonly ILogger logger;
         private readonly IServiceProvider serviceProvider;
@@ -44,7 +45,7 @@ namespace F1.Core.RPC
         private readonly IParametersSerializer serializer;
         private readonly Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler> newCompletionSourceDict = new Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler>();
 
-        public RequestDispatchProxyFactory(ILoggerFactory loggerFactory,
+        public RpcDispatchProxyFactory(ILoggerFactory loggerFactory,
                                             IServiceProvider serviceProvider,
                                             IParametersSerializer serializer,
                                             RpcMetadata metadata,
@@ -60,10 +61,12 @@ namespace F1.Core.RPC
             this.RegisterClientProxyHandler();
         }
 
+        //TODO
+        //这边可以把proxy缓存起来
         public T CreateProxy<T>(string actor = null, IActorContext context = null)
         {
-            var o = DispatchProxy.Create<T, RequestDispatchProxy>();
-            var proxy = o as RequestDispatchProxy;
+            var o = DispatchProxy.Create<T, RpcDispatchProxy>();
+            var proxy = o as RpcDispatchProxy;
 
             proxy.ServiceProvider = this.serviceProvider;
             proxy.DispatchProxyFactory = this;
@@ -71,7 +74,7 @@ namespace F1.Core.RPC
             proxy.Logger = this.logger;
             proxy.Serializer = this.serializer;
 
-            proxy.PositionRequest = new Abstractions.Placement.PlacementFindActorPositionRequest()
+            proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
                 ActorType = typeof(T).Name,
                 ActorID = actor,

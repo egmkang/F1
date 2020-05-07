@@ -54,7 +54,7 @@ namespace F1.Core.RPC
 
     public delegate object GetTaskResult(Task t);
 
-    public class RequestDispatchHandler : IRpcRequestDispatchHandler
+    public class DispatchHandler : IRpcRequestDispatchHandler
     {
         private readonly RpcMetadata metadata;
         private readonly Dictionary<string, ServerInvoker> invokersMap = new Dictionary<string, ServerInvoker>();
@@ -62,7 +62,7 @@ namespace F1.Core.RPC
 
         private readonly ILogger logger;
 
-        public RequestDispatchHandler(ILoggerFactory loggerFactory, RpcMetadata metadata) 
+        public DispatchHandler(ILoggerFactory loggerFactory, RpcMetadata metadata) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
             this.metadata = metadata;
