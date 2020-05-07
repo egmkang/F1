@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using RpcMessage;
 using F1.Abstractions.Network;
 using F1.Core.Message;
 using F1.Abstractions.Placement;
 using F1.Core.Utils;
 using F1.Core.Network;
-using RpcMessage;
 
 namespace F1.Core.RPC
 {
