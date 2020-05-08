@@ -30,10 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Message\gateway.proto" />
     <None Remove="Message\rpc.proto" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\F1.Abstractions\F1.Abstractions.csproj" />
   </ItemGroup>
+
 </Project>

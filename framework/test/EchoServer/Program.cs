@@ -38,11 +38,6 @@ namespace sample
             var logFactory = builder.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
             var logger = logFactory.CreateLogger("t");
-            var connectionManager = builder.ServiceProvider.GetRequiredService<IConnectionManager>();
-
-            var connectionSessionInfoFactory = builder.ServiceProvider.GetRequiredService<IConnectionSessionInfoFactory>();
-
-            var connectionFactory = builder.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
 
             var connectionListener = builder.ServiceProvider.GetRequiredService<IConnectionListener>();
 

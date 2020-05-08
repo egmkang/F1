@@ -34,6 +34,7 @@ namespace F1.Core.Actor
             this.messageCenter = messageCenter;
 
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
+            this.messageCenter.RegisterMessageProc(typeof(RequestRpcHeartBeat).FullName, this.ProcessRequestRpcHeartBeat);
 
             _ = Util.RunTaskTimer(this.ActorGC, 60 * 1000);
         }
@@ -80,6 +81,8 @@ namespace F1.Core.Actor
             //慢路径, 需要到pd里面查询是否没问题
             await Task.CompletedTask;
         }
+
+        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage) { }
 
         private void ProcessRequestRpc(InboundMessage inboundMessage) 
         {

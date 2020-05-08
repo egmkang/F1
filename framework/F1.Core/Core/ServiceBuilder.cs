@@ -23,12 +23,12 @@ namespace F1.Core.Core
             return this;
         }
 
-        public async Task InitAsync(string pdAddress) 
+        public async Task InitAsync(string pdAddress, int port) 
         {
             var placement = this.serviceProvider.GetRequiredService<IPlacement>();
             placement.SetPlacementServerInfo(pdAddress);
             var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
-            await runtime.InitActorRuntime();
+            await runtime.InitActorRuntime(port);
         }
 
         public void ShutDown()

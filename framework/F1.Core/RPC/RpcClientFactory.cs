@@ -9,8 +9,8 @@ using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using RpcMessage;
 using F1.Abstractions.Network;
-using F1.Core.Message;
 using F1.Abstractions.Placement;
+using F1.Core.Message;
 using F1.Core.Utils;
 using F1.Core.Network;
 
@@ -287,7 +287,6 @@ namespace F1.Core.RPC
                 this.ProcessRpcResponseError(msg, completionSource);
                 return;
             }
-
 
             completionSource.WithResult(msg);
         }

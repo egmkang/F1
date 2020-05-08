@@ -8,6 +8,11 @@ namespace ActorTest
 {
     class Program
     {
+        static async Task RunTest(IServiceProvider serviceProvider) 
+        {
+            await Task.CompletedTask;
+        }
+
         static async Task Main(string[] args)
         {
             var builder = new ServiceBuilder();
@@ -15,9 +20,14 @@ namespace ActorTest
             builder.ServiceCollection.AddLogging(opt => opt.AddConsole());
             builder.Build();
 
-            await builder.InitAsync("127.0.0.1:2379");
+            await builder.InitAsync("127.0.0.1:2379", 9999);
 
-            Console.WriteLine("Hello World!");
+            _ = RunTest(builder.ServiceProvider);
+
+            while (true)
+            {
+                await Task.Delay(1000);
+            }
         }
     }
 }

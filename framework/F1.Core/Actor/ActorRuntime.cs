@@ -1,14 +1,17 @@
-﻿using F1.Abstractions.Actor;
-using F1.Abstractions.Network;
-using F1.Abstractions.Placement;
-using F1.Core.Utils;
-using Microsoft.Extensions.Logging;
-using Microsoft.Win32.SafeHandles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using F1.Abstractions.Actor;
+using F1.Abstractions.Network;
+using F1.Abstractions.Placement;
+using F1.Core.RPC;
+using F1.Core.Utils;
+using F1.Core.Message;
+using F1.Core.Network;
 
 namespace F1.Core.Actor
 {
@@ -19,6 +22,7 @@ namespace F1.Core.Actor
         public UniqueSequence UniqueSequence { get; internal set; }
         private readonly ILogger logger;
         private readonly IPlacement placement;
+        private readonly RpcMetadata rpcMetadata;
 
         public IActorContext Context { get; internal set; }
 
@@ -58,16 +62,52 @@ namespace F1.Core.Actor
         public ActorRuntime(IServiceProvider serviceProvider, 
                             UniqueSequence uniqueSequence,
                             IPlacement placement,
+                            RpcMetadata rpcMetadata,
                             ILoggerFactory loggerFactory) 
         {
             this.ServiceProvider = serviceProvider;
             this.UniqueSequence = uniqueSequence;
             this.placement = placement;
+            this.rpcMetadata = rpcMetadata;
 
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
         }
 
-        public async Task InitActorRuntime() 
+
+        private async Task Listen(int port) 
+        {
+            var connectionListener = this.ServiceProvider.GetRequiredService<IConnectionListener>();
+            var messageCenter = this.ServiceProvider.GetRequiredService<IMessageCenter>();
+            var messageHandlerFactory = this.ServiceProvider.GetRequiredService<IMessageHandlerFactory>();
+            var connectionFactory = this.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
+            messageHandlerFactory.Codec = new ProtobufMessageCodec();
+
+            //TODO
+            //RPC请求快速失败
+            messageCenter.RegsiterEvent(
+                (channel) =>
+                {
+                    logger.LogError("Channel Closed, SessionID:{0}", channel.GetSessionInfo().SessionID);
+                },
+                (outboundMessage) =>
+                {
+                    logger.LogError("Message Dropped, Dest SessionID:{0}", outboundMessage.DestConnection.GetSessionInfo().SessionID);
+                });
+
+            messageCenter.RegisterMessageProc("",
+                (inboundMessage) =>
+                {
+                    //TODO
+                    //这边需要处理网关来的消息
+                });
+
+            connectionListener.Init(new NetworkConfiguration() { });
+            await connectionListener.BindAsync(port, messageHandlerFactory);
+
+            connectionFactory.Init(new NetworkConfiguration() { });
+        }
+
+        public async Task InitActorRuntime(int port) 
         {
             try
             {
@@ -81,9 +121,43 @@ namespace F1.Core.Actor
             {
                 this.logger.LogCritical("Init ActorHost fail. Exception:{0}", e.ToString());
             }
-            //TODO
-            //这边要生成服务器的信息
-            //监听服务器, 然后续约啥的
+
+            try
+            {
+                await this.Listen(port);
+            }
+            catch (Exception e) 
+            {
+                this.logger.LogCritical("Listen Port:{0} fail", port);
+            }
+
+            try
+            {
+                var server_info = new PlacementActorHostInfo();
+                server_info.ServerID = this.ServerID;
+                server_info.Domain = "t";
+                server_info.StartTime = Platform.GetMilliSeconds();
+                server_info.Address = $"{Platform.GetLocalAddresss()}:{port}";
+
+                var serverTypes = this.rpcMetadata.RpcServerTypes;
+                foreach (var (key, _) in serverTypes)
+                {
+                    server_info.ActorType.Add(key);
+                    logger.LogTrace("Register ServiceType:{0}", key);
+                }
+
+                var lease_id = await placement.RegisterServerAsync(server_info);
+                logger.LogInformation("Register ServerID:{1}, LeaseID:{0}", lease_id, this.ServerID);
+
+                _ = placement.StartPullingAsync();
+            }
+            catch (Exception e)
+            {
+                this.logger.LogCritical("Register PlacementDriver Fail. Exception:{0}", e.ToString());
+            }
+
+            //保证PD的事件被监听
+            var rpcClientFactory = this.ServiceProvider.GetRequiredService<RpcClientFactory>();
         }
     }
 }
