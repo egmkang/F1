@@ -79,10 +79,7 @@ namespace F1.Core.Network
 
                     var localPort = (channel.LocalAddress as IPEndPoint).Port;
 
-                    if (channel.RemoteAddress is IPEndPoint)
-                    {
-                        info.RemoteAddress = channel.RemoteAddress as IPEndPoint;
-                    }
+                    info.RemoteAddress = channel.RemoteAddress as IPEndPoint;
 
                     this.connectionManager.AddConnection(channel);
                     info.RunSendingLoopAsync(channel);

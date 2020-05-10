@@ -20,13 +20,13 @@ namespace ActorTest
             builder.ServiceCollection.AddLogging(opt => opt.AddConsole());
             builder.Build();
 
-            await builder.InitAsync("127.0.0.1:2379", 9999);
+            await builder.InitAsync("127.0.0.1:2379", 10001);
 
             _ = RunTest(builder.ServiceProvider);
 
             while (true)
             {
-                await Task.Delay(1000);
+                await Task.Delay(10000);
             }
         }
     }

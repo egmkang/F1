@@ -77,6 +77,7 @@ namespace F1.Core.Network
                 }
             }
             var channel = await bootstrap.ConnectAsync(address);
+            channel.GetSessionInfo().RemoteAddress = channel.RemoteAddress as IPEndPoint;
             this.connectionManager.AddConnection(channel);
             channel.GetSessionInfo().RunSendingLoopAsync(channel);
             return channel;

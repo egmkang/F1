@@ -101,14 +101,19 @@ namespace F1.Core.Actor
                     //这边需要处理网关来的消息
                 });
 
+            connectionFactory.Init(new NetworkConfiguration() { });
+
             connectionListener.Init(new NetworkConfiguration() { });
             await connectionListener.BindAsync(port, messageHandlerFactory);
-
-            connectionFactory.Init(new NetworkConfiguration() { });
         }
 
         public async Task InitActorRuntime(int port) 
         {
+            //保证RequestRpc, RequestRPCHeartBeat消息被监听
+            var actorManager = this.ServiceProvider.GetRequiredService<ActorManager>();
+            //保证PD的事件被监听
+            var rpcClientFactory = this.ServiceProvider.GetRequiredService<RpcClientFactory>();
+
             try
             {
                 this.ServerID = await this.placement.GenerateServerIDAsync();
@@ -147,7 +152,7 @@ namespace F1.Core.Actor
                 }
 
                 var lease_id = await placement.RegisterServerAsync(server_info);
-                logger.LogInformation("Register ServerID:{1}, LeaseID:{0}", lease_id, this.ServerID);
+                logger.LogInformation("Register ServerID:{1}, LeaseID:{0}", this.ServerID, lease_id);
 
                 _ = placement.StartPullingAsync();
             }
@@ -156,8 +161,6 @@ namespace F1.Core.Actor
                 this.logger.LogCritical("Register PlacementDriver Fail. Exception:{0}", e.ToString());
             }
 
-            //保证PD的事件被监听
-            var rpcClientFactory = this.ServiceProvider.GetRequiredService<RpcClientFactory>();
         }
     }
 }

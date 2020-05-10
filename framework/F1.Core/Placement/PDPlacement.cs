@@ -365,16 +365,21 @@ namespace F1.Core.Placement
                     try
                     {
                         await this.PullOnce(pullingCancelTokenSource.Token);
-                        timerCount++;
-                        var delay = (Platform.GetMilliSeconds() - currentMilliSeconds) - timerCount * timerInterval;
-                        if (delay > 0) 
-                        {
-                            await Task.Delay((int)delay);
-                        }
                     }
                     catch (Exception e)
                     {
                         this.logger.LogError("PD KeepAlive PullOnce fail, Exception:{0}", e.Message);
+                        //TODO
+                        //这边异常情况, 服务器需要主动退出
+                    }
+                    finally
+                    {
+                        timerCount++;
+                        var delay = (Platform.GetMilliSeconds() - currentMilliSeconds) - timerCount * timerInterval;
+                        if (delay > 0)
+                        {
+                            await Task.Delay((int)delay);
+                        }
                     }
                 }
             });

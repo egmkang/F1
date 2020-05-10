@@ -82,7 +82,14 @@ namespace F1.Core.Actor
             await Task.CompletedTask;
         }
 
-        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage) { }
+        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage) 
+        {
+            var response = new ResponseRpcHeartBeat() 
+            {
+                 MilliSeconds = (inboundMessage.Inner as RequestRpcHeartBeat).MilliSeconds,
+            };
+            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, response));
+        }
 
         private void ProcessRequestRpc(InboundMessage inboundMessage) 
         {

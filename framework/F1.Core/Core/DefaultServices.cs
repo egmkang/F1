@@ -13,6 +13,7 @@ using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Abstractions.RPC;
 using F1.Core.Actor;
+using F1.Abstractions.Actor;
 
 namespace F1.Core.Core
 {
@@ -39,7 +40,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<RpcClientFactory>();
             services.TryAddSingleton<ActorFactory>();
             services.TryAddSingleton<ActorManager>();
-            services.TryAddSingleton<ActorClientFactory>();
+            services.TryAddSingleton<IActorClientFactory, ActorClientFactory>();
             services.TryAddSingleton<ActorRuntime>();
         }
     }
