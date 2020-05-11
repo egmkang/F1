@@ -1,8 +1,8 @@
-﻿using F1.Core.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using F1.Core.Utils;
 
 namespace F1.Core.RPC
 {
@@ -15,10 +15,16 @@ namespace F1.Core.RPC
         Task GetTask();
 
         long ID { get; set; }
+        long CreateTime { get; }
     }
 
     public class GenericCompletionSource<T> : TaskCompletionSource<T>, IGenericCompletionSource
     {
+        public GenericCompletionSource() 
+        {
+            this.CreateTime = Platform.GetMilliSeconds();
+        }
+
         public Task GetTask() { return this.Task;  }
 
         public void WithException(Exception e)
@@ -32,5 +38,7 @@ namespace F1.Core.RPC
         }
 
         public long ID { get; set; }
+
+        public long CreateTime { get; private set; }
     }
 }

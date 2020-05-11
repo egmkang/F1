@@ -12,76 +12,33 @@ namespace F1.Core.RPC
 
     public class TaskCompletionSourceManager
     {
-        class QueueGroup
-        {
-            private readonly CompletionSourceQueue queue0 = new CompletionSourceQueue();
-            private readonly CompletionSourceQueue queue1 = new CompletionSourceQueue();
-            private readonly CompletionSourceQueue queue2 = new CompletionSourceQueue();
-            private readonly CompletionSourceQueue queue3 = new CompletionSourceQueue();
-            private readonly RpcTimeOutException Exception = new RpcTimeOutException();
-            private readonly AtomicInt64 next = new AtomicInt64();
-            private readonly AtomicInt64 count = new AtomicInt64();
-
-            public long Count => count;
-
-            public void Push(IGenericCompletionSource completionSource)
-            {
-                this.count.Inc();
-                var index = this.next.Inc() % 4;
-                var s = new WeakCompletionSource(completionSource);
-                switch (index)
-                {
-                    case 0: queue0.Enqueue(s); break;
-                    case 1: queue1.Enqueue(s); break;
-                    case 2: queue2.Enqueue(s); break;
-                    case 3: queue3.Enqueue(s); break;
-                }
-            }
-
-            public void GC(Action<long> action)
-            {
-                foreach (var q in new CompletionSourceQueue[] { queue0, queue1, queue2, queue3 })
-                {
-                    foreach (var item in q)
-                    {
-                        var uniqueID = 0L;
-                        try
-                        {
-                            if (item.TryGetTarget(out var value) && value != null && !value.GetTask().IsCompleted)
-                            {
-                                uniqueID = value.ID;
-                                value.WithException(Exception);
-                            }
-                        }
-                        finally
-                        {
-                            if (uniqueID != 0)
-                            {
-                                action(uniqueID);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        const int GCDelay = 5100;       //5.1秒之后
         const int GCInterval = 100;     //100ms做一次GC
         private readonly ConcurrentDictionary<long, IGenericCompletionSource> completionSourceDict = new ConcurrentDictionary<long, IGenericCompletionSource>();
-        private readonly ConcurrentQueue<QueueGroup> queue = new ConcurrentQueue<QueueGroup>();
-        private QueueGroup currentGroup = new QueueGroup();
+        private readonly CompletionSourceQueue queue0 = new CompletionSourceQueue();
+        private readonly CompletionSourceQueue queue1 = new CompletionSourceQueue();
+        private readonly CompletionSourceQueue queue2 = new CompletionSourceQueue();
+        private readonly CompletionSourceQueue queue3 = new CompletionSourceQueue();
+        private readonly CompletionSourceQueue[] array = null;
+        private readonly RpcTimeOutException Exception = new RpcTimeOutException();
+        private readonly AtomicInt64 index = new AtomicInt64();
 
 
         public TaskCompletionSourceManager()
         {
-            //this.GCNextQueueLoop();
-            //this.ChangeNextQueueLoop();
+            array = new CompletionSourceQueue[] { queue0, queue1, queue2, queue3 };
+
+            _ = Util.RunTaskTimer(() => this.TryGCOneQueue(queue0), GCInterval);
+            _ = Util.RunTaskTimer(() => this.TryGCOneQueue(queue1), GCInterval);
+            _ = Util.RunTaskTimer(() => this.TryGCOneQueue(queue2), GCInterval);
+            _ = Util.RunTaskTimer(() => this.TryGCOneQueue(queue3), GCInterval);
         }
 
         public void Push(IGenericCompletionSource completionSource)
         {
             this.completionSourceDict.TryAdd(completionSource.ID, completionSource);
-            this.currentGroup.Push(completionSource);
+            var i = index.Inc() % 4;
+            var weak = new WeakCompletionSource(completionSource);
+            this.array[i].Enqueue(weak);
         }
 
         public IGenericCompletionSource GetCompletionSource(long uniqueID)
@@ -90,27 +47,28 @@ namespace F1.Core.RPC
             return value;
         }
 
-        private async void GCNextQueueLoop()
+        private const int TimeOut = 5 * 1000;
+        private void TryGCOneQueue(CompletionSourceQueue q) 
         {
-            await Task.Delay(GCDelay);
+            var currentTime = Platform.GetMilliSeconds() - TimeOut;
 
-            await Util.RunTaskTimer(() =>
+            while (q.TryPeek(out var item)) 
             {
-                this.queue.TryDequeue(out var q);
-                if (q != null) { q.GC((id) => this.GetCompletionSource(id)); }
-            }, GCInterval);
-        }
-
-        private async void ChangeNextQueueLoop()
-        {
-            await Util.RunTaskTimer(() =>
-            {
-                if (this.currentGroup.Count == 0) return;
-
-                this.queue.Enqueue(this.currentGroup);
-                var q = new QueueGroup();
-                this.currentGroup = q;
-            }, GCInterval);
+                if (item.TryGetTarget(out var completionSource) &&
+                    !completionSource.GetTask().IsCompleted)
+                {
+                    if (completionSource.CreateTime > currentTime)
+                    {
+                        break;
+                    }
+                    else 
+                    {
+                        this.GetCompletionSource(completionSource.ID);
+                        completionSource.WithException(Exception);
+                    }
+                }
+                q.TryDequeue(out var _);
+            }
         }
     }
 }
