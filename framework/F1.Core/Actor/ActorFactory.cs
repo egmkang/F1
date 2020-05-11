@@ -5,6 +5,9 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using F1.Core.RPC;
+using AspectCore.Extensions.Reflection;
+using F1.Abstractions.RPC;
+using F1.Abstractions.Network;
 
 namespace F1.Core.Actor
 {
@@ -16,12 +19,20 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         private readonly RpcDispatchProxyFactory proxyFactory;
         private readonly DispatchHandler requestDispatchHandler;
+        private readonly IParametersSerializer parametersSerializer;
+        private readonly IMessageCenter messageCenter;
 
-        public ActorFactory(ILoggerFactory loggerFactory, RpcDispatchProxyFactory proxyFactory, DispatchHandler requestDispatchHandler) 
+        public ActorFactory(ILoggerFactory loggerFactory,
+                            RpcDispatchProxyFactory proxyFactory,
+                            DispatchHandler requestDispatchHandler,
+                            IParametersSerializer parametersSerializer,
+                            IMessageCenter messageCenter) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
             this.proxyFactory = proxyFactory;
             this.requestDispatchHandler = requestDispatchHandler;
+            this.parametersSerializer = parametersSerializer;
+            this.messageCenter = messageCenter;
         }
 
         private Func<Actor> GetConstructor(Type t)
@@ -48,6 +59,8 @@ namespace F1.Core.Actor
             actor.Logger = this.logger;
             actor.ProxyFactory = this.proxyFactory;
             context.Dispatcher = this.requestDispatchHandler;
+            context.Serializer = this.parametersSerializer;
+            context.MessageCenter = this.messageCenter;
 
             this.logger.LogInformation("CreateActor, ID:{0}", actor.UniqueID);
 

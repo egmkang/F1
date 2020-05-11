@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using F1.Abstractions.Network;
 using F1.Abstractions.RPC;
@@ -20,7 +21,7 @@ namespace F1.Core.Actor
             if (CreateByteStringByBytes == null) 
             {
                 var param = Expression.Parameter(typeof(byte[]), "bytes");
-                var ctor = typeof(ByteString).GetConstructor(new[] { typeof(byte[]) });
+                var ctor = typeof(ByteString).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(byte[]) }, null);
                 var lambda = Expression.Lambda<Func<byte[], ByteString>>(
                     Expression.New(ctor, param), param);
                 CreateByteStringByBytes = lambda.Compile();

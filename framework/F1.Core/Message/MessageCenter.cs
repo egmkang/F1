@@ -159,6 +159,14 @@ namespace F1.Core.Message
                 this.defaultInboundMessageProc(message);
                 return;
             }
+            if (this.logger.IsEnabled(LogLevel.Debug)) 
+            {
+                if (message.MessageName != "RpcMessage.RequestRpcHeartBeat" &&
+                    message.MessageName != "RpcMessage.ResponseRpcHeartBeat") 
+                {
+                    this.logger.LogDebug("ProcessMessage, MessageName:{0}", message.MessageName);
+                }
+            }
             if (this.inboudMessageProc.TryGetValue(message.MessageName, out var proc))
             {
                 proc(message);

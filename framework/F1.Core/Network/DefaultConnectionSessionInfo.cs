@@ -83,15 +83,7 @@ namespace F1.Core.Network
                             _ = channel.WriteAsync(buffer);
                             number++;
                         }
-                        if (logger.IsEnabled(LogLevel.Debug)) 
-                        {
-                            logger.LogDebug("SessionID:{0}, SendMessage, Count:{1}", channel.GetSessionInfo().SessionID, number);
-                        }
                         channel.Flush();
-                        if (this.logger.IsEnabled(LogLevel.Trace)) 
-                        {
-                            logger.LogInformation("Flush");
-                        }
                         number = 0;
                     }
                     catch (Exception e)  when(message.Inner != default)

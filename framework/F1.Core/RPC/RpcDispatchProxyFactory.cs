@@ -76,6 +76,7 @@ namespace F1.Core.RPC
 
             proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
+                Domain = "t",
                 ActorType = typeof(T).Name,
                 ActorID = actor,
                 TTL = 0,

@@ -172,6 +172,11 @@ namespace F1.Core.RPC
                     var position = await this.placement.FindActorPositonAsync(actor);
                     if (position != null) 
                     {
+                        if (this.logger.IsEnabled(LogLevel.Trace)) 
+                        {
+                            this.logger.LogTrace("FindActorPosition, Actor:{0}@{1}, Position:{2}",
+                                actor.ActorType, actor.ActorID, position.ServerID);
+                        }
                         var server = this.GetChannelByServerID(position.ServerID);
                         if (server != null) 
                         {
@@ -185,7 +190,7 @@ namespace F1.Core.RPC
                     {
                         await Task.Delay(1000);
                     }
-                    this.logger.LogError("TrySendRpcRequest, Actor:{0}/{1}, Exception:{2}",
+                    this.logger.LogError("TrySendRpcRequest, Actor:{0}@{1}, Exception:{2}",
                         actor.ActorType, actor.ActorID, e.Message);
                 }
             }
@@ -213,6 +218,10 @@ namespace F1.Core.RPC
 
             var outboundMessage = new OutboundMessage(channel, message);
             this.messageCenter.SendMessage(outboundMessage);
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                this.logger.LogTrace("SendRpcMessage, {0}", message.GetType());
+            }
 
             if (!request.NeedResult) 
             {
@@ -231,6 +240,7 @@ namespace F1.Core.RPC
             {
                 var actorInfo = new PlacementFindActorPositionRequest()
                 {
+                    Domain = "t",
                     ActorID = msg.Request.ActorId,
                     ActorType = msg.Request.ActorType,
                     TTL = 0,
@@ -278,7 +288,7 @@ namespace F1.Core.RPC
             var completionSource = this.taskCompletionSourceManager.GetCompletionSource(msg.ResponseId);
             if (completionSource == null) 
             {
-                this.logger.LogWarning("ProcessRpcResponseSuccess, ResponseID:{0}", msg.ResponseId);
+                this.logger.LogWarning("ProcessRpcResponse fail, ResponseID:{0}", msg.ResponseId);
                 return;
             }
 

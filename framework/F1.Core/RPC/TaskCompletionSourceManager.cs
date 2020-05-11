@@ -65,7 +65,7 @@ namespace F1.Core.RPC
             }
         }
 
-        const int GCDelay = 2100;       //2.1秒之后
+        const int GCDelay = 5100;       //5.1秒之后
         const int GCInterval = 100;     //100ms做一次GC
         private readonly ConcurrentDictionary<long, IGenericCompletionSource> completionSourceDict = new ConcurrentDictionary<long, IGenericCompletionSource>();
         private readonly ConcurrentQueue<QueueGroup> queue = new ConcurrentQueue<QueueGroup>();
@@ -74,8 +74,8 @@ namespace F1.Core.RPC
 
         public TaskCompletionSourceManager()
         {
-            this.GCNextQueueLoop();
-            this.ChangeNextQueueLoop();
+            //this.GCNextQueueLoop();
+            //this.ChangeNextQueueLoop();
         }
 
         public void Push(IGenericCompletionSource completionSource)
