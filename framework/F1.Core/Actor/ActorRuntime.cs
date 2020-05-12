@@ -109,6 +109,7 @@ namespace F1.Core.Actor
 
         public async Task InitActorRuntime(int port) 
         {
+            var sendThreads = this.ServiceProvider.GetRequiredService<SendingThreads>();
             //保证RequestRpc, RequestRPCHeartBeat消息被监听
             var actorManager = this.ServiceProvider.GetRequiredService<ActorManager>();
             //保证PD的事件被监听

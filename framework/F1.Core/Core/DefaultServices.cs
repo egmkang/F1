@@ -42,6 +42,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<ActorManager>();
             services.TryAddSingleton<IActorClientFactory, ActorClientFactory>();
             services.TryAddSingleton<ActorRuntime>();
+            services.TryAddSingleton<SendingThreads>();
         }
     }
 }

@@ -15,6 +15,8 @@ C# Framework:
     * [x] Codec
     * [x] ConnectionManager
     * [x] MessageCenter
+    * [x] SendingLoop
+    * [ ] MessageProcessLoop
 * [ ] RPC
     * [x] ClientManager
         * [ ] Client Reconnect

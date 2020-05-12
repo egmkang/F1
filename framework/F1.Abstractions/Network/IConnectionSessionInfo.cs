@@ -16,7 +16,7 @@ namespace F1.Abstractions.Network
         bool IsActive { get; }
 
         int PutOutboundMessage(OutboundMessage msg);
-        void RunSendingLoopAsync(IChannel channel);
+        void SendMessagesBatch(IChannel channel);
         void ShutDown();
     }
 }

@@ -82,7 +82,6 @@ namespace F1.Core.Network
                     info.RemoteAddress = channel.RemoteAddress as IPEndPoint;
 
                     this.connectionManager.AddConnection(channel);
-                    info.RunSendingLoopAsync(channel);
 
                     IChannelPipeline pipeline = channel.Pipeline;
                     pipeline.AddLast("TimeOut", new IdleStateHandler(this.config.ReadTimeout, this.config.WriteTimeout, this.config.ReadTimeout));

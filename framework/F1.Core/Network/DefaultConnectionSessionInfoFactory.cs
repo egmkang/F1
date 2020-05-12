@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using F1.Abstractions.Network;
 using F1.Core.Message;
 using F1.Core.Utils;
-using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Network
 {
@@ -15,11 +15,13 @@ namespace F1.Core.Network
         private long SessionIDSeed = 0;
         private readonly ILogger logger;
         private readonly IMessageCenter messageCenter;
+        private readonly SendingThreads sendingThreads;
 
-        public DefaultConnectionSessionInfoFactory(ILoggerFactory loggerFactory, IMessageCenter messageCenter) 
+        public DefaultConnectionSessionInfoFactory(ILoggerFactory loggerFactory, IMessageCenter messageCenter, SendingThreads sendingThreads) 
         {
             this.logger = loggerFactory.CreateLogger("F1.SessionInfo");
             this.messageCenter = messageCenter;
+            this.sendingThreads = sendingThreads;
             var relativeSeconds = Platform.GetRelativeSeconds(RelativeTime);
             SessionIDSeed = relativeSeconds  * 10000000000;
 
@@ -30,7 +32,7 @@ namespace F1.Core.Network
         public IConnectionSessionInfo NewSessionInfo(IMessageHandlerFactory handlerFactory)
         {
             return new DefaultConnectionSessionInfo(Interlocked.Increment(ref this.SessionIDSeed),
-                this.logger, this.messageCenter, handlerFactory.Codec);
+                this.logger, this.messageCenter, handlerFactory.Codec, this.sendingThreads);
         }
     }
 }

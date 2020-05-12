@@ -87,6 +87,7 @@ namespace F1.Core.RPC
                     break;
                 }
 
+                //this.logger.LogInformation("TrySendHeartBeat");
                 var msg = new OutboundMessage(channel, new RequestRpcHeartBeat() 
                 {
                      MilliSeconds = Platform.GetMilliSeconds(),
@@ -268,7 +269,7 @@ namespace F1.Core.RPC
                 return;
             }
             var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSeconds;
-            if (elapsedTime > 100) 
+            if (elapsedTime > 1) 
             {
                 var sessionInfo = message.SourceConnection.GetSessionInfo();
                 this.logger.LogWarning("ProcessRpcHearBeat, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, Elapsed Time:{3}ms",

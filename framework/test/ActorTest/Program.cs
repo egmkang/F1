@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using DotNetty.Codecs;
 using F1.Core.Core;
 using F1.Core.RPC;
 using F1.Core.Actor;
 using F1.Abstractions.Actor;
-using DotNetty.Codecs;
-using NLog.Extensions.Logging;
 
 namespace ActorTest
 {
@@ -56,6 +57,9 @@ namespace ActorTest
 
         static async Task Main(string[] args)
         {
+            ProfileOptimization.SetProfileRoot("./profile");
+            ProfileOptimization.StartProfile("actor_test");
+
             var builder = new ServiceBuilder();
             builder.AddDefaultServices();
             builder.ServiceCollection.AddLogging( builder => 
