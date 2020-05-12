@@ -21,6 +21,8 @@ namespace F1.Core.Message
 
             int length = buffer.ReadableBytes;
             Stream inputStream = null;
+            //TODO
+            //这边看看能不能优化
             try
             {
                 CodedInputStream codedInputStream;

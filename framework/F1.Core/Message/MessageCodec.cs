@@ -29,6 +29,8 @@ namespace F1.Core.Message
             buffer.WriteByte(messageName.Length);
             buffer.WriteBytes(messageName);
             
+            //TODO
+            //这边可以优化掉
             ArraySegment<byte> data = buffer.GetIoBuffer(buffer.WriterIndex, bodySize);
             using var memoryStream = new MemoryStream(data.Array, data.Offset, bodySize);
             using var stream = new CodedOutputStream(memoryStream);
