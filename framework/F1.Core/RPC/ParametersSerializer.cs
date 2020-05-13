@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
+using System.Threading;
 using Google.Protobuf;
 using MessagePack;
 using Ceras;
@@ -13,12 +10,15 @@ namespace F1.Core.RPC
 {
     public class ParametersSerializerCeras  : IParametersSerializer
     {
-        private readonly CerasSerializer serializer = new CerasSerializer();
+        private static readonly ThreadLocal<CerasSerializer> Serializer = 
+            new ThreadLocal<CerasSerializer>(() =>
+            {
+                var value = new CerasSerializer();
+                value.GetConfig().VersionTolerance.Mode = VersionToleranceMode.Extended;
+                return value;
+            });
 
-        public ParametersSerializerCeras() 
-        {
-            this.serializer.GetConfig().VersionTolerance.Mode = VersionToleranceMode.Extended;
-        }
+        private CerasSerializer serializer => Serializer.Value;
 
         public byte[] Serialize(object[] p, Type[] types) 
         {
