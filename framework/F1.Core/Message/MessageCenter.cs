@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Network;
 using F1.Core.Utils;
+
 
 namespace F1.Core.Message
 {
@@ -17,8 +19,12 @@ namespace F1.Core.Message
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger logger;
         private readonly IConnectionManager connectionManager;
-        private readonly AsyncMessageQueue<InboundMessage> inboundMessageQueue;
         private readonly Dictionary<string, Action<InboundMessage>> inboudMessageProc = new Dictionary<string, Action<InboundMessage>>();
+        private readonly object mutex = new object();
+        private readonly AtomicInt64 pendingProcessCounter = new AtomicInt64();
+        private readonly ConcurrentQueue<InboundMessage> inboundMessages = new ConcurrentQueue<InboundMessage>();
+        private readonly Thread messageThread;
+        private volatile bool stop = false;
 
         private Action<IChannel> channelClosedProc;
         private Action<OutboundMessage> failMessageProc;
@@ -31,9 +37,9 @@ namespace F1.Core.Message
             this.connectionManager = connectionManager;
             this.logger = this.loggerFactory.CreateLogger("F1.MessageCenter");
 
-            this.inboundMessageQueue = new AsyncMessageQueue<InboundMessage>();
-
-            this.StartAsync();
+            this.messageThread = new Thread(this.MessageLoop);
+            this.messageThread.Name = "MessageProcess";
+            this.messageThread.Start();
         }
 
         public void RegsiterEvent(Action<IChannel> channelClosedProc,
@@ -43,40 +49,45 @@ namespace F1.Core.Message
             this.failMessageProc = failMessageProc;
         }
 
-        public void StartAsync()
+        private void MessageLoop() 
         {
-            var reader = this.inboundMessageQueue.Reader;
-            Task.Run(async () =>
+            while (!this.stop) 
             {
-                while (this.inboundMessageQueue.Valid) 
+                lock (this.mutex)
                 {
-                    var more = await reader.WaitToReadAsync();
-                    if (!more) 
+                    while (true)
                     {
+                        var c = this.pendingProcessCounter.Load();
+                        if (c == 0)
+                        {
+                            Monitor.Wait(this.mutex);
+                            continue;
+                        }
+                        this.pendingProcessCounter.Add(-c);
                         break;
                     }
+                }
 
-                    InboundMessage message = default;
-                    while (reader.TryRead(out message) && message.Inner != null)
+                InboundMessage message = default;
+                while (this.inboundMessages.TryDequeue(out message) && message.Inner != null) 
+                {
+                    try
                     {
-                        this.inboundMessageQueue.QueueCount--;
-                        try
-                        {
-                            this.ProcessInboundMessage(message);
-                        }
-                        catch (Exception e)
-                        {
-                            this.logger.LogError("MessageCenter Process InboundMessage, Exception:{0}, StackTrace:{1}", e, e.StackTrace.ToString());
-                        }
+                        this.ProcessInboundMessage(message);
+                    }
+                    catch (Exception e)
+                    {
+                        this.logger.LogError("MessageCenter Process InboundMessage, Exception:{0}, StackTrace:{1}", e, e.StackTrace.ToString());
                     }
                 }
-                this.logger.LogInformation("MessageCenter Exit");
-            });
+            }
+            this.logger.LogInformation("MessageCenter Exit");
         }
 
         public void StopAsync()
         {
-            this.inboundMessageQueue.ShutDown(InboundMessage.Empty);
+            this.stop = true;
+            this.inboundMessages.Enqueue(InboundMessage.Empty);
         }
 
         public void OnConnectionClosed(IChannel channel)
@@ -115,10 +126,13 @@ namespace F1.Core.Message
                     sessionInfo.SessionID, message.MilliSeconds, message.Inner.ToString());
             }
 
-            this.inboundMessageQueue.PushMessage(message);
-            if (this.inboundMessageQueue.QueueCount > 10000)
+            if (this.stop) return;
+
+            this.inboundMessages.Enqueue(message);
+            lock (this.mutex) 
             {
-                this.logger.LogWarning("InboundMessage Queue Size:{0}", this.inboundMessageQueue.QueueCount);
+                this.pendingProcessCounter.Inc();
+                Monitor.Pulse(this.mutex);
             }
         }
 

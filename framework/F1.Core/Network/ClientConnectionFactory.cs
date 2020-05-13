@@ -58,10 +58,10 @@ namespace F1.Core.Network
                         .Option(ChannelOption.SoRcvbuf, this.config.RecvWindowSize)
                         .Option(ChannelOption.SoSndbuf, this.config.SendWindowSize)
                         .Option(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
-                        .ChildOption(ChannelOption.TcpNodelay, true)
-                        .ChildOption(ChannelOption.SoKeepalive, true)
-                        .ChildOption(ChannelOption.WriteBufferHighWaterMark, this.config.WriteBufferHighWaterMark)
-                        .ChildOption(ChannelOption.WriteBufferLowWaterMark, this.config.WriteBufferLowWaterMark)
+                        .Option(ChannelOption.TcpNodelay, true)
+                        .Option(ChannelOption.SoKeepalive, true)
+                        .Option(ChannelOption.WriteBufferHighWaterMark, this.config.WriteBufferHighWaterMark)
+                        .Option(ChannelOption.WriteBufferLowWaterMark, this.config.WriteBufferLowWaterMark)
                         .Handler(new ActionChannelInitializer<IChannel>(channel =>
                         {
                             var info = this.channelSessionInfoFactory.NewSessionInfo(factory);

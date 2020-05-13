@@ -1,16 +1,15 @@
-﻿using DotNetty.Transport.Channels;
-using F1.Core.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading;
+using DotNetty.Transport.Channels;
+using F1.Core.Utils;
 
 namespace F1.Core.Network
 {
-
     internal class SendingMessageThread
     {
+        private static volatile int Index = 0;
         private readonly object mutex = new object();
         private Dictionary<long, IChannel> channels = new Dictionary<long, IChannel>();
         private Dictionary<long, IChannel> temp = new Dictionary<long, IChannel>();
@@ -21,6 +20,7 @@ namespace F1.Core.Network
         public SendingMessageThread() 
         {
             this.thread = new Thread(this.SendingLoop);
+            this.thread.Name = $"SendingMessageThread_{Index++}";
             this.thread.Start();
         }
 
@@ -31,36 +31,32 @@ namespace F1.Core.Network
             {
                 channels.TryAdd(sessionInfo.SessionID, channel);
                 pendingCount.Inc();
+                Monitor.Pulse(this.mutex);
             }
         }
 
-        const int MaxSpinCount = 128;
         public void SendingLoop() 
         {
-            var emptyCount = 0;
             while (stop == 0) 
             {
-                var count = 0L;
-                lock (this.mutex) 
+                while (true)
                 {
-                    var t = this.channels;
-                    channels = temp;
-                    temp = t;
-                    this.channels.Clear();
-                    count = this.pendingCount.Load();
-                    if (count != 0)
+                    lock (this.mutex)
                     {
+                        var count = this.pendingCount.Load();
+                        if (count == 0)
+                        {
+                            Monitor.Wait(this.mutex);
+                            continue;
+                        }
+                        var t = this.channels;
+                        channels = temp;
+                        temp = t;
+                        this.channels.Clear();
                         this.pendingCount.Add(-count);
+                        break;
                     }
                 }
-
-                if (count == 0)
-                {
-                    emptyCount++;
-                    if (emptyCount <= 128) continue;
-                    Thread.Sleep(10);
-                }
-                emptyCount = 0;
 
                 foreach (var (_, channel) in temp) 
                 {
