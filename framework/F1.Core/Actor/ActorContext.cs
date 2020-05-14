@@ -47,6 +47,8 @@ namespace F1.Core.Actor
         {
             if (inboundMessage.Inner is RequestRpc requestRpc)
             {
+                //logger.LogDebug("Actor:{0}, InputMessage:{1}_{2}",
+                //                this.Actor.UniqueID, requestRpc.SrcServer, requestRpc.SrcRequestId);
                 //可重入
                 if (requestRpc.SrcServer == this.CurrentRequest.ServerID &&
                     requestRpc.SrcRequestId == this.CurrentRequest.RequestID)
