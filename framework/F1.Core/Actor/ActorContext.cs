@@ -16,12 +16,13 @@ namespace F1.Core.Actor
 {
     internal class ActorContext : IActorContext
     {
-        private readonly AsyncMessageQueue<InboundMessage> mailBox = new AsyncMessageQueue<InboundMessage>();
+        private readonly AsyncQueue<InboundMessage> mailBox = new AsyncQueue<InboundMessage>();
         private readonly ILogger logger;
         internal Actor Actor { get; set; }
         internal IParametersSerializer Serializer { get; set; }
         internal DispatchHandler Dispatcher { get; set; }
         internal IMessageCenter MessageCenter { get; set; }
+        internal volatile bool stop = false;
 
         public (long ServerID, long RequestID) CurrentRequest { get; internal set; }
 
@@ -54,12 +55,13 @@ namespace F1.Core.Actor
                     return;
                 }
             }
-            this.mailBox.PushMessage(inboundMessage);
+            this.mailBox.Enqueue(inboundMessage);
         }
 
         public void Stop()
         {
-            this.mailBox.ShutDown(new InboundMessage());
+            this.stop = true;
+            this.mailBox.Enqueue(new InboundMessage());
         }
 
         public void Run()
@@ -129,19 +131,14 @@ namespace F1.Core.Actor
         private async Task RunningLoop() 
         {
             await this.Actor.ActivateAsync();
-            var reader = this.mailBox.Reader;
 
-            while (this.mailBox.Valid) 
+            while (!this.stop)
             {
-                var more = await reader.WaitToReadAsync();
-                if (!more)
-                {
-                    break;
-                }
-
                 await Task.Yield();
 
-                while (reader.TryRead(out var inboundMessage) && inboundMessage.Inner != null) 
+                var queue = await this.mailBox.ReadAsync();
+
+                while (queue.TryDequeue(out var inboundMessage) && inboundMessage.Inner != null)
                 {
                     try 
                     {
