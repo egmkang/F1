@@ -11,7 +11,6 @@ namespace F1.Core.Actor
     {
         private readonly Actor actor;
         private readonly Dictionary<long, ActorTimer> timers = new Dictionary<long, ActorTimer>();
-        private static readonly object Mutex = new object();
         private static readonly HashedWheelTimer HashedWheelTimer = new HashedWheelTimer(TimeSpan.FromMilliseconds(50), 1024, -1);
 
         public ActorTimerManager(Actor actor) 
@@ -31,7 +30,7 @@ namespace F1.Core.Actor
 
         internal void RegisterTimer(ActorTimer timer, long nextWait)
         {
-            lock (Mutex) HashedWheelTimer.NewTimeout(timer, TimeSpan.FromMilliseconds(nextWait));
+            HashedWheelTimer.NewTimeout(timer, TimeSpan.FromMilliseconds(nextWait));
         }
 
         internal void UnRegisterTimer(long id) 
