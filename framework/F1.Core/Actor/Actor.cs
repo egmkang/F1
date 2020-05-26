@@ -17,6 +17,7 @@ namespace F1.Core.Actor
         internal IActorContext Context { get; set; }
         internal RpcDispatchProxyFactory ProxyFactory { get; set; }
         public ILogger Logger { get; internal set; }
+        private ActorTimerManager TimerManager { get; set; }
 
         internal void InitActor(Type type, string id, IActorContext context)
         {
@@ -24,6 +25,7 @@ namespace F1.Core.Actor
             this.ID = id;
             this.Context = context;
             this.UniqueID = $"{this.ActorType.Name}@{this.ID}";
+            this.TimerManager = new ActorTimerManager(this);
         }
 
         internal async Task ActivateAsync() 
@@ -78,6 +80,21 @@ namespace F1.Core.Actor
         internal virtual Task DispatchUserMessage(InboundMessage inboundMessage)
         {
             return Task.CompletedTask;
+        }
+
+        public ActorTimer RegisterTimer(Func<ActorTimer, Task> fn, int interval) 
+        {
+            return this.TimerManager.RegisterTimer(interval, fn);
+        }
+
+        public void UnRegisterTimer(ActorTimer timer)
+        {
+            this.UnRegisterTimer(timer.ID);
+        }
+
+        public void UnRegisterTimer(long id) 
+        {
+            this.TimerManager.UnRegisterTimer(id);
         }
     }
 }

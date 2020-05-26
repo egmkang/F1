@@ -30,6 +30,7 @@ C# Framework:
     * [x] ServerContext
     * [x] Actor
     * [x] ActorContext
+        * [x] Reentrant
     * [x] ActorManager
         * [ ] SlowPath
     * [x] ActorMessageLoop

@@ -89,10 +89,12 @@ namespace F1.Core.Actor
         }
         private async Task DispatchMessage(InboundMessage inboundMessage) 
         {
-            //TODO
-            //timer目前还未处理
             //actor只处理rpc请求和timer请求
-            if (inboundMessage.Inner is RequestRpc requestRpc)
+            if (inboundMessage.Inner is ActorTimer timer)
+            {
+                timer.Tick();
+            }
+            else if (inboundMessage.Inner is RequestRpc requestRpc)
             {
                 this.CurrentRequest = (requestRpc.SrcServer, requestRpc.SrcRequestId);
 
@@ -133,6 +135,9 @@ namespace F1.Core.Actor
         private async Task RunningLoop() 
         {
             await this.Actor.ActivateAsync();
+
+            //TODO
+            //判断协程ID
 
             while (!this.stop)
             {
