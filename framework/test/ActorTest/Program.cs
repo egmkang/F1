@@ -14,6 +14,8 @@ namespace ActorTest
     [Rpc]
     public interface ITestActorInterface 
     {
+        Task RunATimer(int count);
+
         Task<int> RandomIntAsync();
 
         Task<string> HelloAsync();
@@ -56,10 +58,35 @@ namespace ActorTest
             var twoNames = await proxy.GetTwoNamesAsync(this.ID);
             return twoNames;
         }
+
+        public Task RunATimer(int count)
+        {
+            var timer = this.RegisterTimer(async (t) => 
+            {
+                await Task.Yield();
+                this.Logger.LogInformation("timer count:{0}", t.TickCount);
+                if (t.TickCount >= count) 
+                {
+                    this.UnRegisterTimer(t);
+                }
+            }, 1000);
+
+            return Task.CompletedTask;
+        }
     }
 
     class Program
     {
+
+        static async Task RunTimerTest(IServiceProvider serviceProvider, string id, int count)
+        {
+            await Task.Delay(20 * 1000);
+
+            var clientFactory = serviceProvider.GetRequiredService<IActorClientFactory>();
+            var proxyA = clientFactory.GetActorProxy<ITestActorInterface>(id);
+
+            await proxyA.RunATimer(count);
+        }
 
         static async Task RunReentrantTest(IServiceProvider serviceProvider, string id, string idB) 
         {
@@ -111,6 +138,7 @@ namespace ActorTest
             _ = RunTest(builder.ServiceProvider, "A");
             _ = RunTest(builder.ServiceProvider, "B");
             _ = RunReentrantTest(builder.ServiceProvider, "CCCC", "DDDD");
+            _ = RunTimerTest(builder.ServiceProvider, "A", 5);
 
             while (true)
             {

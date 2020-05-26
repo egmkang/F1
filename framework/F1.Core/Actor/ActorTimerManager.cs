@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetty.Common.Utilities;
-
+using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Actor
 {
@@ -30,6 +30,7 @@ namespace F1.Core.Actor
 
         internal void RegisterTimer(ActorTimer timer, long nextWait)
         {
+            actor.Logger.LogWarning("RegisterTimer, NextWait:{0}", nextWait);
             HashedWheelTimer.NewTimeout(timer, TimeSpan.FromMilliseconds(nextWait));
         }
 

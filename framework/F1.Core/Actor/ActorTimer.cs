@@ -43,7 +43,7 @@ namespace F1.Core.Actor
         public long TickCount => this.tickCount;
         public bool IsCancel => this.cancel;
 
-        public async Task Tick() 
+        internal async Task Tick() 
         {
             if (this.IsCancel) return;
 
@@ -68,7 +68,7 @@ namespace F1.Core.Actor
         {
             var currentTime = Platform.GetMilliSeconds();
             var nextTime = this.beginMilliSeconds + (this.tickCount + 1) * this.interval;
-            var waitTime = nextTime = currentTime;
+            var waitTime = nextTime - currentTime;
             return waitTime > 0 ? waitTime : 0;
         }
 
