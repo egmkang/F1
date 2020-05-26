@@ -82,7 +82,7 @@ namespace F1.Core.Actor
             return Task.CompletedTask;
         }
 
-        public ActorTimer RegisterTimer(Func<ActorTimer, Task> fn, int interval) 
+        public ActorTimer RegisterTimer(Action<ActorTimer> fn, int interval) 
         {
             return this.TimerManager.RegisterTimer(interval, fn);
         }

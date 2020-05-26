@@ -18,7 +18,7 @@ namespace F1.Core.Actor
             this.actor = actor;
         }
 
-        internal ActorTimer RegisterTimer(int interval, Func<ActorTimer, Task> fn)
+        internal ActorTimer RegisterTimer(int interval, Action<ActorTimer> fn)
         {
             var timer = new ActorTimer(this.actor, fn, this, interval);
             this.timers.Add(timer.ID, timer);
@@ -30,7 +30,7 @@ namespace F1.Core.Actor
 
         internal void RegisterTimer(ActorTimer timer, long nextWait)
         {
-            actor.Logger.LogWarning("RegisterTimer, NextWait:{0}", nextWait);
+            //actor.Logger.LogWarning("RegisterTimer, NextWait:{0}", nextWait);
             HashedWheelTimer.NewTimeout(timer, TimeSpan.FromMilliseconds(nextWait));
         }
 

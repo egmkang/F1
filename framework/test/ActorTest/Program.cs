@@ -61,9 +61,8 @@ namespace ActorTest
 
         public Task RunATimer(int count)
         {
-            var timer = this.RegisterTimer(async (t) => 
+            var timer = this.RegisterTimer((t) => 
             {
-                await Task.Yield();
                 this.Logger.LogInformation("timer count:{0}", t.TickCount);
                 if (t.TickCount >= count) 
                 {

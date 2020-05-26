@@ -16,7 +16,7 @@ namespace F1.Core.Actor
         private static long NewID => Interlocked.Increment(ref IdSequence);
 
         private readonly long id;
-        private readonly Func<ActorTimer, Task> fn;
+        private readonly Action<ActorTimer> fn;
         private readonly Actor actor;
         private readonly ActorTimerManager manager;
         private readonly ILogger logger;
@@ -25,7 +25,7 @@ namespace F1.Core.Actor
         private readonly long interval;
         private bool cancel = false;
 
-        internal ActorTimer(Actor actor, Func<ActorTimer, Task> fn, ActorTimerManager manager, int interval)
+        internal ActorTimer(Actor actor, Action<ActorTimer> fn, ActorTimerManager manager, int interval)
         {
             this.id = NewID;
             this.actor = actor;
@@ -50,7 +50,7 @@ namespace F1.Core.Actor
             try
             {
                 this.tickCount++;
-                await this.fn(this);
+                this.fn(this);
             }
             catch (Exception e)
             {
