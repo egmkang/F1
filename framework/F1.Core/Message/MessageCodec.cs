@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using DotNetty.Buffers;
 using F1.Abstractions.Network;
@@ -18,6 +20,19 @@ namespace F1.Core.Message
 
     internal class MessageEncoder
     {
+        static Func<byte[], int, int, CodedOutputStream> GetNewStream;
+
+        static MessageEncoder() 
+        {
+            var paramBuffer = Expression.Parameter(typeof(byte[]), "buffer");
+            var paramOffset = Expression.Parameter(typeof(int), "offset");
+            var paramLength = Expression.Parameter(typeof(int), "length");
+            var ctor = typeof(CodedOutputStream).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(byte[]), typeof(int), typeof(int) }, null);
+            var lambda = Expression.Lambda<Func<byte[], int, int, CodedOutputStream>>(
+                Expression.New(ctor, paramBuffer, paramOffset, paramLength), paramBuffer, paramOffset, paramLength);
+            GetNewStream = lambda.Compile();
+        }
+
         public IByteBuffer Encode(IByteBufferAllocator bufferAllocator, IMessage message) 
         {
             var bodySize = message.CalculateSize();
@@ -29,15 +44,11 @@ namespace F1.Core.Message
             buffer.WriteByte(messageName.Length);
             buffer.WriteBytes(messageName);
             
-            //TODO
-            //这边可以优化掉
             ArraySegment<byte> data = buffer.GetIoBuffer(buffer.WriterIndex, bodySize);
-            using var memoryStream = new MemoryStream(data.Array, data.Offset, bodySize);
-            using var stream = new CodedOutputStream(memoryStream);
+            using var stream = GetNewStream(data.Array, data.Offset, bodySize);
             message.WriteTo(stream);
 
             stream.Flush();
-            memoryStream.Flush();
             buffer.SetWriterIndex(buffer.WriterIndex + bodySize);
 
             return buffer;

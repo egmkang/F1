@@ -11,7 +11,7 @@ namespace F1.Core.Actor
     {
         private readonly Actor actor;
         private readonly Dictionary<long, ActorTimer> timers = new Dictionary<long, ActorTimer>();
-        private static readonly HashedWheelTimer HashedWheelTimer = new HashedWheelTimer(TimeSpan.FromMilliseconds(50), 1024, -1);
+        private static readonly HashedWheelTimer HashedWheelTimer = new HashedWheelTimer(TimeSpan.FromMilliseconds(10), 1024, -1);
 
         public ActorTimerManager(Actor actor) 
         {

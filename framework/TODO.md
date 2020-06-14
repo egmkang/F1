@@ -34,7 +34,7 @@ C# Framework:
     * [x] ActorManager
         * [ ] SlowPath
     * [x] ActorMessageLoop
-        * [ ] Timer
+        * [x] Timer
         * [ ] UserMessage
     * [ ] ActorLifeTime
     * [x] ActorClientProxyFactory
