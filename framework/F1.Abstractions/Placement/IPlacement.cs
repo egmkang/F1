@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace F1.Abstractions.Placement
 {
@@ -252,5 +252,11 @@ namespace F1.Abstractions.Placement
         /// 停止轮训续约
         /// </summary>
         Task StopPullingAsync();
+
+        /// <summary>
+        /// 碰到致命错误
+        /// </summary>
+        /// <param name="fn">回调</param>
+        void OnException(Action<Exception> fn);
     }
 }

@@ -7,6 +7,7 @@ using F1.Abstractions;
 using F1.Abstractions.Network;
 using F1.Core.Actor;
 using F1.Abstractions.Placement;
+using System.Threading;
 
 namespace F1.Core.Core
 {
@@ -16,6 +17,10 @@ namespace F1.Core.Core
         private IServiceProvider serviceProvider;
         public IServiceProvider ServiceProvider => this.serviceProvider;
         public IServiceCollection ServiceCollection => this.serviceCollection;
+
+        public bool Running { get; set; } = true;
+
+        private int shutingDown = 0;
 
         public IServiceBuilder Build()
         {
@@ -33,10 +38,15 @@ namespace F1.Core.Core
 
         public void ShutDown()
         {
-            var listener = this.serviceProvider.GetRequiredService<IConnectionListener>();
-            listener.ShutdDownAsync().Wait();
-            var connectionFactory = this.serviceProvider.GetRequiredService<IClientConnectionFactory>();
-            connectionFactory.ShutdDownAsync().Wait();
+            this.Running = false;
+
+            if (Interlocked.Increment(ref this.shutingDown) == 1) 
+            {
+                var listener = this.serviceProvider.GetRequiredService<IConnectionListener>();
+                listener.ShutdDownAsync().Wait();
+                var connectionFactory = this.serviceProvider.GetRequiredService<IClientConnectionFactory>();
+                connectionFactory.ShutdDownAsync().Wait();
+            }
         }
     }
 }

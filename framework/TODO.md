@@ -36,7 +36,7 @@ C# Framework:
     * [x] ActorMessageLoop
         * [x] Timer
         * [ ] UserMessage
-    * [ ] ActorLifeTime
+    * [x] ActorLifeTime
     * [x] ActorClientProxyFactory
 * [ ] Virtual Actor
     * [ ] impl

@@ -38,6 +38,7 @@ namespace F1.Core.Placement
         private OnAddServer onAddServer;
         private OnRemoveServer onRemoveServer;
         private OnServerOffline onServerOffline;
+        private Action<Exception> onFatalError;
 
         public string PlacementServerAddress { get; private set; }
 
@@ -369,8 +370,12 @@ namespace F1.Core.Placement
                     catch (Exception e)
                     {
                         this.logger.LogError("PD KeepAlive PullOnce fail, Exception:{0}", e.Message);
-                        //TODO: 服务器进程主动退出
                         //这边异常情况, 服务器需要主动退出
+                        if (this.onFatalError != null) 
+                        {
+                            this.onFatalError(e);
+                        }
+                        break;
                     }
                     finally
                     {
@@ -398,6 +403,11 @@ namespace F1.Core.Placement
             var uniqueName = $"{request.ActorType}/{request.ActorID}";
             this.positionLru.Remove(uniqueName);
             this.logger.LogInformation("ClearActorPosition, UniqueName:{0}", uniqueName);
+        }
+
+        public void OnException(Action<Exception> fn)
+        {
+            this.onFatalError = fn;
         }
     }
 }

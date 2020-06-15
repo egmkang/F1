@@ -10,6 +10,7 @@ using RpcMessage;
 using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Abstractions.Network;
+using System.Collections.Generic;
 
 namespace F1.Core.Actor
 {
@@ -36,7 +37,7 @@ namespace F1.Core.Actor
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
             this.messageCenter.RegisterMessageProc(typeof(RequestRpcHeartBeat).FullName, this.ProcessRequestRpcHeartBeat);
 
-            _ = Util.RunTaskTimer(this.ActorGC, 60 * 1000);
+            _ = Util.RunTaskTimer(this.ActorGC, 10 * 1000);
         }
 
         public Actor GetActor(string type, string uniqueID) 
@@ -69,8 +70,30 @@ namespace F1.Core.Actor
             }
         }
 
+
+        const int ActorLifeTime = 30 * 60 * 1000;
+
         private void ActorGC() 
         {
+            var list = new List<(Type, string, Actor)>();
+            var lastMessageTime = Platform.GetMilliSeconds() - ActorLifeTime;
+
+            foreach (var ((type, actorID), actor) in this.actorInstances) 
+            {
+                if (actor.Context.LastMessageTime < lastMessageTime) 
+                {
+                    list.Add((type, actorID, actor));
+                }
+            }
+            foreach (var (type, actorID, actor) in list) 
+            {
+                if (actor.Context.LastMessageTime < lastMessageTime) 
+                {
+                    this.actorInstances.TryRemove((type, actorID), out var _);
+                    actor.Context.Stop();
+                    this.logger.LogInformation("ActorGC, Actor:{0}", actor.UniqueID);
+                }
+            }
             //TODO: ActorGC
             //暂定1分钟做一次GC
             //关掉半个小时内还未活跃的Actor

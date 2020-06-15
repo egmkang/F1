@@ -12,6 +12,8 @@ namespace F1.Abstractions
 
         IServiceBuilder Build();
 
+        bool Running { get; }
+
         void ShutDown();
     }
 }
