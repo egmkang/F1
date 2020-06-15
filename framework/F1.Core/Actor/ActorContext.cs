@@ -136,8 +136,7 @@ namespace F1.Core.Actor
         {
             await this.Actor.ActivateAsync();
 
-            //TODO
-            //判断协程ID
+            //TODO: 判断协程ID
 
             while (!this.stop)
             {

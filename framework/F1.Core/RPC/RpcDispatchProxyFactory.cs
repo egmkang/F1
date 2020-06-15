@@ -61,7 +61,7 @@ namespace F1.Core.RPC
             this.RegisterClientProxyHandler();
         }
 
-        //TODO
+        //TODO: proxy缓存
         //这边可以把proxy缓存起来
         public T CreateProxy<T>(string actor = null, IActorContext context = null)
         {
@@ -76,6 +76,7 @@ namespace F1.Core.RPC
 
             proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
+                //TODO: 去掉Actor的Domain
                 Domain = "t",
                 ActorType = typeof(T).Name,
                 ActorID = actor,

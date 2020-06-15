@@ -9,7 +9,7 @@ C# Framework:
         * [x] Add
         * [x] Remove
         * [ ] Offline(LRU¸ÄÔì)
-* [ ] Socket
+* [x] Socket
     * [x] TcpServer
     * [x] TcpClient
     * [x] Codec

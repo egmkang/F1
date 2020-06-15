@@ -369,7 +369,7 @@ namespace F1.Core.Placement
                     catch (Exception e)
                     {
                         this.logger.LogError("PD KeepAlive PullOnce fail, Exception:{0}", e.Message);
-                        //TODO
+                        //TODO: 服务器进程主动退出
                         //这边异常情况, 服务器需要主动退出
                     }
                     finally
