@@ -69,7 +69,8 @@ namespace F1.Core.Network
 
     public class SendingThreads
     {
-        private readonly SendingMessageThread[] array = new SendingMessageThread[2] { new SendingMessageThread(), new SendingMessageThread() };
+        const int SendThreadCount = 2;
+        private readonly SendingMessageThread[] array = new SendingMessageThread[SendThreadCount] { new SendingMessageThread(), new SendingMessageThread() };
 
         public void SendMessage(IChannel channel) 
         {
@@ -77,7 +78,7 @@ namespace F1.Core.Network
             var sessionInfo = channel.GetSessionInfo();
             if (sessionInfo == null) return;
 
-            array[sessionInfo.SessionID % 2].SendMessage(channel);
+            array[sessionInfo.SessionID % SendThreadCount].SendMessage(channel);
         }
     }
 }

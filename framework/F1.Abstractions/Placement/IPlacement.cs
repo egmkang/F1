@@ -194,6 +194,12 @@ namespace F1.Abstractions.Placement
         /// <returns>返回PD上面最新的事件</returns>
         Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, long load);
         /// <summary>
+        /// 在内存中找Actor所在的服务器信息
+        /// </summary>
+        /// <param name="request">actor定位所需要的信息</param>
+        /// <returns>Actor所在的服务器信息</returns>
+        PlacementFindActorPositionResponse FindActorPositionInCache(PlacementFindActorPositionRequest request);
+        /// <summary>
         /// 找到Actor所在的服务器信息
         /// </summary>
         /// <param name="request">actor定位所需要的信息</param>
@@ -209,6 +215,11 @@ namespace F1.Abstractions.Placement
         /// </summary>
         /// <returns>返回版本信息的字符串</returns>
         Task<PlacementVersionInfo> GetVersionAsync();
+        /// <summary>
+        /// 获取当前服务器的信息
+        /// </summary>
+        long CurrentServerID { get; }
+
 
         delegate void OnAddServer(PlacementActorHostInfo serverInfo);
         delegate void OnRemoveServer(PlacementActorHostInfo serverInfo);

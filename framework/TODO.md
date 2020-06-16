@@ -1,6 +1,6 @@
 C# Framework:
 
-* [ ] Placement SDK
+* [x] Placement SDK
     * [x] RegisterServer
     * [x] KeepAliveServer
     * [x] FindActorPositon
@@ -8,7 +8,8 @@ C# Framework:
     * [x] ServerEvents:
         * [x] Add
         * [x] Remove
-        * [ ] Offline(LRU¸ÄÔì)
+        * [x] Offline
+    * [x] Remove Domain
 * [x] Socket
     * [x] TcpServer
     * [x] TcpClient
@@ -32,7 +33,7 @@ C# Framework:
     * [x] ActorContext
         * [x] Reentrant
     * [x] ActorManager
-        * [ ] SlowPath
+        * [x] SlowPath
     * [x] ActorMessageLoop
         * [x] Timer
         * [ ] UserMessage

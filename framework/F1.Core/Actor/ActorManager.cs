@@ -11,6 +11,8 @@ using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Abstractions.Network;
 using System.Collections.Generic;
+using F1.Abstractions.Placement;
+using MessagePack.Formatters;
 
 namespace F1.Core.Actor
 {
@@ -25,17 +27,20 @@ namespace F1.Core.Actor
         private readonly ActorFactory actorFactory;
         private readonly RpcMetadata rpcMetadata;
         private readonly IMessageCenter messageCenter;
+        private readonly IPlacement placement;
 
         public ActorManager(ILoggerFactory loggerFactory,
                             ActorFactory actorFactory,
                             RpcMetadata rpcMetadata,
-                            IMessageCenter messageCenter
+                            IMessageCenter messageCenter,
+                            IPlacement placement
                             ) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
             this.actorFactory = actorFactory;
             this.rpcMetadata = rpcMetadata;
             this.messageCenter = messageCenter;
+            this.placement = placement;
 
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
             this.messageCenter.RegisterMessageProc(typeof(RequestRpcHeartBeat).FullName, this.ProcessRequestRpcHeartBeat);
@@ -73,7 +78,6 @@ namespace F1.Core.Actor
             }
         }
 
-
         private void ActorGC() 
         {
             //暂定1分钟做一次GC
@@ -101,9 +105,42 @@ namespace F1.Core.Actor
 
         private async Task ProcessRequestRpcSlowPath(InboundMessage inboundMessage) 
         {
-            //TODO: Actor慢路径
-            //慢路径, 需要到pd里面查询是否没问题
-            await Task.CompletedTask;
+            var requestRpc = inboundMessage.Inner as RequestRpc;
+            Contract.Assert(requestRpc != null);
+
+            var args = new PlacementFindActorPositionRequest()
+            {
+                ActorType = requestRpc.ActorType,
+                ActorID = requestRpc.ActorId,
+                TTL = 0,
+            };
+
+            try
+            {
+                //慢路径, 需要到pd里面查询是否没问题
+                //这边要处理Actor的位置, 万一Actor的位置发生变化
+                //那么需要告诉对端重新请求
+                var response = await this.placement.FindActorPositonAsync(args);
+                if (response != null && response.ServerID == this.placement.CurrentServerID)
+                {
+                    this.DisptachRequestRPC(inboundMessage, requestRpc);
+                }
+                else
+                {
+                    if (response == null)
+                    {
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorPositionNotFound, "PositionNotFound");
+                    }
+                    else 
+                    {
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorHasNewPosition, "Actor has new position");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, e.ToString());
+            }
         }
 
         private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage) 
@@ -115,12 +152,22 @@ namespace F1.Core.Actor
             this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, response));
         }
 
+        private void DisptachRequestRPC(InboundMessage inboundMessage, RequestRpc requestRpc) 
+        {
+            var actor = this.GetActor(requestRpc.ActorType, requestRpc.ActorId);
+            if (actor == null)
+            {
+                this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ActorType, requestRpc.ActorId);
+                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, "GetActor fail");
+                return;
+            }
+            actor.Context.SendMail(inboundMessage);
+        }
+
+        static ThreadLocal<PlacementFindActorPositionRequest> pdPositionArgsCache = new ThreadLocal<PlacementFindActorPositionRequest>(() => new PlacementFindActorPositionRequest());
+
         private void ProcessRequestRpc(InboundMessage inboundMessage) 
         {
-            //TODO: 处理Actor位置发生变化
-            //这边要处理Actor的位置, 万一Actor的位置发生变化
-            //那么需要告诉对端重新请求
-
             var requestRpc = inboundMessage.Inner as RequestRpc;
             if (requestRpc == null) 
             {
@@ -129,14 +176,22 @@ namespace F1.Core.Actor
             }
             try
             {
-                var actor = this.GetActor(requestRpc.ActorType, requestRpc.ActorId);
-                if (actor == null)
+                var args = pdPositionArgsCache.Value;
+                args.ActorType = requestRpc.ActorType;
+                args.ActorID = requestRpc.ActorId;
+                args.TTL = 0;
+
+                //这边通过本地的缓存检测服务器是否存在, 存在就直接执行
+                //否则需要进行慢路径确认
+                var destPosition = this.placement.FindActorPositionInCache(args);
+                if (destPosition != null && destPosition.ServerID == this.placement.CurrentServerID)
                 {
-                    this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ActorType, requestRpc.ActorId);
-                    ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, "GetActor fail");
-                    return;
+                    this.DisptachRequestRPC(inboundMessage, requestRpc);
                 }
-                actor.Context.SendMail(inboundMessage);
+                else 
+                {
+                    _ = this.ProcessRequestRpcSlowPath(inboundMessage);
+                }
             }
             catch (Exception e) 
             {

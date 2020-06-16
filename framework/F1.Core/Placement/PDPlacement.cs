@@ -41,6 +41,7 @@ namespace F1.Core.Placement
         private Action<Exception> onFatalError;
 
         public string PlacementServerAddress { get; private set; }
+        public long CurrentServerID => this.currentServerInfo.ServerID;
 
         public PDPlacement(ILoggerFactory loggerFactory) 
         {
@@ -80,7 +81,19 @@ namespace F1.Core.Placement
 
         private bool IsServerValid(long serverID) 
         {
-            return this.host.TryGetValue(serverID, out var _);
+            return this.host.TryGetValue(serverID, out var _) ||
+                   this.offlineServer.Get(serverID) != null;
+        }
+
+        public PlacementFindActorPositionResponse FindActorPositionInCache(PlacementFindActorPositionRequest request)
+        {
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+            var pos = this.positionLru.Get(uniqueName);
+            if (pos != null && this.IsServerValid(pos.ServerID))
+            {
+                return pos;
+            }
+            return null;
         }
 
         public async Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request)
@@ -105,7 +118,11 @@ namespace F1.Core.Placement
 
             var position = JsonConvert.DeserializeObject<PlacementFindActorPositionResponse>(str);
 
-            this.positionLru.Add(uniqueName, position);
+            //如果服务器要下线了, 那么存到LRU里面, 还是需要每次都去重新定位
+            if (this.offlineServer.Get(position.ServerID) == null) 
+            {
+                this.positionLru.Add(uniqueName, position);
+            }
             return position;
         }
 

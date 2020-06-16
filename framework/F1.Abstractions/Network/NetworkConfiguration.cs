@@ -14,6 +14,6 @@ namespace F1.Abstractions.Network
         public int WriteBufferHighWaterMark { get; set; } = 256 * 1024;
         public int WriteBufferLowWaterMark { get; set; } = 128 * 1024;
         public int ConnectTimeout { get; set; } = 5;
-        public int EventLoopCount { get; set; } = 2;
+        public int EventLoopCount { get; set; } = 3;
     }
 }

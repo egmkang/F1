@@ -67,7 +67,9 @@ namespace F1.Core.RPC
         }
         private void OnOfflineServer(PlacementActorHostInfo server)
         {
-            //TODO, 服务器要下线, 要把所有在这个服务器上的玩家清掉
+            //这边通过每次获取Actor位置的时候判断服务器是否下线来做的
+            //所以暂时不需要处理
+            //服务器要下线, 要把所有在这个服务器上的玩家清掉
             //但是自己的不能清掉
         }
 

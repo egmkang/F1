@@ -82,8 +82,7 @@ namespace F1.Core.Actor
             var connectionFactory = this.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
             messageHandlerFactory.Codec = new ProtobufMessageCodec();
 
-            //TODO
-            //RPC请求快速失败
+            //TODO, RPC请求快速失败
             messageCenter.RegsiterEvent(
                 (channel) =>
                 {
