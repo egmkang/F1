@@ -42,12 +42,6 @@ namespace F1.Abstractions.Placement
         [JsonProperty("address")]
         public string Address = "";
         /// <summary>
-        /// 服务器的名字空间, 用来做多组服务器隔离的, PD上面有名字空间, framework里面没有
-        /// framework不允许多个名字空间的服务器进行交互
-        /// </summary>
-        [JsonProperty("domain")]
-        public string Domain = "";
-        /// <summary>
         /// 服务器能提供的Actor对象类型, 即服务能力
         /// </summary>
         [JsonProperty("actor_type")]
@@ -99,11 +93,6 @@ namespace F1.Abstractions.Placement
     public class PlacementFindActorPositionRequest 
     {
         /// <summary>
-        /// 名字空间
-        /// </summary>
-        [JsonProperty("domain")]
-        public string Domain = "";
-        /// <summary>
         /// Actor的类型, 参见ActorType
         /// </summary>
         [JsonProperty("actor_type")]
@@ -126,11 +115,6 @@ namespace F1.Abstractions.Placement
     /// </summary>
     public class PlacementFindActorPositionResponse 
     {
-        /// <summary>
-        /// 名字空间
-        /// </summary>
-        [JsonProperty("domain")]
-        public string Domain = "";
         /// <summary>
         /// Actor的类型, 参见ActorType
         /// </summary>

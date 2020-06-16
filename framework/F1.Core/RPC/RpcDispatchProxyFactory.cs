@@ -76,8 +76,6 @@ namespace F1.Core.RPC
 
             proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
-                //TODO: 去掉Actor的Domain
-                Domain = "t",
                 ActorType = typeof(T).Name,
                 ActorID = actor,
                 TTL = 0,

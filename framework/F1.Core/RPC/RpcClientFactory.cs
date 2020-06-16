@@ -241,7 +241,6 @@ namespace F1.Core.RPC
             {
                 var actorInfo = new PlacementFindActorPositionRequest()
                 {
-                    Domain = "t",
                     ActorID = msg.Request.ActorId,
                     ActorType = msg.Request.ActorType,
                     TTL = 0,

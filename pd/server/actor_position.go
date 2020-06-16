@@ -16,7 +16,6 @@ const ActorPathPrefix = "/actor"
 type ActorPositionInfo struct {
 	ActorID    string `json:"actor_id"`
 	ActorType  string `json:"actor_type"`
-	Domain     string `json:"domain"`
 	TTL        int64  `json:"ttl"`
 	CreateTime int64  `json:"create_time"`
 	ServerID   int64  `json:"server_id"`
@@ -25,7 +24,6 @@ type ActorPositionInfo struct {
 type ActorPositionArgs struct {
 	ActorID   string
 	ActorType string
-	Domain    string
 	TTL       int64
 }
 
@@ -125,10 +123,10 @@ func (this *ActorMembership) savePositionToRemote(uniqueActorID string, position
 //-1服务器个数不够
 //-2没有该类型的服务器
 //-3分配算法错误
-func (this *ActorMembership) chooseServerByRandom(domain string, actorType string) int64 {
+func (this *ActorMembership) chooseServerByRandom(actorType string) int64 {
 	//返回-1表示服务器个数不够
 	index := this.index
-	uniqueType := fmt.Sprintf("%s:%s", domain, actorType)
+	uniqueType := fmt.Sprintf("%s", actorType)
 	set, ok := index.types[uniqueType]
 	if !ok || len(set) == 0 {
 		return -2
@@ -174,12 +172,12 @@ func (this *ActorMembership) chooseServerByRandom(domain string, actorType strin
 
 func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*ActorPositionInfo, error) {
 	needAllocNewPosition := args.TTL == 0
-	uniqueActorID := fmt.Sprintf("%s_%s_%s", args.ActorID, args.ActorType, args.Domain)
+	uniqueActorID := fmt.Sprintf("%s_%s", args.ActorID, args.ActorType)
 	//1. 先到LRU里面去找, 找到检查server存在性, 存在就返回
 	//2. 到remote里面找, 找到检查sever存在性, 存在, 写LUR返回
 	//3. 上锁
 	//4. 到LRU里面找, 到remote里面找, 检查存在性, 存在写LRU返回
-	//5. 按照domain, type分配一个server, 然后写remote, 写LRU, 返回
+	//5. 按照type分配一个server, 然后写remote, 写LRU, 返回
 	position, err := this.findPositionFromRemote(uniqueActorID, needAllocNewPosition)
 	if err != nil {
 		return nil, err
@@ -211,7 +209,7 @@ func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*A
 	}
 
 	//随机生成一个server
-	newServerID := this.chooseServerByRandom(args.Domain, args.ActorType)
+	newServerID := this.chooseServerByRandom(args.ActorType)
 	log.Info("chooseServerByRandom", zap.String("ActorID", uniqueActorID), zap.Int64("ServerID", newServerID))
 	if newServerID < 0 {
 		if newServerID == -1 {
@@ -226,7 +224,6 @@ func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*A
 	position = &ActorPositionInfo{
 		ActorID:    args.ActorID,
 		ActorType:  args.ActorType,
-		Domain:     args.Domain,
 		TTL:        args.TTL,
 		CreateTime: util.GetMilliSeconds(),
 		ServerID:   newServerID,
@@ -242,7 +239,7 @@ func (this *ActorMembership) findOrAllocNewPosition(args *ActorPositionArgs) (*A
 
 func (this *ActorMembership) FindPosition(args *ActorPositionArgs) (*ActorPositionInfo, error) {
 	needAllocNewPosition := args.TTL == 0
-	uniqueActorID := fmt.Sprintf("%s_%s_%s", args.ActorID, args.ActorType, args.Domain)
+	uniqueActorID := fmt.Sprintf("%s_%s", args.ActorID, args.ActorType)
 	position := this.findPositionInLRU(uniqueActorID, needAllocNewPosition)
 	if position != nil {
 		return position, nil
@@ -251,7 +248,7 @@ func (this *ActorMembership) FindPosition(args *ActorPositionArgs) (*ActorPositi
 }
 
 func (this *ActorMembership) DeletePosition(args *ActorPositionArgs) error {
-	uniqueActorID := fmt.Sprintf("%s_%s_%s", args.ActorID, args.ActorType, args.Domain)
+	uniqueActorID := fmt.Sprintf("%s_%s", args.ActorID, args.ActorType)
 
 	mutex, err := util.NewMutex(this.server.GetEtcdClient(), uniqueActorID)
 	if err != nil {

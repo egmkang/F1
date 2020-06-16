@@ -21,7 +21,6 @@ func newActorHandler(server *server.Server, render *render.Render) *actorHandler
 }
 
 type FindActorPositionRequest struct {
-	Domain    string `json:"domain"`
 	ActorType string `json:"actor_type"`
 	ActorID   string `json:"actor_id"`
 	TTL       int64  `json:"ttl"`
@@ -30,7 +29,6 @@ type FindActorPositionRequest struct {
 type FindActorPositionResponse struct {
 	ActorID       string `json:"actor_id"`
 	ActorType     string `json:"actor_type"`
-	Domain        string `json:"domain"`
 	TTL           int64  `json:"ttl"`
 	CreateTime    int64  `json:"create_time"`
 	ServerID      int64  `json:"server_id"`
@@ -43,14 +41,13 @@ func (this *actorHandler) FindPosition(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(req.Domain) == 0 || len(req.ActorType) == 0 || len(req.ActorID) == 0 {
+	if len(req.ActorType) == 0 || len(req.ActorID) == 0 {
 		this.render.JSON(w, http.StatusBadRequest, "args error")
 		return
 	}
 	args := &server.ActorPositionArgs{
 		ActorID:   req.ActorID,
 		ActorType: req.ActorType,
-		Domain:    req.Domain,
 		TTL:       req.TTL,
 	}
 
@@ -68,7 +65,6 @@ func (this *actorHandler) FindPosition(w http.ResponseWriter, r *http.Request) {
 	resp := FindActorPositionResponse{
 		ActorID:       result.ActorID,
 		ActorType:     result.ActorType,
-		Domain:        result.Domain,
 		TTL:           result.TTL,
 		CreateTime:    result.CreateTime,
 		ServerID:      result.ServerID,
@@ -90,7 +86,6 @@ func (this *actorHandler) NewActorToken(w http.ResponseWriter, r *http.Request) 
 
 type DeleteActorResponse struct {
 	ActorID   string `json:"actor_id"`
-	Domain    string `json:"domain"`
 	ActorType string `json:"actor_type"`
 }
 
@@ -100,14 +95,13 @@ func (this *actorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(req.Domain) == 0 || len(req.ActorType) == 0 || len(req.ActorID) == 0 {
+	if len(req.ActorType) == 0 || len(req.ActorID) == 0 {
 		this.render.JSON(w, http.StatusBadRequest, "args error")
 		return
 	}
 	args := &server.ActorPositionArgs{
 		ActorID:   req.ActorID,
 		ActorType: req.ActorType,
-		Domain:    req.Domain,
 	}
 	err := this.server.GetActorMembership().DeletePosition(args)
 	if err != nil {
@@ -120,7 +114,6 @@ func (this *actorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
 
 	resp := &DeleteActorResponse{
 		ActorID:   args.ActorID,
-		Domain:    args.Domain,
 		ActorType: args.ActorType,
 	}
 	this.render.JSON(w, http.StatusOK, resp)

@@ -37,12 +37,6 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if len(serverInfo.Domain) == 0 {
-		log.Error("RegisterNewServer domain is null", zap.Int64("ServerID", serverInfo.ServerID))
-		this.render.JSON(w, http.StatusBadRequest, "RegisterNewServer domain is null")
-		return
-	}
-
 	//从etcd里面获取server信息, 如果存在就拒绝注册
 	if info := this.server.GetActorHostInfoByServerID(serverInfo.ServerID); info != nil {
 		this.render.JSON(w, http.StatusBadRequest, fmt.Sprintf("RegisterNewServer, ServerID:%d exist", serverInfo.ServerID))
@@ -82,7 +76,6 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 		zap.Int64("LeaseID", serverInfo.LeaseID),
 		zap.Int64("TTL", serverInfo.TTL),
 		zap.Int64("StartTime", serverInfo.StartTime),
-		zap.String("domain", serverInfo.Domain),
 		zap.String("Address", serverInfo.Address),
 		zap.Strings("ActorType", serverInfo.ActorType))
 
@@ -124,7 +117,7 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 		zap.Int64("Load", info.Load))
 
 	result := &KeepAliveServerResp{
-		Hosts:  this.server.GetActorMembersByDomain(info.Domain),
+		Hosts:  this.server.GetActorMembers(),
 		Events: this.server.GetActorMembershipRecentEvent(),
 	}
 	this.render.JSON(w, http.StatusOK, result)

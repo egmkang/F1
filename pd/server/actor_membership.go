@@ -29,13 +29,12 @@ type ActorHostInfo struct {
 	StartTime int64    `json:"start_time"` //服务器注册的时间(单位毫秒)
 	TTL       int64    `json:"ttl"`        //存活时间(心跳时间*3)
 	Address   string   `json:"address"`    //服务器地址
-	Domain    string   `json:"domain"`     //命名空间
 	ActorType []string `json:"actor_type"` //可以提供服务的类型
 }
 
 type ActorHostIndex struct {
 	ids   map[int64]*ActorHostInfo            //ServerID => ActorHostInfo
-	types map[string]map[int64]*ActorHostInfo //Domain:ActorType => Set<ActorHostInfo>
+	types map[string]map[int64]*ActorHostInfo //ActorType => Set<ActorHostInfo>
 }
 
 type ActorMembership struct {
@@ -153,21 +152,19 @@ func (this *ActorMembership) GetActorMemberInfoByID(serverID int64) *ActorHostIn
 	return info
 }
 
-func (this *ActorMembership) GetActorMembersByDomain(domain string) map[int64]*ActorHostInfo {
+func (this *ActorMembership) GetActorMembers() map[int64]*ActorHostInfo {
 	result := map[int64]*ActorHostInfo{}
 	index := this.GetReadonlyIndex()
 
 	for k, v := range index.ids {
-		if v.Domain == domain {
-			result[k] = v
-		}
+		result[k] = v
 	}
 
 	return result
 }
 
-func (this *ActorMembership) GetMembersByDomainAndType(domain string, actorType string) map[int64]*ActorHostInfo {
-	typesName := domain + ":" + actorType
+func (this *ActorMembership) GetMembersByType(actorType string) map[int64]*ActorHostInfo {
+	typesName := actorType
 	index := this.GetReadonlyIndex()
 
 	result, ok := index.types[typesName]
@@ -210,7 +207,7 @@ func buildIndexFromArray(list []*ActorHostInfo) *ActorHostIndex {
 		index.ids[v.ServerID] = v
 		//注册类型的索引
 		for _, typeName := range v.ActorType {
-			var realTypeName = v.Domain + ":" + typeName
+			var realTypeName = typeName
 			if _, ok := index.types[realTypeName]; !ok {
 				index.types[realTypeName] = map[int64]*ActorHostInfo{}
 			}

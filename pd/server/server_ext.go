@@ -87,12 +87,12 @@ func (this *Server) GetActorHostInfoByServerID(serverID int64) *ActorHostInfo {
 	return info
 }
 
-func (this *Server) GetActorMembersByDomain(domain string) map[int64]*ActorHostInfo {
-	return this.actorMembership.GetActorMembersByDomain(domain)
+func (this *Server) GetActorMembers() map[int64]*ActorHostInfo {
+	return this.actorMembership.GetActorMembers()
 }
 
-func (this *Server) GetActorMembersByDomainAndType(domain string, actorType string) map[int64]*ActorHostInfo {
-	return this.actorMembership.GetMembersByDomainAndType(domain, actorType)
+func (this *Server) GetActorMembersByType(actorType string) map[int64]*ActorHostInfo {
+	return this.actorMembership.GetMembersByType(actorType)
 }
 
 func (this *Server) AddActorHostID(serverID int64) {

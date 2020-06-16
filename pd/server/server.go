@@ -108,7 +108,6 @@ func (this *Server) InitEtcd(path string, apiRegister func(*Server) http.Handler
 	go this.actorMembership.FindPosition(&ActorPositionArgs{
 		ActorID:   "1",
 		ActorType: "1",
-		Domain:    "tt",
 		TTL:       0,
 	})
 	return nil

@@ -205,7 +205,6 @@ namespace F1.Core.Placement
                 this.currentServerInfo.StartTime = info.StartTime;
                 this.currentServerInfo.Address = info.Address;
                 this.currentServerInfo.ActorType = info.ActorType.ToList();
-                this.currentServerInfo.Domain = info.Domain;
                 this.currentServerInfo.TTL = info.TTL;
 
                 this.currentServerInfo.LeaseID = response.LeaseID;

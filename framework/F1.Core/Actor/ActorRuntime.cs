@@ -141,7 +141,6 @@ namespace F1.Core.Actor
             {
                 var server_info = new PlacementActorHostInfo();
                 server_info.ServerID = this.ServerID;
-                server_info.Domain = "t";
                 server_info.StartTime = Platform.GetMilliSeconds();
                 server_info.Address = $"{Platform.GetLocalAddresss()}:{port}";
 

@@ -65,7 +65,6 @@ namespace PlacementTest
             var server_id = await placement.GenerateServerIDAsync();
             var server_info = new PlacementActorHostInfo();
             server_info.ServerID = server_id;
-            server_info.Domain = "tttt";
             server_info.StartTime = 101001;
             server_info.Address = Platform.GetLocalAddresss() + ":1111";
             server_info.ActorType.Add("test type");
