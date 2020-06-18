@@ -12,7 +12,7 @@ using F1.Core.RPC;
 using F1.Abstractions.Network;
 using System.Collections.Generic;
 using F1.Abstractions.Placement;
-using MessagePack.Formatters;
+
 
 namespace F1.Core.Actor
 {
@@ -44,6 +44,7 @@ namespace F1.Core.Actor
 
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
             this.messageCenter.RegisterMessageProc(typeof(RequestRpcHeartBeat).FullName, this.ProcessRequestRpcHeartBeat);
+            this.messageCenter.RegisterUserMessageCallback((type, actorID, inboundMessage) => this.DispatchUserMessage(inboundMessage, type, actorID));
 
             _ = Util.RunTaskTimer(this.ActorGC, ActorGCInterval);
         }

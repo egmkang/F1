@@ -52,7 +52,7 @@ namespace F1.Core.Message
                 sessionInfo.ActiveTime = currentMilliSeconds;
 
                 var inboundMessage = new InboundMessage(context.Channel, typeName, message, Platform.GetMilliSeconds());
-                this.messageCenter.OnReceivedMessage(inboundMessage);
+                this.messageCenter.OnReceiveMessage(inboundMessage);
             }
         }
 

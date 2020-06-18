@@ -9,7 +9,8 @@ using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Network;
 using F1.Core.Utils;
-
+using F1.Core.Actor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace F1.Core.Message
 {
@@ -20,6 +21,7 @@ namespace F1.Core.Message
         private readonly ILogger logger;
         private readonly IConnectionManager connectionManager;
         private readonly Dictionary<string, Action<InboundMessage>> inboudMessageProc = new Dictionary<string, Action<InboundMessage>>();
+        private Func<string, string, InboundMessage, bool> userMessageCallback;
         private readonly object mutex = new object();
         private readonly AtomicInt64 pendingProcessCounter = new AtomicInt64();
         private readonly ConcurrentQueue<InboundMessage> inboundMessages = new ConcurrentQueue<InboundMessage>();
@@ -30,7 +32,9 @@ namespace F1.Core.Message
         private Action<OutboundMessage> failMessageProc;
         private Action<InboundMessage> defaultInboundMessageProc;
 
-        public MessageCenter(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IConnectionManager connectionManager) 
+        public MessageCenter(IServiceProvider serviceProvider,
+                             ILoggerFactory loggerFactory,
+                             IConnectionManager connectionManager) 
         {
             this.serviceProvider = serviceProvider;
             this.loggerFactory = loggerFactory;
@@ -117,7 +121,7 @@ namespace F1.Core.Message
             }
         }
 
-        public void OnReceivedMessage(InboundMessage message)
+        public void OnReceiveMessage(InboundMessage message)
         {
             if (this.logger.IsEnabled(LogLevel.Trace)) 
             {
@@ -134,6 +138,20 @@ namespace F1.Core.Message
                 this.pendingProcessCounter.Inc();
                 Monitor.Pulse(this.mutex);
             }
+        }
+
+        public void RegisterUserMessageCallback(Func<string, string, InboundMessage, bool> fn) 
+        {
+            this.userMessageCallback = fn;
+        }
+
+        public bool OnReceiveUserMessage(string type, string actorID, InboundMessage message) 
+        {
+            if (this.userMessageCallback != null)
+            {
+                return this.userMessageCallback(type, actorID, message);
+            }
+            return false;
         }
 
         public void SendMessage(OutboundMessage message)
