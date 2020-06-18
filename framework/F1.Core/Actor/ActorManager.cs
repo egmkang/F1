@@ -34,7 +34,7 @@ namespace F1.Core.Actor
                             RpcMetadata rpcMetadata,
                             IMessageCenter messageCenter,
                             IPlacement placement
-                            ) 
+                            )
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
             this.actorFactory = actorFactory;
@@ -48,10 +48,10 @@ namespace F1.Core.Actor
             _ = Util.RunTaskTimer(this.ActorGC, ActorGCInterval);
         }
 
-        public Actor GetActor(string type, string uniqueID) 
+        public Actor GetActor(string type, string uniqueID)
         {
             this.rpcMetadata.RpcServerTypes.TryGetValue(type, out var serverType);
-            if (serverType == null) 
+            if (serverType == null)
             {
                 throw new Exception($"DestType:{type} not found");
             }
@@ -78,23 +78,23 @@ namespace F1.Core.Actor
             }
         }
 
-        private void ActorGC() 
+        private void ActorGC()
         {
             //暂定1分钟做一次GC
             //关掉半个小时内还未活跃的Actor
             var list = new List<(Type, string, Actor)>();
             var lastMessageTime = Platform.GetMilliSeconds() - ActorLifeTime;
 
-            foreach (var ((type, actorID), actor) in this.actorInstances) 
+            foreach (var ((type, actorID), actor) in this.actorInstances)
             {
-                if (actor.Context.LastMessageTime < lastMessageTime) 
+                if (actor.Context.LastMessageTime < lastMessageTime)
                 {
                     list.Add((type, actorID, actor));
                 }
             }
-            foreach (var (type, actorID, actor) in list) 
+            foreach (var (type, actorID, actor) in list)
             {
-                if (actor.Context.LastMessageTime < lastMessageTime) 
+                if (actor.Context.LastMessageTime < lastMessageTime)
                 {
                     this.actorInstances.TryRemove((type, actorID), out var _);
                     actor.Context.Stop();
@@ -103,7 +103,7 @@ namespace F1.Core.Actor
             }
         }
 
-        private async Task ProcessRequestRpcSlowPath(InboundMessage inboundMessage) 
+        private async Task ProcessRequestRpcSlowPath(InboundMessage inboundMessage)
         {
             var requestRpc = inboundMessage.Inner as RequestRpc;
             Contract.Assert(requestRpc != null);
@@ -131,7 +131,7 @@ namespace F1.Core.Actor
                     {
                         ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorPositionNotFound, "PositionNotFound");
                     }
-                    else 
+                    else
                     {
                         ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorHasNewPosition, "Actor has new position");
                     }
@@ -143,16 +143,16 @@ namespace F1.Core.Actor
             }
         }
 
-        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage) 
+        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage)
         {
-            var response = new ResponseRpcHeartBeat() 
+            var response = new ResponseRpcHeartBeat()
             {
-                 MilliSeconds = (inboundMessage.Inner as RequestRpcHeartBeat).MilliSeconds,
+                MilliSeconds = (inboundMessage.Inner as RequestRpcHeartBeat).MilliSeconds,
             };
             this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, response));
         }
 
-        private void DisptachRequestRPC(InboundMessage inboundMessage, RequestRpc requestRpc) 
+        private void DisptachRequestRPC(InboundMessage inboundMessage, RequestRpc requestRpc)
         {
             var actor = this.GetActor(requestRpc.ActorType, requestRpc.ActorId);
             if (actor == null)
@@ -162,6 +162,37 @@ namespace F1.Core.Actor
                 return;
             }
             actor.Context.SendMail(inboundMessage);
+        }
+
+        /// <summary>
+        /// 把用户消息发送到Actor的队列里面去
+        /// </summary>
+        /// <param name="inboundMessage">用户消息</param>
+        /// <param name="type">Actor的类型</param>
+        /// <param name="actorID">Actor的ID</param>
+        /// <returns>成功返回true</returns>
+        public bool DispatchUserMessage(InboundMessage inboundMessage, string type, string actorID) 
+        {
+            var args = pdPositionArgsCache.Value;
+            args.ActorType = type;
+            args.ActorID = actorID;
+            args.TTL = 0;
+
+            try 
+            {
+                var destPosition = this.placement.FindActorPositionInCache(args);
+                if (destPosition != null && destPosition.ServerID == this.placement.CurrentServerID)
+                {
+                    var actor = this.GetActor(type, actorID);
+                    actor.Context.SendMail(inboundMessage);
+                    return true;
+                }
+            }
+            catch (Exception e) 
+            {
+                this.logger.LogError("DispatchUserMessage, Actor:{0}/{1}, Error:{2}", type, actorID, e.ToString());
+            }
+            return false;
         }
 
         static ThreadLocal<PlacementFindActorPositionRequest> pdPositionArgsCache = new ThreadLocal<PlacementFindActorPositionRequest>(() => new PlacementFindActorPositionRequest());

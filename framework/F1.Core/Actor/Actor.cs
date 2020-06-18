@@ -62,7 +62,12 @@ namespace F1.Core.Actor
             return Task.CompletedTask;
         }
 
-        protected virtual Task ProcessInputMessage(InboundMessage msg) 
+        /// <summary>
+        /// 用户自己派发消息
+        /// </summary>
+        /// <param name="inboundMessage">进来的消息</param>
+        /// <returns>返回值, 只能是Task类型</returns>
+        protected virtual Task ProcessUserInputMessage(InboundMessage msg) 
         {
             return Task.CompletedTask;
         }
@@ -72,14 +77,9 @@ namespace F1.Core.Actor
             return this.ProxyFactory.CreateProxy<T>(name, this.Context);
         }
 
-        /// <summary>
-        /// 用户自己派发消息
-        /// </summary>
-        /// <param name="inboundMessage">进来的消息</param>
-        /// <returns>返回值, 只能是Task类型</returns>
-        internal virtual Task DispatchUserMessage(InboundMessage inboundMessage)
+        internal Task DispatchUserMessage(InboundMessage inboundMessage)
         {
-            return Task.CompletedTask;
+            return this.ProcessUserInputMessage(inboundMessage);
         }
 
         public ActorTimer RegisterTimer(Action<ActorTimer> fn, int interval) 
