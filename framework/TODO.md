@@ -39,6 +39,7 @@ C# Framework:
         * [x] UserMessage(not tested)
     * [x] ActorLifeTime
     * [x] ActorClientProxyFactory
+    * [ ] Multi Interface(一个Actor实现多个接口)
 * [ ] Virtual Actor
     * [ ] impl
     * [ ] sample
