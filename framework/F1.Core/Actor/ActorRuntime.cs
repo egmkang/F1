@@ -143,10 +143,10 @@ namespace F1.Core.Actor
                 server_info.Address = $"{Platform.GetLocalAddresss()}:{port}";
 
                 var serverTypes = this.rpcMetadata.RpcServerTypes;
-                foreach (var (key, _) in serverTypes)
+                foreach (var (key, value) in serverTypes)
                 {
-                    server_info.ActorType.Add(key);
-                    logger.LogTrace("Register ServiceType:{0}", key);
+                    server_info.ActorType.Add(value.Name);
+                    logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
                 }
 
                 var lease_id = await placement.RegisterServerAsync(server_info);

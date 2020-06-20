@@ -3,7 +3,7 @@ package RpcMessage;
 
 message RequestRpc
 {
-string actor_type	= 1;	//要求actor_type在一个扁平的空间内是唯一的
+string actor_type	= 1;	//actor的接口类型
 string actor_id		= 2;	//该ID不要包含actor_type和domain信息
 string method       = 3;	//函数名
 bytes args          = 4;	//收入参数(序列化暂时还未想好)

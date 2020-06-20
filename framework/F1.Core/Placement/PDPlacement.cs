@@ -87,7 +87,7 @@ namespace F1.Core.Placement
 
         public PlacementFindActorPositionResponse FindActorPositionInCache(PlacementFindActorPositionRequest request)
         {
-            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
             var pos = this.positionLru.Get(uniqueName);
             if (pos != null && this.IsServerValid(pos.ServerID))
             {
@@ -99,7 +99,7 @@ namespace F1.Core.Placement
         public async Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request)
         {
             //check actor position cache
-            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
 
             var pos = this.positionLru.Get(uniqueName);
             if (pos != null && this.IsServerValid(pos.ServerID))
@@ -112,7 +112,7 @@ namespace F1.Core.Placement
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("FindActorPositionAsync fail, ActorType:{0}, ActorID:{1}, TTL:{2}, ErrorMessage:{3}",
-                    request.ActorType, request.ActorID, request.TTL, str);
+                    request.ActorImplType, request.ActorID, request.TTL, str);
                 throw new PlacementException(code, str); 
             }
 
@@ -416,7 +416,7 @@ namespace F1.Core.Placement
 
         public void ClearActorPositionCache(PlacementFindActorPositionRequest request)
         {
-            var uniqueName = $"{request.ActorType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
             this.positionLru.Remove(uniqueName);
             this.logger.LogInformation("ClearActorPosition, UniqueName:{0}", uniqueName);
         }

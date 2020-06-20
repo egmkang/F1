@@ -35,7 +35,12 @@ namespace F1.Core.RPC
         /// <summary>
         /// Proxy的interface类型
         /// </summary>
-        public Type Type { get; internal set; }
+        public Type InterfaceType { get; internal set; }
+
+        /// <summary>
+        /// 实现interface的类型
+        /// </summary>
+        public Type ImplType { get; internal set; }
 
         public PlacementFindActorPositionRequest PositionRequest { get; internal set; }
 
@@ -48,10 +53,10 @@ namespace F1.Core.RPC
 
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
-            var handler = this.DispatchProxyFactory.GetProxyClientHandler(this.Type, targetMethod);
+            var handler = this.DispatchProxyFactory.GetProxyClientHandler(this.InterfaceType, targetMethod);
             if (handler == null) 
             {
-                this.Logger.LogError("Actor:{0}, Type:{1}, Method:{2} not found", this.ActorUniqueID, this.Type.Name, targetMethod.Name);
+                this.Logger.LogError("Actor:{0}, Type:{1}, Method:{2} not found", this.ActorUniqueID, this.InterfaceType.Name, targetMethod.Name);
                 throw new RpcDispatchException("Method not found");
             }
 
@@ -61,7 +66,7 @@ namespace F1.Core.RPC
             var currentRequest = this.Context == null ? (0, 0) : this.Context.CurrentRequest;
             var request = new RequestRpc()
             {
-                ActorType = this.PositionRequest.ActorType,
+                ActorType = this.PositionRequest.ActorInterfaceType,
                 ActorId = this.PositionRequest.ActorID,
                 Method = handler.Name,
 

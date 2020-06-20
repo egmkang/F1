@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
@@ -10,7 +10,6 @@ using RpcMessage;
 using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Abstractions.Network;
-using System.Collections.Generic;
 using F1.Abstractions.Placement;
 
 
@@ -109,9 +108,16 @@ namespace F1.Core.Actor
             var requestRpc = inboundMessage.Inner as RequestRpc;
             Contract.Assert(requestRpc != null);
 
+            var implType = this.rpcMetadata.GetServerType(requestRpc.ActorType);
+            if (implType == null) 
+            {
+                this.logger.LogError("DispatchRpcRequestSlowPath, InterfaceType:{0} not found ImplType", requestRpc.ActorType);
+                return;
+            }
             var args = new PlacementFindActorPositionRequest()
             {
-                ActorType = requestRpc.ActorType,
+                ActorInterfaceType = requestRpc.ActorType,
+                ActorImplType = implType.Name,
                 ActorID = requestRpc.ActorId,
                 TTL = 0,
             };
@@ -174,8 +180,16 @@ namespace F1.Core.Actor
         /// <returns>成功返回true</returns>
         public bool DispatchUserMessage(InboundMessage inboundMessage, string type, string actorID) 
         {
+            var implType = this.rpcMetadata.GetServerType(type);
+            if (implType == null) 
+            {
+                this.logger.LogError("DispatchUserMessage, InterfaceType:{0} not found ImplType:{1}", type);
+                return false;
+            }
+
             var args = pdPositionArgsCache.Value;
-            args.ActorType = type;
+            args.ActorInterfaceType = type;
+            args.ActorImplType = "";
             args.ActorID = actorID;
             args.TTL = 0;
 
@@ -208,8 +222,15 @@ namespace F1.Core.Actor
             }
             try
             {
+                var implType = this.rpcMetadata.GetServerType(requestRpc.ActorType);
+                if (implType == null) 
+                {
+                    this.logger.LogError("ProcessRequestRpc, InterfaceType:{0} not found ImplType", requestRpc.ActorType);
+                    return;
+                }
                 var args = pdPositionArgsCache.Value;
-                args.ActorType = requestRpc.ActorType;
+                args.ActorInterfaceType = requestRpc.ActorType;
+                args.ActorImplType = implType.Name;
                 args.ActorID = requestRpc.ActorId;
                 args.TTL = 0;
 

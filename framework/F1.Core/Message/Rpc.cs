@@ -96,7 +96,7 @@ namespace RpcMessage {
     public const int ActorTypeFieldNumber = 1;
     private string actorType_ = "";
     /// <summary>
-    ///要求actor_type在一个扁平的空间内是唯一的
+    ///actor的接口类型
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string ActorType {

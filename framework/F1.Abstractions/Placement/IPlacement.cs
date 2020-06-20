@@ -93,10 +93,14 @@ namespace F1.Abstractions.Placement
     public class PlacementFindActorPositionRequest 
     {
         /// <summary>
-        /// Actor的类型, 参见ActorType
+        /// Actor的实现类型
         /// </summary>
         [JsonProperty("actor_type")]
-        public string ActorType = "";
+        public string ActorImplType = "";
+        /// <summary>
+        /// Actor的接口类型, 参见ActorType
+        /// </summary>
+        public string ActorInterfaceType = "";
         /// <summary>
         /// Actor的ID, 在该ActorType下必须唯一
         /// </summary>

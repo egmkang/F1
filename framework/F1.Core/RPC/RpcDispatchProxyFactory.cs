@@ -65,6 +65,7 @@ namespace F1.Core.RPC
         //这边可以把proxy缓存起来
         public T CreateProxy<T>(string actor = null, IActorContext context = null)
         {
+            var interfaceName = typeof(T).Name;
             var o = DispatchProxy.Create<T, RpcDispatchProxy>();
             var proxy = o as RpcDispatchProxy;
 
@@ -74,19 +75,28 @@ namespace F1.Core.RPC
             proxy.Logger = this.logger;
             proxy.Serializer = this.serializer;
 
+            //获取实现类型, 在pd上面通过实现类型来定位
+            var implType = this.metadata.GetServerType(interfaceName);
+            if (implType == null) 
+            {
+                throw new Exception($"ActorType:{interfaceName} not found");
+            }
             proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
-                ActorType = typeof(T).Name,
+                ActorImplType = implType.Name,
+                ActorInterfaceType = interfaceName,
                 ActorID = actor,
                 TTL = 0,
             };
             proxy.ActorUniqueID = actor;
             proxy.Context = context;
-            proxy.Type = typeof(T);
+            proxy.InterfaceType = typeof(T);
+            proxy.ImplType = implType;
+
 
             if (this.logger.IsEnabled(LogLevel.Trace))
             {
-                this.logger.LogTrace("CreateProxy, Type:{0}, Actor:{1}", proxy.Type.Name, actor);
+                this.logger.LogTrace("CreateProxy, Type:{0}, Actor:{1}", interfaceName, actor);
             }
 
             return o;

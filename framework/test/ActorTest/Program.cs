@@ -8,6 +8,7 @@ using F1.Core.Core;
 using F1.Core.RPC;
 using F1.Core.Actor;
 using F1.Abstractions.Actor;
+using NLog.Fluent;
 
 namespace ActorTest
 {
@@ -74,6 +75,32 @@ namespace ActorTest
         }
     }
 
+    [Rpc]
+    public interface ITestMultiInterface1 
+    {
+        public Task<int> GetNext1();
+    }
+
+    [Rpc]
+    public interface ITestMultiInterface2 
+    {
+        public Task<int> GetNext2();
+    }
+
+    public class TestMultiInterfaceImpl : Actor, ITestMultiInterface1, ITestMultiInterface2
+    {
+        private int currentValue = 0;
+        public Task<int> GetNext1()
+        {
+            return Task.FromResult(currentValue++);
+        }
+
+        public Task<int> GetNext2()
+        {
+            return Task.FromResult(currentValue++);
+        }
+    }
+
     class Program
     {
 
@@ -117,6 +144,24 @@ namespace ActorTest
             logger.LogInformation("RandomIntAsync, ID:{1}, Result:{0}", randomNumber, id);
         }
 
+        static async Task RunMultiInterfaceImpl(IServiceProvider serviceProvider, string id) 
+        {
+            await Task.Delay(25 * 1000);
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("test");
+            var clientFactory = serviceProvider.GetRequiredService<IActorClientFactory>();
+
+            var proxy1 = clientFactory.GetActorProxy<ITestMultiInterface1>(id);
+            var proxy2 = clientFactory.GetActorProxy<ITestMultiInterface2>(id);
+
+            var next1 = await proxy1.GetNext1();
+            var next2 = await proxy2.GetNext2();
+            var next3 = await proxy1.GetNext1();
+            var next4 = await proxy2.GetNext2();
+
+            logger.LogInformation("NextNumbers:{0}, {1}, {2}, {3}", next1, next2, next3, next4);
+        }
+
         static async Task Main(string[] args)
         {
             ProfileOptimization.SetProfileRoot("./profile");
@@ -138,6 +183,7 @@ namespace ActorTest
             _ = RunTest(builder.ServiceProvider, "B");
             _ = RunReentrantTest(builder.ServiceProvider, "CCCC", "DDDD");
             _ = RunTimerTest(builder.ServiceProvider, "A", 5);
+            _ = RunMultiInterfaceImpl(builder.ServiceProvider, "MMM");
 
             while (true)
             {
