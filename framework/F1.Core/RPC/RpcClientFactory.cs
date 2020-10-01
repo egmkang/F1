@@ -13,6 +13,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Message;
 using F1.Core.Utils;
 using F1.Core.Network;
+using F1.Core.Gateway;
 
 namespace F1.Core.RPC
 {
@@ -26,6 +27,7 @@ namespace F1.Core.RPC
         private readonly IMessageHandlerFactory messageHandlerFactory;
         private readonly UniqueSequence uniqueSequence;
         private readonly TaskCompletionSourceManager taskCompletionSourceManager;
+        private readonly GatewayClientFactory gatewayClientFactory;
         private readonly LRU<long, PlacementActorHostInfo> recentRemovedServer = new LRU<long, PlacementActorHostInfo>(1024);
         //ServerID => IChannel
         private readonly ConcurrentDictionary<long, WeakReference<IChannel>> clients = new ConcurrentDictionary<long, WeakReference<IChannel>>();
@@ -36,7 +38,8 @@ namespace F1.Core.RPC
             IClientConnectionFactory connectionFactory,
             IMessageHandlerFactory messageHandlerFactory,
             UniqueSequence uniqueSequence,
-            TaskCompletionSourceManager taskCompletionSourceManager) 
+            TaskCompletionSourceManager taskCompletionSourceManager,
+            GatewayClientFactory gatewayClientFactory) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
@@ -45,6 +48,7 @@ namespace F1.Core.RPC
             this.messageHandlerFactory = messageHandlerFactory;
             this.uniqueSequence = uniqueSequence;
             this.taskCompletionSourceManager = taskCompletionSourceManager;
+            this.gatewayClientFactory = gatewayClientFactory;
 
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
@@ -55,18 +59,35 @@ namespace F1.Core.RPC
 
         private long NewSequenceID => this.uniqueSequence.GetNewSequence();
 
+        private bool IsGateway(PlacementActorHostInfo server) => server.ActorType.Count == 1 && server.ActorType[0] == GatewayConstant.ServiceGateway;
+
         private void OnAddServer(PlacementActorHostInfo server) 
         {
+            if (IsGateway(server)) 
+            {
+                this.gatewayClientFactory.OnAddServer(server);
+                return;
+            }
             this.TryConnectAsync(server);
         }
 
         private void OnRemoveServer(PlacementActorHostInfo server) 
         {
+            if (IsGateway(server)) 
+            {
+                this.gatewayClientFactory.OnRemoveServer(server);
+                return;
+            }
             this.recentRemovedServer.Add(server.ServerID, server);
             this.TryCloseCurrentClient(server.ServerID);
         }
         private void OnOfflineServer(PlacementActorHostInfo server)
         {
+            if (IsGateway(server)) 
+            {
+                this.gatewayClientFactory.OnOfflineServer(server);
+                return;
+            }
             //这边通过每次获取Actor位置的时候判断服务器是否下线来做的
             //所以暂时不需要处理
             //服务器要下线, 要把所有在这个服务器上的玩家清掉

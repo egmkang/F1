@@ -5,15 +5,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using F1.Abstractions;
 using F1.Abstractions.Network;
+using F1.Abstractions.Actor;
+using F1.Abstractions.RPC;
+using F1.Abstractions.Placement;
 using F1.Core.Network;
 using F1.Core.Message;
-using F1.Abstractions.Placement;
 using F1.Core.Placement;
 using F1.Core.Utils;
 using F1.Core.RPC;
-using F1.Abstractions.RPC;
+using F1.Core.Gateway;
 using F1.Core.Actor;
-using F1.Abstractions.Actor;
 
 namespace F1.Core.Core
 {
@@ -37,6 +38,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<DispatchHandler>();
             services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
             services.TryAddSingleton<TaskCompletionSourceManager>();
+            services.TryAddSingleton<GatewayClientFactory>();
             services.TryAddSingleton<RpcClientFactory>();
             services.TryAddSingleton<ActorFactory>();
             services.TryAddSingleton<ActorManager>();

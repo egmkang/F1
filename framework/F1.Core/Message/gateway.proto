@@ -1,6 +1,68 @@
 ﻿syntax="proto3";
 package GatewayMessage;
 
-message NewConnection
+//握手(其他服务器发给Gateway)
+message  RequestShakeHands
 {
+int64 server_id = 1;
+}
+
+message ResponseShakeHands
+{
+int64 server_id = 1;
+int64 gateway_id = 2;	//Gateway的ID
+}
+
+message RequestHeartBeat
+{
+fixed64 milli_second = 1;
+}
+
+message ResponseHeartBeat
+{
+fixed64 milli_second = 1;
+}
+
+
+//1. 新链接
+//2. 链接断开
+//3. 关闭链接
+message NotifyConnectionComing
+{
+fixed64 session_id = 1;
+
+string open_id = 2;
+fixed64 player_id = 3;
+bytes token = 4;
+}
+
+message NotifyConnectionAborted
+{
+fixed64 session_id = 1;
+}
+
+message RequestCloseConnection
+{
+fixed64 session_id = 1;
+}
+
+//1. 玩家新的消息
+//2. 发送消息给玩家
+message NotifyNewMessage
+{
+fixed64 session_id = 1;
+bytes msg = 2;
+}
+
+message RequestSendMessageToPlayer
+{
+repeated fixed64 session_ids = 1;
+bytes msg = 2;
+}
+
+//设置游戏玩家的地址
+message RequestSetGamePlayerLocation
+{
+fixed64 session_id = 1;
+fixed64 new_game_server = 2;
 }

@@ -10,6 +10,7 @@ C# Framework:
         * [x] Remove
         * [x] Offline
     * [x] Remove Domain
+    * [ ] Gateway
 * [x] Socket
     * [x] TcpServer
     * [x] TcpClient
@@ -18,9 +19,11 @@ C# Framework:
     * [x] MessageCenter
     * [x] SendingLoop
     * [x] MessageProcessLoop
+    * [ ] Auto Reconnect Client Factory
+        * [ ] Add/Remove
+        * [ ] HeartBeat
 * [ ] RPC
     * [x] ClientManager
-        * [ ] Client Reconnect
         * [x] Client Add/Remove
         * [x] HeartBeat
     * [x] Future/Promise
@@ -40,6 +43,10 @@ C# Framework:
     * [x] ActorLifeTime
     * [x] ActorClientProxyFactory
     * [x] Multi Interface
+    * [ ] Gateway
+        * [ ] Gateway Client
+        * [ ] Message Process
+    * [ ] Actor Model
 * [ ] Virtual Actor
     * [ ] impl
     * [ ] sample
