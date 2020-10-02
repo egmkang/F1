@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AspectCore.Extensions.Reflection;
 using Microsoft.Extensions.Logging;
+using F1.Abstractions.RPC;
 
 namespace F1.Core.RPC
 {

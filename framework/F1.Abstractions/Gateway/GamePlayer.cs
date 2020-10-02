@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using F1.Core.RPC;
+using F1.Abstractions.RPC;
 
-namespace F1.Core.GameActor
+namespace F1.Abstractions.GameActor
 {
     /// <summary>
     /// 游戏玩家对象, 比如一场战斗内的玩家对象, 和LogicPlayer可以在物理上分开

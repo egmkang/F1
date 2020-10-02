@@ -8,6 +8,7 @@ using F1.Core.Core;
 using F1.Core.RPC;
 using F1.Core.Actor;
 using F1.Abstractions.Actor;
+using F1.Abstractions.RPC;
 using NLog.Fluent;
 
 namespace ActorTest

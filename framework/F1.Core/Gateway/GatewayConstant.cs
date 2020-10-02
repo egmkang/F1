@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using F1.Core.GameActor;
+using F1.Abstractions.GameActor;
 
 namespace F1.Core.Gateway
 {

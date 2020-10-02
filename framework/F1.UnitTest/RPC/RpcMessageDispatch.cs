@@ -4,6 +4,7 @@ using Xunit;
 using F1.Core.RPC;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using F1.Abstractions.RPC;
 
 namespace F1.UnitTest.RPC
 {
