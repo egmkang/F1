@@ -43,7 +43,7 @@ namespace F1.Core.Actor
         public long TickCount => this.tickCount;
         public bool IsCancel => this.cancel;
 
-        internal async Task Tick() 
+        internal void Tick() 
         {
             if (this.IsCancel) return;
 

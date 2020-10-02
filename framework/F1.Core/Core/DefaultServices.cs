@@ -38,6 +38,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<DispatchHandler>();
             services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
             services.TryAddSingleton<TaskCompletionSourceManager>();
+            services.TryAddSingleton<ClientConnectionPool>();
             services.TryAddSingleton<GatewayClientFactory>();
             services.TryAddSingleton<RpcClientFactory>();
             services.TryAddSingleton<ActorFactory>();

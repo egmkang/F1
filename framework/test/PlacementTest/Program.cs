@@ -87,7 +87,7 @@ namespace PlacementTest
                     logger.LogInformation("offline : {0}", offline.ServerID);
                 });
 
-            placement.StartPullingAsync();
+            _ = placement.StartPullingAsync();
             int count = 0;
             while (count < 20) 
             {

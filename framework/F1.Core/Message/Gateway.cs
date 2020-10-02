@@ -28,16 +28,16 @@ namespace GatewayMessage {
             "cXVlc3RTaGFrZUhhbmRzEhEKCXNlcnZlcl9pZBgBIAEoAyI7ChJSZXNwb25z",
             "ZVNoYWtlSGFuZHMSEQoJc2VydmVyX2lkGAEgASgDEhIKCmdhdGV3YXlfaWQY",
             "AiABKAMiKAoQUmVxdWVzdEhlYXJ0QmVhdBIUCgxtaWxsaV9zZWNvbmQYASAB",
-            "KAYiKQoRUmVzcG9uc2VIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgG",
+            "KBAiKQoRUmVzcG9uc2VIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgQ",
             "Il8KFk5vdGlmeUNvbm5lY3Rpb25Db21pbmcSEgoKc2Vzc2lvbl9pZBgBIAEo",
-            "BhIPCgdvcGVuX2lkGAIgASgJEhEKCXBsYXllcl9pZBgDIAEoBhINCgV0b2tl",
+            "EBIPCgdvcGVuX2lkGAIgASgJEhEKCXBsYXllcl9pZBgDIAEoEBINCgV0b2tl",
             "bhgEIAEoDCItChdOb3RpZnlDb25uZWN0aW9uQWJvcnRlZBISCgpzZXNzaW9u",
-            "X2lkGAEgASgGIiwKFlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lv",
-            "bl9pZBgBIAEoBiIzChBOb3RpZnlOZXdNZXNzYWdlEhIKCnNlc3Npb25faWQY",
-            "ASABKAYSCwoDbXNnGAIgASgMIj4KGlJlcXVlc3RTZW5kTWVzc2FnZVRvUGxh",
-            "eWVyEhMKC3Nlc3Npb25faWRzGAEgAygGEgsKA21zZxgCIAEoDCJLChxSZXF1",
-            "ZXN0U2V0R2FtZVBsYXllckxvY2F0aW9uEhIKCnNlc3Npb25faWQYASABKAYS",
-            "FwoPbmV3X2dhbWVfc2VydmVyGAIgASgGYgZwcm90bzM="));
+            "X2lkGAEgASgQIiwKFlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lv",
+            "bl9pZBgBIAEoECIzChBOb3RpZnlOZXdNZXNzYWdlEhIKCnNlc3Npb25faWQY",
+            "ASABKBASCwoDbXNnGAIgASgMIj4KGlJlcXVlc3RTZW5kTWVzc2FnZVRvUGxh",
+            "eWVyEhMKC3Nlc3Npb25faWRzGAEgAygQEgsKA21zZxgCIAEoDCJLChxSZXF1",
+            "ZXN0U2V0R2FtZVBsYXllckxvY2F0aW9uEhIKCnNlc3Npb25faWQYASABKBAS",
+            "FwoPbmV3X2dhbWVfc2VydmVyGAIgASgQYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -385,9 +385,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "milli_second" field.</summary>
     public const int MilliSecondFieldNumber = 1;
-    private ulong milliSecond_;
+    private long milliSecond_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong MilliSecond {
+    public long MilliSecond {
       get { return milliSecond_; }
       set {
         milliSecond_ = value;
@@ -414,7 +414,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (MilliSecond != 0UL) hash ^= MilliSecond.GetHashCode();
+      if (MilliSecond != 0L) hash ^= MilliSecond.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -428,9 +428,9 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (MilliSecond != 0UL) {
+      if (MilliSecond != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(MilliSecond);
+        output.WriteSFixed64(MilliSecond);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -440,7 +440,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (MilliSecond != 0UL) {
+      if (MilliSecond != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -454,7 +454,7 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.MilliSecond != 0UL) {
+      if (other.MilliSecond != 0L) {
         MilliSecond = other.MilliSecond;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -469,7 +469,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            MilliSecond = input.ReadFixed64();
+            MilliSecond = input.ReadSFixed64();
             break;
           }
         }
@@ -514,9 +514,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "milli_second" field.</summary>
     public const int MilliSecondFieldNumber = 1;
-    private ulong milliSecond_;
+    private long milliSecond_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong MilliSecond {
+    public long MilliSecond {
       get { return milliSecond_; }
       set {
         milliSecond_ = value;
@@ -543,7 +543,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (MilliSecond != 0UL) hash ^= MilliSecond.GetHashCode();
+      if (MilliSecond != 0L) hash ^= MilliSecond.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -557,9 +557,9 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (MilliSecond != 0UL) {
+      if (MilliSecond != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(MilliSecond);
+        output.WriteSFixed64(MilliSecond);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -569,7 +569,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (MilliSecond != 0UL) {
+      if (MilliSecond != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -583,7 +583,7 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.MilliSecond != 0UL) {
+      if (other.MilliSecond != 0L) {
         MilliSecond = other.MilliSecond;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -598,7 +598,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            MilliSecond = input.ReadFixed64();
+            MilliSecond = input.ReadSFixed64();
             break;
           }
         }
@@ -651,9 +651,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_id" field.</summary>
     public const int SessionIdFieldNumber = 1;
-    private ulong sessionId_;
+    private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SessionId {
+    public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
@@ -673,9 +673,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "player_id" field.</summary>
     public const int PlayerIdFieldNumber = 3;
-    private ulong playerId_;
+    private long playerId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong PlayerId {
+    public long PlayerId {
       get { return playerId_; }
       set {
         playerId_ = value;
@@ -716,9 +716,9 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (SessionId != 0UL) hash ^= SessionId.GetHashCode();
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (OpenId.Length != 0) hash ^= OpenId.GetHashCode();
-      if (PlayerId != 0UL) hash ^= PlayerId.GetHashCode();
+      if (PlayerId != 0L) hash ^= PlayerId.GetHashCode();
       if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -733,17 +733,17 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(SessionId);
+        output.WriteSFixed64(SessionId);
       }
       if (OpenId.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(OpenId);
       }
-      if (PlayerId != 0UL) {
+      if (PlayerId != 0L) {
         output.WriteRawTag(25);
-        output.WriteFixed64(PlayerId);
+        output.WriteSFixed64(PlayerId);
       }
       if (Token.Length != 0) {
         output.WriteRawTag(34);
@@ -757,13 +757,13 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         size += 1 + 8;
       }
       if (OpenId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(OpenId);
       }
-      if (PlayerId != 0UL) {
+      if (PlayerId != 0L) {
         size += 1 + 8;
       }
       if (Token.Length != 0) {
@@ -780,13 +780,13 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.SessionId != 0UL) {
+      if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
       if (other.OpenId.Length != 0) {
         OpenId = other.OpenId;
       }
-      if (other.PlayerId != 0UL) {
+      if (other.PlayerId != 0L) {
         PlayerId = other.PlayerId;
       }
       if (other.Token.Length != 0) {
@@ -804,7 +804,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            SessionId = input.ReadFixed64();
+            SessionId = input.ReadSFixed64();
             break;
           }
           case 18: {
@@ -812,7 +812,7 @@ namespace GatewayMessage {
             break;
           }
           case 25: {
-            PlayerId = input.ReadFixed64();
+            PlayerId = input.ReadSFixed64();
             break;
           }
           case 34: {
@@ -861,9 +861,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_id" field.</summary>
     public const int SessionIdFieldNumber = 1;
-    private ulong sessionId_;
+    private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SessionId {
+    public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
@@ -890,7 +890,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (SessionId != 0UL) hash ^= SessionId.GetHashCode();
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -904,9 +904,9 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(SessionId);
+        output.WriteSFixed64(SessionId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -916,7 +916,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -930,7 +930,7 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.SessionId != 0UL) {
+      if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -945,7 +945,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            SessionId = input.ReadFixed64();
+            SessionId = input.ReadSFixed64();
             break;
           }
         }
@@ -990,9 +990,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_id" field.</summary>
     public const int SessionIdFieldNumber = 1;
-    private ulong sessionId_;
+    private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SessionId {
+    public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
@@ -1019,7 +1019,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (SessionId != 0UL) hash ^= SessionId.GetHashCode();
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1033,9 +1033,9 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(SessionId);
+        output.WriteSFixed64(SessionId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1045,7 +1045,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -1059,7 +1059,7 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.SessionId != 0UL) {
+      if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1074,7 +1074,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            SessionId = input.ReadFixed64();
+            SessionId = input.ReadSFixed64();
             break;
           }
         }
@@ -1124,9 +1124,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_id" field.</summary>
     public const int SessionIdFieldNumber = 1;
-    private ulong sessionId_;
+    private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SessionId {
+    public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
@@ -1165,7 +1165,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (SessionId != 0UL) hash ^= SessionId.GetHashCode();
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1180,9 +1180,9 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(SessionId);
+        output.WriteSFixed64(SessionId);
       }
       if (Msg.Length != 0) {
         output.WriteRawTag(18);
@@ -1196,7 +1196,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         size += 1 + 8;
       }
       if (Msg.Length != 0) {
@@ -1213,7 +1213,7 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.SessionId != 0UL) {
+      if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
       if (other.Msg.Length != 0) {
@@ -1231,7 +1231,7 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            SessionId = input.ReadFixed64();
+            SessionId = input.ReadSFixed64();
             break;
           }
           case 18: {
@@ -1281,11 +1281,11 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_ids" field.</summary>
     public const int SessionIdsFieldNumber = 1;
-    private static readonly pb::FieldCodec<ulong> _repeated_sessionIds_codec
-        = pb::FieldCodec.ForFixed64(10);
-    private readonly pbc::RepeatedField<ulong> sessionIds_ = new pbc::RepeatedField<ulong>();
+    private static readonly pb::FieldCodec<long> _repeated_sessionIds_codec
+        = pb::FieldCodec.ForSFixed64(10);
+    private readonly pbc::RepeatedField<long> sessionIds_ = new pbc::RepeatedField<long>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<ulong> SessionIds {
+    public pbc::RepeatedField<long> SessionIds {
       get { return sessionIds_; }
     }
 
@@ -1434,9 +1434,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "session_id" field.</summary>
     public const int SessionIdFieldNumber = 1;
-    private ulong sessionId_;
+    private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong SessionId {
+    public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
@@ -1445,9 +1445,9 @@ namespace GatewayMessage {
 
     /// <summary>Field number for the "new_game_server" field.</summary>
     public const int NewGameServerFieldNumber = 2;
-    private ulong newGameServer_;
+    private long newGameServer_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong NewGameServer {
+    public long NewGameServer {
       get { return newGameServer_; }
       set {
         newGameServer_ = value;
@@ -1475,8 +1475,8 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (SessionId != 0UL) hash ^= SessionId.GetHashCode();
-      if (NewGameServer != 0UL) hash ^= NewGameServer.GetHashCode();
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
+      if (NewGameServer != 0L) hash ^= NewGameServer.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1490,13 +1490,13 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         output.WriteRawTag(9);
-        output.WriteFixed64(SessionId);
+        output.WriteSFixed64(SessionId);
       }
-      if (NewGameServer != 0UL) {
+      if (NewGameServer != 0L) {
         output.WriteRawTag(17);
-        output.WriteFixed64(NewGameServer);
+        output.WriteSFixed64(NewGameServer);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1506,10 +1506,10 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (SessionId != 0UL) {
+      if (SessionId != 0L) {
         size += 1 + 8;
       }
-      if (NewGameServer != 0UL) {
+      if (NewGameServer != 0L) {
         size += 1 + 8;
       }
       if (_unknownFields != null) {
@@ -1523,10 +1523,10 @@ namespace GatewayMessage {
       if (other == null) {
         return;
       }
-      if (other.SessionId != 0UL) {
+      if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
-      if (other.NewGameServer != 0UL) {
+      if (other.NewGameServer != 0L) {
         NewGameServer = other.NewGameServer;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1541,11 +1541,11 @@ namespace GatewayMessage {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            SessionId = input.ReadFixed64();
+            SessionId = input.ReadSFixed64();
             break;
           }
           case 17: {
-            NewGameServer = input.ReadFixed64();
+            NewGameServer = input.ReadSFixed64();
             break;
           }
         }

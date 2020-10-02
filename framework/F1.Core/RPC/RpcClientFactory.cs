@@ -19,36 +19,30 @@ namespace F1.Core.RPC
 {
     internal class RpcClientFactory
     {
-        private const int MaxRetryInterval = 5;
         private readonly IPlacement placement;
         private readonly IMessageCenter messageCenter;
         private readonly ILogger logger;
-        private readonly IClientConnectionFactory connectionFactory;
-        private readonly IMessageHandlerFactory messageHandlerFactory;
         private readonly UniqueSequence uniqueSequence;
         private readonly TaskCompletionSourceManager taskCompletionSourceManager;
         private readonly GatewayClientFactory gatewayClientFactory;
-        private readonly LRU<long, PlacementActorHostInfo> recentRemovedServer = new LRU<long, PlacementActorHostInfo>(1024);
-        //ServerID => IChannel
-        private readonly ConcurrentDictionary<long, WeakReference<IChannel>> clients = new ConcurrentDictionary<long, WeakReference<IChannel>>();
+        private readonly ClientConnectionPool clientConnectionPool;
+
 
         public RpcClientFactory(ILoggerFactory loggerFactory,
             IMessageCenter messageCenter,
             IPlacement placement,
-            IClientConnectionFactory connectionFactory,
-            IMessageHandlerFactory messageHandlerFactory,
             UniqueSequence uniqueSequence,
             TaskCompletionSourceManager taskCompletionSourceManager,
-            GatewayClientFactory gatewayClientFactory) 
+            GatewayClientFactory gatewayClientFactory,
+            ClientConnectionPool clientConnectionPool) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
             this.placement = placement;
-            this.connectionFactory = connectionFactory;
-            this.messageHandlerFactory = messageHandlerFactory;
             this.uniqueSequence = uniqueSequence;
             this.taskCompletionSourceManager = taskCompletionSourceManager;
             this.gatewayClientFactory = gatewayClientFactory;
+            this.clientConnectionPool = clientConnectionPool;
 
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
@@ -68,7 +62,9 @@ namespace F1.Core.RPC
                 this.gatewayClientFactory.OnAddServer(server);
                 return;
             }
-            this.TryConnectAsync(server);
+            this.clientConnectionPool.OnAddServer(server.ServerID,
+                IPEndPoint.Parse(server.Address),
+                () => new RequestRpcHeartBeat() { MilliSeconds = Platform.GetMilliSeconds() });
         }
 
         private void OnRemoveServer(PlacementActorHostInfo server) 
@@ -78,8 +74,7 @@ namespace F1.Core.RPC
                 this.gatewayClientFactory.OnRemoveServer(server);
                 return;
             }
-            this.recentRemovedServer.Add(server.ServerID, server);
-            this.TryCloseCurrentClient(server.ServerID);
+            this.clientConnectionPool.OnRemoveServer(server.ServerID);
         }
         private void OnOfflineServer(PlacementActorHostInfo server)
         {
@@ -92,96 +87,6 @@ namespace F1.Core.RPC
             //所以暂时不需要处理
             //服务器要下线, 要把所有在这个服务器上的玩家清掉
             //但是自己的不能清掉
-        }
-
-        const int HeartBeatInterval = 5000;
-        private async void TrySendHeatBeat(IChannel channel) 
-        {
-            var sessionInfo = channel.GetSessionInfo();
-
-            while (sessionInfo.IsActive)
-            {
-                if (Platform.GetMilliSeconds() - sessionInfo.ActiveTime > 3 * HeartBeatInterval) 
-                {
-                    this.logger.LogError("HearBeatTimeOut, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, TimeOut:{3}",
-                        sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, Platform.GetMilliSeconds() - sessionInfo.ActiveTime);
-
-                    this.TryCloseCurrentClient(sessionInfo.ServerID);
-                    break;
-                }
-
-                //this.logger.LogInformation("TrySendHeartBeat");
-                var msg = new OutboundMessage(channel, new RequestRpcHeartBeat() 
-                {
-                     MilliSeconds = Platform.GetMilliSeconds(),
-                });
-                sessionInfo.PutOutboundMessage(msg);
-
-                await Task.Delay(HeartBeatInterval);
-            }
-        }
-
-        private void TryConnectAsync(PlacementActorHostInfo server)
-        {
-            Task.Run(async () =>
-            {
-                this.logger.LogInformation("TryConnectAsync, ServerID:{0}, Address:{1} Start", server.ServerID, server.Address);
-
-                var reteyCount = 0;
-                while (true)
-                {
-                    try
-                    {
-                        if (this.recentRemovedServer.Get(server.ServerID) != null) 
-                        {
-                            this.logger.LogInformation("TryConnectAsync, ServerID:{0} has been canceled", server.ServerID);
-                            break;
-                        }
-                        var channel = await this.connectionFactory.ConnectAsync(IPEndPoint.Parse(server.Address), this.messageHandlerFactory);
-                        var sessionInfo = channel.GetSessionInfo();
-                        this.logger.LogInformation("TryConnectAsync, ServerID:{0}, Address:{1}, SessionID:{2}",
-                            server.ServerID, server.Address, sessionInfo.SessionID);
-
-                        sessionInfo.ServerID = server.ServerID;
-                        var weak = new WeakReference<IChannel>(channel);
-                        this.clients.AddOrUpdate(server.ServerID, weak, (_1, _2) => weak);
-
-                        this.TrySendHeatBeat(channel);
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        this.logger.LogError("TryConnectAsync, ServerID:{0}, Address:{1}, Exception:{2}",
-                            server.ServerID, server.Address, e.Message);
-                    }
-                    if (reteyCount >= MaxRetryInterval) reteyCount = MaxRetryInterval;
-                    await Task.Delay(reteyCount * 1000);
-                    reteyCount++;
-                }
-            });
-        }
-
-        private void TryCloseCurrentClient(long serverID) 
-        {
-            try
-            {
-                if (this.clients.TryGetValue(serverID, out var c) && c.TryGetTarget(out var channel))
-                {
-                    this.logger.LogInformation("TryCloseCurrentClient, ServerID:{1} SessionID:{0}",
-                        channel.GetSessionInfo().SessionID, serverID);
-                    channel.CloseAsync();
-
-                    this.clients.TryRemove(serverID, out var _);
-                }
-                else 
-                {
-                    this.logger.LogInformation("TryCloseCurrentClient, cannot find ServerID:{0}", serverID);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError("TryCloseCurrentClient, Exception:{0}", e.Message);
-            }
         }
 
         public async Task<ResponseRpc> TrySendRpcRequest(PlacementFindActorPositionRequest actor,
@@ -224,11 +129,7 @@ namespace F1.Core.RPC
 
         public IChannel GetChannelByServerID(long serverID) 
         {
-            if (this.clients.TryGetValue(serverID, out var c) && c.TryGetTarget(out var channel)) 
-            {
-                return channel;
-            }
-            return null;
+            return this.clientConnectionPool.GetChannelByServerID(serverID);
         }
 
         public Task<ResponseRpc> SendRpcMessage(IChannel channel, object message)

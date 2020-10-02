@@ -132,7 +132,7 @@ namespace F1.Core.Actor
             }
             catch (Exception e) 
             {
-                this.logger.LogCritical("Listen Port:{0} fail", port);
+                this.logger.LogCritical("Listen Port:{0} fail, Exception:{1}", port, e);
             }
 
             try

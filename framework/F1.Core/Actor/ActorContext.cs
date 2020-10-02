@@ -92,7 +92,7 @@ namespace F1.Core.Actor
             //actor只处理rpc请求和timer请求
             if (inboundMessage.Inner is ActorTimer timer)
             {
-                await timer.Tick();
+                timer.Tick();
             }
             else if (inboundMessage.Inner is RequestRpc requestRpc)
             {

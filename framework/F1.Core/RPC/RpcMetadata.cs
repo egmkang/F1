@@ -71,7 +71,7 @@ namespace F1.Core.RPC
                         rpcTypes.AddRange(implTypes);
                     }
                 }
-                catch (Exception e) { }
+                catch { }
             }
 
             foreach (var (define, impl) in rpcTypes)

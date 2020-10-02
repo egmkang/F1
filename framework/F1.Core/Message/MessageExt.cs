@@ -67,7 +67,7 @@ namespace F1.Core.Message
                     }
                     LoadParserFromAssembly(assembly);
                 }
-                catch (Exception e)
+                catch
                 {
                     //logger.Error("LoadAssembly, Exception:{0}, StackTrace:{1}", e.Message, e.StackTrace);
                 }
