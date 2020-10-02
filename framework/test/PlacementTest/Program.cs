@@ -95,7 +95,7 @@ namespace PlacementTest
                 count++;
             }
 
-            placement.StopPullingAsync();
+            _ = placement.StopPullingAsync();
             Console.WriteLine("Hello World!");
         }
     }

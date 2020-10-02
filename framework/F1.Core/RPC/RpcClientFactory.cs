@@ -5,8 +5,9 @@ using System.Net;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
-using DotNetty.Transport.Channels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DotNetty.Transport.Channels;
 using RpcMessage;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
@@ -33,15 +34,15 @@ namespace F1.Core.RPC
             IPlacement placement,
             UniqueSequence uniqueSequence,
             TaskCompletionSourceManager taskCompletionSourceManager,
-            GatewayClientFactory gatewayClientFactory,
-            ClientConnectionPool clientConnectionPool) 
+            ClientConnectionPool clientConnectionPool,
+            IServiceProvider serviceProvider) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
             this.placement = placement;
             this.uniqueSequence = uniqueSequence;
             this.taskCompletionSourceManager = taskCompletionSourceManager;
-            this.gatewayClientFactory = gatewayClientFactory;
+            this.gatewayClientFactory = serviceProvider.GetService<GatewayClientFactory>();
             this.clientConnectionPool = clientConnectionPool;
 
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
@@ -59,7 +60,7 @@ namespace F1.Core.RPC
         {
             if (IsGateway(server)) 
             {
-                this.gatewayClientFactory.OnAddServer(server);
+                this.gatewayClientFactory?.OnAddServer(server);
                 return;
             }
             this.clientConnectionPool.OnAddServer(server.ServerID,
@@ -71,7 +72,7 @@ namespace F1.Core.RPC
         {
             if (IsGateway(server)) 
             {
-                this.gatewayClientFactory.OnRemoveServer(server);
+                this.gatewayClientFactory?.OnRemoveServer(server);
                 return;
             }
             this.clientConnectionPool.OnRemoveServer(server.ServerID);
@@ -80,7 +81,7 @@ namespace F1.Core.RPC
         {
             if (IsGateway(server)) 
             {
-                this.gatewayClientFactory.OnOfflineServer(server);
+                this.gatewayClientFactory?.OnOfflineServer(server);
                 return;
             }
             //这边通过每次获取Actor位置的时候判断服务器是否下线来做的

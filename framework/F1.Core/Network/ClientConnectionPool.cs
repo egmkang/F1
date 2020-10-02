@@ -54,7 +54,8 @@ namespace F1.Core.Network
             return null;
         }
 
-        private async Task ReconnectLoop(long serverID, EndPoint endPoint, Func<object> heartBeatMessageFn) 
+        private async Task ReconnectLoop(long serverID, EndPoint endPoint, 
+                                         Func<object> heartBeatMessageFn) 
         {
             while (true) 
             {
@@ -73,7 +74,8 @@ namespace F1.Core.Network
             }
         }
 
-        private async Task TryConnectAsync(long serverID, EndPoint endPoint, Func<object> heartBeatMessageFn)
+        private async Task TryConnectAsync(long serverID, EndPoint endPoint, 
+                                            Func<object> heartBeatMessageFn)
         {
             try
             {

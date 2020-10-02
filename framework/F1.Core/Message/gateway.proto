@@ -1,18 +1,7 @@
 ﻿syntax="proto3";
 package GatewayMessage;
 
-//握手(其他服务器发给Gateway)
-message  RequestShakeHands
-{
-int64 server_id = 1;
-}
-
-message ResponseShakeHands
-{
-int64 server_id = 1;
-int64 gateway_id = 2;	//Gateway的ID
-}
-
+//心跳
 message RequestHeartBeat
 {
 sfixed64 milli_second = 1;
@@ -29,21 +18,23 @@ sfixed64 milli_second = 1;
 //3. 关闭链接
 message NotifyConnectionComing
 {
-sfixed64 session_id = 1;
-
-string open_id = 2;
-sfixed64 player_id = 3;
-bytes token = 4;
+string service_type = 1;
+sfixed64 session_id = 2;
+string open_id = 3;
+sfixed64 player_id = 4;
+bytes token = 5;
 }
 
 message NotifyConnectionAborted
 {
 sfixed64 session_id = 1;
+string service_type = 2;
 }
 
 message RequestCloseConnection
 {
 sfixed64 session_id = 1;
+string service_type = 2;
 }
 
 //1. 玩家新的消息
@@ -51,7 +42,8 @@ sfixed64 session_id = 1;
 message NotifyNewMessage
 {
 sfixed64 session_id = 1;
-bytes msg = 2;
+string service_type = 2;
+bytes msg = 3;
 }
 
 message RequestSendMessageToPlayer

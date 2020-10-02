@@ -24,31 +24,29 @@ namespace GatewayMessage {
     static GatewayReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChVNZXNzYWdlL2dhdGV3YXkucHJvdG8SDkdhdGV3YXlNZXNzYWdlIiYKEVJl",
-            "cXVlc3RTaGFrZUhhbmRzEhEKCXNlcnZlcl9pZBgBIAEoAyI7ChJSZXNwb25z",
-            "ZVNoYWtlSGFuZHMSEQoJc2VydmVyX2lkGAEgASgDEhIKCmdhdGV3YXlfaWQY",
-            "AiABKAMiKAoQUmVxdWVzdEhlYXJ0QmVhdBIUCgxtaWxsaV9zZWNvbmQYASAB",
-            "KBAiKQoRUmVzcG9uc2VIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgQ",
-            "Il8KFk5vdGlmeUNvbm5lY3Rpb25Db21pbmcSEgoKc2Vzc2lvbl9pZBgBIAEo",
-            "EBIPCgdvcGVuX2lkGAIgASgJEhEKCXBsYXllcl9pZBgDIAEoEBINCgV0b2tl",
-            "bhgEIAEoDCItChdOb3RpZnlDb25uZWN0aW9uQWJvcnRlZBISCgpzZXNzaW9u",
-            "X2lkGAEgASgQIiwKFlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lv",
-            "bl9pZBgBIAEoECIzChBOb3RpZnlOZXdNZXNzYWdlEhIKCnNlc3Npb25faWQY",
-            "ASABKBASCwoDbXNnGAIgASgMIj4KGlJlcXVlc3RTZW5kTWVzc2FnZVRvUGxh",
-            "eWVyEhMKC3Nlc3Npb25faWRzGAEgAygQEgsKA21zZxgCIAEoDCJLChxSZXF1",
-            "ZXN0U2V0R2FtZVBsYXllckxvY2F0aW9uEhIKCnNlc3Npb25faWQYASABKBAS",
-            "FwoPbmV3X2dhbWVfc2VydmVyGAIgASgQYgZwcm90bzM="));
+            "ChVNZXNzYWdlL2dhdGV3YXkucHJvdG8SDkdhdGV3YXlNZXNzYWdlIigKEFJl",
+            "cXVlc3RIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgQIikKEVJlc3Bv",
+            "bnNlSGVhcnRCZWF0EhQKDG1pbGxpX3NlY29uZBgBIAEoECJ1ChZOb3RpZnlD",
+            "b25uZWN0aW9uQ29taW5nEhQKDHNlcnZpY2VfdHlwZRgBIAEoCRISCgpzZXNz",
+            "aW9uX2lkGAIgASgQEg8KB29wZW5faWQYAyABKAkSEQoJcGxheWVyX2lkGAQg",
+            "ASgQEg0KBXRva2VuGAUgASgMIkMKF05vdGlmeUNvbm5lY3Rpb25BYm9ydGVk",
+            "EhIKCnNlc3Npb25faWQYASABKBASFAoMc2VydmljZV90eXBlGAIgASgJIkIK",
+            "FlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
+            "CgxzZXJ2aWNlX3R5cGUYAiABKAkiSQoQTm90aWZ5TmV3TWVzc2FnZRISCgpz",
+            "ZXNzaW9uX2lkGAEgASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCRILCgNtc2cY",
+            "AyABKAwiPgoaUmVxdWVzdFNlbmRNZXNzYWdlVG9QbGF5ZXISEwoLc2Vzc2lv",
+            "bl9pZHMYASADKBASCwoDbXNnGAIgASgMIksKHFJlcXVlc3RTZXRHYW1lUGxh",
+            "eWVyTG9jYXRpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIXCg9uZXdfZ2FtZV9z",
+            "ZXJ2ZXIYAiABKBBiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestShakeHands), global::GatewayMessage.RequestShakeHands.Parser, new[]{ "ServerId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.ResponseShakeHands), global::GatewayMessage.ResponseShakeHands.Parser, new[]{ "ServerId", "GatewayId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestHeartBeat), global::GatewayMessage.RequestHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.ResponseHeartBeat), global::GatewayMessage.ResponseHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "SessionId", "OpenId", "PlayerId", "Token" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "Msg" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "SessionId", "OpenId", "PlayerId", "Token" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "Msg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSetGamePlayerLocation), global::GatewayMessage.RequestSetGamePlayerLocation.Parser, new[]{ "SessionId", "NewGameServer" }, null, null, null, null)
           }));
@@ -58,297 +56,8 @@ namespace GatewayMessage {
   }
   #region Messages
   /// <summary>
-  ///握手(其他服务器发给Gateway)
+  ///心跳
   /// </summary>
-  public sealed partial class RequestShakeHands : pb::IMessage<RequestShakeHands> {
-    private static readonly pb::MessageParser<RequestShakeHands> _parser = new pb::MessageParser<RequestShakeHands>(() => new RequestShakeHands());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RequestShakeHands> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[0]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestShakeHands() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestShakeHands(RequestShakeHands other) : this() {
-      serverId_ = other.serverId_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestShakeHands Clone() {
-      return new RequestShakeHands(this);
-    }
-
-    /// <summary>Field number for the "server_id" field.</summary>
-    public const int ServerIdFieldNumber = 1;
-    private long serverId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long ServerId {
-      get { return serverId_; }
-      set {
-        serverId_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RequestShakeHands);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RequestShakeHands other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (ServerId != other.ServerId) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (ServerId != 0L) hash ^= ServerId.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (ServerId != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(ServerId);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (ServerId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ServerId);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RequestShakeHands other) {
-      if (other == null) {
-        return;
-      }
-      if (other.ServerId != 0L) {
-        ServerId = other.ServerId;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            ServerId = input.ReadInt64();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class ResponseShakeHands : pb::IMessage<ResponseShakeHands> {
-    private static readonly pb::MessageParser<ResponseShakeHands> _parser = new pb::MessageParser<ResponseShakeHands>(() => new ResponseShakeHands());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ResponseShakeHands> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseShakeHands() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseShakeHands(ResponseShakeHands other) : this() {
-      serverId_ = other.serverId_;
-      gatewayId_ = other.gatewayId_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseShakeHands Clone() {
-      return new ResponseShakeHands(this);
-    }
-
-    /// <summary>Field number for the "server_id" field.</summary>
-    public const int ServerIdFieldNumber = 1;
-    private long serverId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long ServerId {
-      get { return serverId_; }
-      set {
-        serverId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "gateway_id" field.</summary>
-    public const int GatewayIdFieldNumber = 2;
-    private long gatewayId_;
-    /// <summary>
-    ///Gateway的ID
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long GatewayId {
-      get { return gatewayId_; }
-      set {
-        gatewayId_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as ResponseShakeHands);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ResponseShakeHands other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (ServerId != other.ServerId) return false;
-      if (GatewayId != other.GatewayId) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (ServerId != 0L) hash ^= ServerId.GetHashCode();
-      if (GatewayId != 0L) hash ^= GatewayId.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (ServerId != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(ServerId);
-      }
-      if (GatewayId != 0L) {
-        output.WriteRawTag(16);
-        output.WriteInt64(GatewayId);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (ServerId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ServerId);
-      }
-      if (GatewayId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(GatewayId);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ResponseShakeHands other) {
-      if (other == null) {
-        return;
-      }
-      if (other.ServerId != 0L) {
-        ServerId = other.ServerId;
-      }
-      if (other.GatewayId != 0L) {
-        GatewayId = other.GatewayId;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            ServerId = input.ReadInt64();
-            break;
-          }
-          case 16: {
-            GatewayId = input.ReadInt64();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
   public sealed partial class RequestHeartBeat : pb::IMessage<RequestHeartBeat> {
     private static readonly pb::MessageParser<RequestHeartBeat> _parser = new pb::MessageParser<RequestHeartBeat>(() => new RequestHeartBeat());
     private pb::UnknownFieldSet _unknownFields;
@@ -357,7 +66,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[2]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -486,7 +195,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[3]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -620,7 +329,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[4]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -637,6 +346,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NotifyConnectionComing(NotifyConnectionComing other) : this() {
+      serviceType_ = other.serviceType_;
       sessionId_ = other.sessionId_;
       openId_ = other.openId_;
       playerId_ = other.playerId_;
@@ -649,8 +359,19 @@ namespace GatewayMessage {
       return new NotifyConnectionComing(this);
     }
 
+    /// <summary>Field number for the "service_type" field.</summary>
+    public const int ServiceTypeFieldNumber = 1;
+    private string serviceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiceType {
+      get { return serviceType_; }
+      set {
+        serviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "session_id" field.</summary>
-    public const int SessionIdFieldNumber = 1;
+    public const int SessionIdFieldNumber = 2;
     private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long SessionId {
@@ -661,7 +382,7 @@ namespace GatewayMessage {
     }
 
     /// <summary>Field number for the "open_id" field.</summary>
-    public const int OpenIdFieldNumber = 2;
+    public const int OpenIdFieldNumber = 3;
     private string openId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string OpenId {
@@ -672,7 +393,7 @@ namespace GatewayMessage {
     }
 
     /// <summary>Field number for the "player_id" field.</summary>
-    public const int PlayerIdFieldNumber = 3;
+    public const int PlayerIdFieldNumber = 4;
     private long playerId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long PlayerId {
@@ -683,7 +404,7 @@ namespace GatewayMessage {
     }
 
     /// <summary>Field number for the "token" field.</summary>
-    public const int TokenFieldNumber = 4;
+    public const int TokenFieldNumber = 5;
     private pb::ByteString token_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Token {
@@ -706,6 +427,7 @@ namespace GatewayMessage {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (ServiceType != other.ServiceType) return false;
       if (SessionId != other.SessionId) return false;
       if (OpenId != other.OpenId) return false;
       if (PlayerId != other.PlayerId) return false;
@@ -716,6 +438,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (OpenId.Length != 0) hash ^= OpenId.GetHashCode();
       if (PlayerId != 0L) hash ^= PlayerId.GetHashCode();
@@ -733,20 +456,24 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (ServiceType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ServiceType);
+      }
       if (SessionId != 0L) {
-        output.WriteRawTag(9);
+        output.WriteRawTag(17);
         output.WriteSFixed64(SessionId);
       }
       if (OpenId.Length != 0) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteString(OpenId);
       }
       if (PlayerId != 0L) {
-        output.WriteRawTag(25);
+        output.WriteRawTag(33);
         output.WriteSFixed64(PlayerId);
       }
       if (Token.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteBytes(Token);
       }
       if (_unknownFields != null) {
@@ -757,6 +484,9 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (ServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
+      }
       if (SessionId != 0L) {
         size += 1 + 8;
       }
@@ -779,6 +509,9 @@ namespace GatewayMessage {
     public void MergeFrom(NotifyConnectionComing other) {
       if (other == null) {
         return;
+      }
+      if (other.ServiceType.Length != 0) {
+        ServiceType = other.ServiceType;
       }
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
@@ -803,19 +536,23 @@ namespace GatewayMessage {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 9: {
+          case 10: {
+            ServiceType = input.ReadString();
+            break;
+          }
+          case 17: {
             SessionId = input.ReadSFixed64();
             break;
           }
-          case 18: {
+          case 26: {
             OpenId = input.ReadString();
             break;
           }
-          case 25: {
+          case 33: {
             PlayerId = input.ReadSFixed64();
             break;
           }
-          case 34: {
+          case 42: {
             Token = input.ReadBytes();
             break;
           }
@@ -833,7 +570,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[5]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -851,6 +588,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NotifyConnectionAborted(NotifyConnectionAborted other) : this() {
       sessionId_ = other.sessionId_;
+      serviceType_ = other.serviceType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -870,6 +608,17 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "service_type" field.</summary>
+    public const int ServiceTypeFieldNumber = 2;
+    private string serviceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiceType {
+      get { return serviceType_; }
+      set {
+        serviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as NotifyConnectionAborted);
@@ -884,6 +633,7 @@ namespace GatewayMessage {
         return true;
       }
       if (SessionId != other.SessionId) return false;
+      if (ServiceType != other.ServiceType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -891,6 +641,7 @@ namespace GatewayMessage {
     public override int GetHashCode() {
       int hash = 1;
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
+      if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -908,6 +659,10 @@ namespace GatewayMessage {
         output.WriteRawTag(9);
         output.WriteSFixed64(SessionId);
       }
+      if (ServiceType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ServiceType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -918,6 +673,9 @@ namespace GatewayMessage {
       int size = 0;
       if (SessionId != 0L) {
         size += 1 + 8;
+      }
+      if (ServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -932,6 +690,9 @@ namespace GatewayMessage {
       }
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
+      }
+      if (other.ServiceType.Length != 0) {
+        ServiceType = other.ServiceType;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -948,6 +709,10 @@ namespace GatewayMessage {
             SessionId = input.ReadSFixed64();
             break;
           }
+          case 18: {
+            ServiceType = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -962,7 +727,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[6]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -980,6 +745,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public RequestCloseConnection(RequestCloseConnection other) : this() {
       sessionId_ = other.sessionId_;
+      serviceType_ = other.serviceType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -999,6 +765,17 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "service_type" field.</summary>
+    public const int ServiceTypeFieldNumber = 2;
+    private string serviceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiceType {
+      get { return serviceType_; }
+      set {
+        serviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as RequestCloseConnection);
@@ -1013,6 +790,7 @@ namespace GatewayMessage {
         return true;
       }
       if (SessionId != other.SessionId) return false;
+      if (ServiceType != other.ServiceType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1020,6 +798,7 @@ namespace GatewayMessage {
     public override int GetHashCode() {
       int hash = 1;
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
+      if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1037,6 +816,10 @@ namespace GatewayMessage {
         output.WriteRawTag(9);
         output.WriteSFixed64(SessionId);
       }
+      if (ServiceType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ServiceType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1047,6 +830,9 @@ namespace GatewayMessage {
       int size = 0;
       if (SessionId != 0L) {
         size += 1 + 8;
+      }
+      if (ServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1062,6 +848,9 @@ namespace GatewayMessage {
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
+      if (other.ServiceType.Length != 0) {
+        ServiceType = other.ServiceType;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1075,6 +864,10 @@ namespace GatewayMessage {
             break;
           case 9: {
             SessionId = input.ReadSFixed64();
+            break;
+          }
+          case 18: {
+            ServiceType = input.ReadString();
             break;
           }
         }
@@ -1095,7 +888,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[7]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1113,6 +906,7 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NotifyNewMessage(NotifyNewMessage other) : this() {
       sessionId_ = other.sessionId_;
+      serviceType_ = other.serviceType_;
       msg_ = other.msg_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -1133,8 +927,19 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "service_type" field.</summary>
+    public const int ServiceTypeFieldNumber = 2;
+    private string serviceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ServiceType {
+      get { return serviceType_; }
+      set {
+        serviceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "msg" field.</summary>
-    public const int MsgFieldNumber = 2;
+    public const int MsgFieldNumber = 3;
     private pb::ByteString msg_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Msg {
@@ -1158,6 +963,7 @@ namespace GatewayMessage {
         return true;
       }
       if (SessionId != other.SessionId) return false;
+      if (ServiceType != other.ServiceType) return false;
       if (Msg != other.Msg) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1166,6 +972,7 @@ namespace GatewayMessage {
     public override int GetHashCode() {
       int hash = 1;
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
+      if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1184,8 +991,12 @@ namespace GatewayMessage {
         output.WriteRawTag(9);
         output.WriteSFixed64(SessionId);
       }
-      if (Msg.Length != 0) {
+      if (ServiceType.Length != 0) {
         output.WriteRawTag(18);
+        output.WriteString(ServiceType);
+      }
+      if (Msg.Length != 0) {
+        output.WriteRawTag(26);
         output.WriteBytes(Msg);
       }
       if (_unknownFields != null) {
@@ -1198,6 +1009,9 @@ namespace GatewayMessage {
       int size = 0;
       if (SessionId != 0L) {
         size += 1 + 8;
+      }
+      if (ServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Msg);
@@ -1215,6 +1029,9 @@ namespace GatewayMessage {
       }
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
+      }
+      if (other.ServiceType.Length != 0) {
+        ServiceType = other.ServiceType;
       }
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
@@ -1235,6 +1052,10 @@ namespace GatewayMessage {
             break;
           }
           case 18: {
+            ServiceType = input.ReadString();
+            break;
+          }
+          case 26: {
             Msg = input.ReadBytes();
             break;
           }
@@ -1252,7 +1073,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[8]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1405,7 +1226,7 @@ namespace GatewayMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[9]; }
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

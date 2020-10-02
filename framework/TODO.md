@@ -19,10 +19,10 @@ C# Framework:
     * [x] MessageCenter
     * [x] SendingLoop
     * [x] MessageProcessLoop
-    * [ ] Auto Reconnect Client Factory
-        * [ ] Add/Remove
-        * [ ] HeartBeat
-* [ ] RPC
+    * [x] Auto Reconnect Client Factory
+        * [x] Add/Remove
+        * [x] HeartBeat
+* [x] RPC
     * [x] ClientManager
         * [x] Client Add/Remove
         * [x] HeartBeat
@@ -44,8 +44,9 @@ C# Framework:
     * [x] ActorClientProxyFactory
     * [x] Multi Interface
     * [ ] Gateway
-        * [ ] Gateway Client
+        * [x] Gateway Client
         * [ ] Message Process
+        * [ ] Gateway Service
     * [ ] Actor Model
 * [ ] Virtual Actor
     * [ ] impl
