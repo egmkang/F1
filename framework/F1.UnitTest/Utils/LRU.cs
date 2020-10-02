@@ -18,17 +18,17 @@ namespace F1.UnitTest.Utils
             lru.Add(3, "3");
 
             var v = lru.Get(1);
-            Assert.Equal(v, "1");
+            Assert.Equal("1", v);
 
             v = lru.Get(2);
-            Assert.Equal(v, "2");
+            Assert.Equal("2", v);
 
             v = lru.Get(3);
-            Assert.Equal(v, "3");
+            Assert.Equal("3", v);
 
             lru.Add(4, "4");
             v = lru.Get(1);
-            Assert.Equal(v, null);
+            Assert.Null(v);
         }
 
         [Fact]
@@ -40,16 +40,16 @@ namespace F1.UnitTest.Utils
             lru.Add(3, "3");
 
             var v = lru.Get(11);
-            Assert.Equal(v, null);
+            Assert.Null(v);
 
             v = lru.Get(1);
-            Assert.Equal(v, "1");
+            Assert.Equal("1", v);
 
             v = lru.Get(1);
-            Assert.Equal(v, "1");
+            Assert.Equal("1", v);
 
             v = lru.Get(2);
-            Assert.Equal(v, "2");
+            Assert.Equal("2", v);
         }
 
         [Fact]
@@ -61,13 +61,13 @@ namespace F1.UnitTest.Utils
             lru.Add(3, "3");
 
             var v = lru.Get(1);
-            Assert.Equal(v, "1");
+            Assert.Equal("1", v);
 
 
             lru.Remove(1);
 
             v = lru.Get(1);
-            Assert.Equal(v, null);
+            Assert.Null(v);
         }
 
 
