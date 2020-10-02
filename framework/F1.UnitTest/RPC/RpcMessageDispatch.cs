@@ -74,12 +74,12 @@ namespace F1.UnitTest.RPC
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnInt", instance1, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();
-            Assert.Equal(result, 100);
+            Assert.Equal(100, result);
 
             var instance2 = new RpcRequestDispatchHandlerTestImpl(101);
             var returnValue2 = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnInt", instance2, new object[0]);
             var result2 = await returnValue2.GetReturnValueAsync();
-            Assert.Equal(result2, 101);
+            Assert.Equal(101, result2);
         }
 
         [Fact]
@@ -91,11 +91,11 @@ namespace F1.UnitTest.RPC
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.SleepAddInt", instance, new object[1] { 100 });
 
             var result = await returnValue.GetReturnValueAsync();
-            Assert.Equal(result, 200);
+            Assert.Equal(200, result);
         }
 
         [Fact]
-        public async Task MethodNotFoundCall()
+        public void MethodNotFoundCall()
         {
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
@@ -116,7 +116,7 @@ namespace F1.UnitTest.RPC
             var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnNothing", instance, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();
-            Assert.Equal(result, null);
+            Assert.Null(result);
         }
     }
 }
