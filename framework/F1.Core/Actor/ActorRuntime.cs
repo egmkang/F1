@@ -79,7 +79,7 @@ namespace F1.Core.Actor
             var connectionListener = this.ServiceProvider.GetRequiredService<IConnectionListener>();
             var messageCenter = this.ServiceProvider.GetRequiredService<IMessageCenter>();
             var messageHandlerFactory = this.ServiceProvider.GetRequiredService<IMessageHandlerFactory>();
-            var connectionFactory = this.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
+            var clientFactory = this.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
             messageHandlerFactory.Codec = new ProtobufMessageCodec();
 
             //TODO, RPC请求快速失败
@@ -99,7 +99,7 @@ namespace F1.Core.Actor
                     logger.LogWarning("Message Dropped, MessageName:{0} not find a processor", inboundMessage.MessageName);
                 });
 
-            connectionFactory.Init(new NetworkConfiguration() { });
+            clientFactory.Init(new NetworkConfiguration() { });
 
             connectionListener.Init(new NetworkConfiguration() { });
             await connectionListener.BindAsync(port, messageHandlerFactory);

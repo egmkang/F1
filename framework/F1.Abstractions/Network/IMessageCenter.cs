@@ -16,6 +16,7 @@ namespace F1.Abstractions.Network
         /// <param name="inboundMessage">需要被处理的消息</param>
         void RegisterMessageProc(string messageName, Action<InboundMessage> inboundMessageProc);
         void SendMessage(OutboundMessage message);
+        bool SendMessageToServer(long serverID, object message);
         void OnReceiveMessage(InboundMessage message);
         void RegisterUserMessageCallback(Func<string, string, InboundMessage, bool> fn);
         /// <summary>

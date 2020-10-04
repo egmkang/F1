@@ -15,6 +15,7 @@ using F1.Core.Message;
 using F1.Core.Utils;
 using F1.Core.Network;
 using F1.Core.Gateway;
+using F1.Abstractions.Gateway;
 
 namespace F1.Core.RPC
 {
@@ -53,8 +54,12 @@ namespace F1.Core.RPC
         }
 
         private long NewSequenceID => this.uniqueSequence.GetNewSequence();
+        /// <summary>
+        /// Gateway在PD里面也是一个ActorHost, 只是提供的服务名为`IGateway`, 进行了特殊处理
+        /// </summary>
+        public static readonly string ServiceGateway = typeof(IGateway).Name;
 
-        private bool IsGateway(PlacementActorHostInfo server) => server.ActorType.Count == 1 && server.ActorType[0] == GatewayConstant.ServiceGateway;
+        private bool IsGateway(PlacementActorHostInfo server) => server.ActorType.Count == 1 && server.ActorType[0] == ServiceGateway;
 
         private void OnAddServer(PlacementActorHostInfo server) 
         {

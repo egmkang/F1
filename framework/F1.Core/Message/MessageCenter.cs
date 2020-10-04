@@ -5,12 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Core.Network;
 using F1.Core.Utils;
 using F1.Core.Actor;
-
 
 namespace F1.Core.Message
 {
@@ -27,6 +27,7 @@ namespace F1.Core.Message
         private readonly ConcurrentQueue<InboundMessage> inboundMessages = new ConcurrentQueue<InboundMessage>();
         private readonly Thread messageThread;
         private volatile bool stop = false;
+        private ClientConnectionPool clientConnectionPool;
 
         private Action<IChannel> channelClosedProc;
         private Action<OutboundMessage> failMessageProc;
@@ -150,6 +151,24 @@ namespace F1.Core.Message
             if (this.userMessageCallback != null)
             {
                 return this.userMessageCallback(type, actorID, message);
+            }
+            return false;
+        }
+
+        public bool SendMessageToServer(long serverID, object message) 
+        {
+            if (this.clientConnectionPool == null) 
+            {
+                this.clientConnectionPool = this.serviceProvider.GetRequiredService<ClientConnectionPool>();
+            }
+            if (this.clientConnectionPool != null) 
+            {
+                var channel = this.clientConnectionPool.GetChannelByServerID(serverID);
+                if (channel != null) 
+                {
+                    this.SendMessage(new OutboundMessage(channel, message));
+                    return true;
+                }
             }
             return false;
         }
