@@ -135,4 +135,52 @@ namespace F1.Core.Message
             return buffer;
         }
     }
+
+    /// <summary>
+    /// 4字节包头(小端)
+    /// 低3字节表示包体长度
+    /// 高1字节保留, 暂时没做加密和压缩支持
+    /// </summary>
+    public sealed class BlockMessageCodec : IMessageCodec
+    {
+        public const uint Mask = (1 << 24) - 1;
+        public const int HeaderLength = sizeof(uint);
+        public const string MessageName = "BlockMessage";
+        public int MaxPacketLength { get; set; } = 1 * 1024 * 1024;
+
+        public (long length, string typeName, object msg) Decode(IByteBuffer input)
+        {
+            if (input.ReadableBytes < HeaderLength) return (0, "", null);
+            input.MarkReaderIndex();
+
+            var header = input.ReadUnsignedIntLE();
+            var length = header & Mask;
+            if (input.ReadableBytes < length) 
+            {
+                input.ResetReaderIndex();
+                return (0, "", null);
+            }
+            if (length >= MaxPacketLength) 
+            {
+                throw new Exception($"Message Length:{length} Out of Bound");
+            }
+
+            var bytes = new byte[length];
+            input.ReadBytes(bytes);
+            return (length + HeaderLength, MessageName, bytes);
+        }
+
+        public IByteBuffer Encode(IByteBufferAllocator allocator, object msg)
+        {
+            var bytes = msg as byte[];
+            var length = bytes != null ? bytes.Length : 0;
+            var buffer = allocator.Buffer(HeaderLength + length);
+            buffer.WriteIntLE(length);
+            if (length > 0) 
+            {
+                buffer.WriteBytes(bytes);
+            }
+            return buffer;
+        }
+    }
 }
