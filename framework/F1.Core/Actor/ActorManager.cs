@@ -3,15 +3,18 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using DotNetty.Transport.Channels;
 using Google.Protobuf;
 using RpcMessage;
 using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
-
+using F1.Core.Network;
 
 namespace F1.Core.Actor
 {
@@ -27,12 +30,15 @@ namespace F1.Core.Actor
         private readonly RpcMetadata rpcMetadata;
         private readonly IMessageCenter messageCenter;
         private readonly IPlacement placement;
+        private readonly IServiceProvider serviceProvider;
+        private ClientConnectionPool clientConnectionPool;
 
         public ActorManager(ILoggerFactory loggerFactory,
                             ActorFactory actorFactory,
                             RpcMetadata rpcMetadata,
                             IMessageCenter messageCenter,
-                            IPlacement placement
+                            IPlacement placement,
+                            IServiceProvider serviceProvider
                             )
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
@@ -40,6 +46,7 @@ namespace F1.Core.Actor
             this.rpcMetadata = rpcMetadata;
             this.messageCenter = messageCenter;
             this.placement = placement;
+            this.serviceProvider = serviceProvider;
 
             this.messageCenter.RegisterMessageProc(typeof(RequestRpc).FullName, this.ProcessRequestRpc);
             this.messageCenter.RegisterMessageProc(typeof(RequestRpcHeartBeat).FullName, this.ProcessRequestRpcHeartBeat);
@@ -204,8 +211,7 @@ namespace F1.Core.Actor
                 }
                 else 
                 {
-                    //TODO:
-                    //slow path
+                    _ = this.DispatchUserMessageSlowPath(inboundMessage, type, actorID);
                 }
             }
             catch (Exception e) 
@@ -213,6 +219,61 @@ namespace F1.Core.Actor
                 this.logger.LogError("DispatchUserMessage, Actor:{0}/{1}, Error:{2}", type, actorID, e.ToString());
             }
             return false;
+        }
+
+        private IChannel GetServerChannelByID(long serverID) 
+        {
+            if (this.clientConnectionPool == null) 
+            {
+                this.clientConnectionPool = this.serviceProvider.GetRequiredService<ClientConnectionPool>();
+            }
+            if (this.clientConnectionPool != null) 
+            {
+                return this.clientConnectionPool.GetChannelByServerID(serverID);
+            }
+            return null;
+        }
+
+        private async Task DispatchUserMessageSlowPath(InboundMessage inboundMessage, string type, string actorID) 
+        {
+            var implType = this.rpcMetadata.GetServerType(type);
+            if (implType == null) 
+            {
+                this.logger.LogError("DispatchUserMessageSlowPath, InterfaceType:{0} not found ImplType", type);
+                return;
+            }
+            var args = new PlacementFindActorPositionRequest()
+            {
+                ActorInterfaceType = type,
+                ActorImplType = implType.Name,
+                ActorID = actorID,
+                TTL = 0,
+            };
+
+            try
+            {
+                //慢路径, 需要到pd里面查询是否没问题
+                //这边要处理Actor的位置, 万一Actor的位置发生变化
+                //这边帮Gateway把消息转发到对应的服务器上面去
+                var response = await this.placement.FindActorPositonAsync(args);
+                if (response != null && response.ServerID == this.placement.CurrentServerID)
+                {
+                    var actor = this.GetActor(type, actorID);
+                    actor.Context.SendMail(inboundMessage);
+                    return;
+                }
+                else  if (response != null)
+                {
+                    var channel = this.GetServerChannelByID(response.ServerID);
+                    this.messageCenter.SendMessage(new OutboundMessage(channel, inboundMessage.Inner));
+                    return;
+                }
+                logger.LogError("DispatchUserMessageSlowPath, ActorType:{0} ActorID:{1} not found", type, actorID);
+            }
+            catch (Exception e) 
+            {
+                logger.LogError("DispatchUserMessageSlowPath, ActorType:{0} ActorID:{1}, Exception:{2}", type, actorID, e);
+            }
         }
 
         static ThreadLocal<PlacementFindActorPositionRequest> pdPositionArgsCache = new ThreadLocal<PlacementFindActorPositionRequest>(() => new PlacementFindActorPositionRequest());
