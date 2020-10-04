@@ -22,6 +22,7 @@ namespace F1.Core.Network
         private readonly IMessageCenter messageCenter;
         private readonly IMessageCodec codec;
         private readonly SendingThreads sendingThreads;
+        private readonly Dictionary<string, object> states = new Dictionary<string, object>();
 
         public DefaultConnectionSessionInfo(long sessionID,
                                             ILogger logger,
@@ -46,6 +47,7 @@ namespace F1.Core.Network
         public IPEndPoint RemoteAddress { get => address; set => address = value; }
         public long ServerID { get; set; }
         public bool IsActive => !this.stop;
+        public Dictionary<string, object> States => states;
 
         public int PutOutboundMessage(OutboundMessage msg)
         {

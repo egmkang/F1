@@ -47,7 +47,7 @@ namespace F1.Core.RPC
         {
             var alltTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(m =>
                {
-                   try { return m.GetExportedTypes(); }
+                   try { return m.GetTypes(); }
                    catch { return new Type[0]; }
                }).ToList();
 

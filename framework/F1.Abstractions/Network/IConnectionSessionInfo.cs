@@ -14,6 +14,7 @@ namespace F1.Abstractions.Network
         long ActiveTime { get; set; }
         IPEndPoint RemoteAddress { get; set; }
         bool IsActive { get; }
+        Dictionary<string, object> States { get; }
 
         int PutOutboundMessage(OutboundMessage msg);
         void SendMessagesBatch(IChannel channel);
