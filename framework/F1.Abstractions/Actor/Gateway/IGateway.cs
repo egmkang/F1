@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using F1.Abstractions.RPC;
 
-namespace F1.Abstractions.Gateway
+namespace F1.Abstractions.Abstractions.Gateway
 {
     /// <summary>
     /// Gateway只有一个空的接口, 用来做服务发现

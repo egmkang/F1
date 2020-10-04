@@ -15,7 +15,7 @@ using F1.Core.Message;
 using F1.Core.Utils;
 using F1.Core.Network;
 using F1.Core.Gateway;
-using F1.Abstractions.Gateway;
+using F1.Abstractions.Abstractions.Gateway;
 
 namespace F1.Core.RPC
 {
