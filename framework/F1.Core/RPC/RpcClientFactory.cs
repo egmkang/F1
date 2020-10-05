@@ -57,7 +57,7 @@ namespace F1.Core.RPC
         /// <summary>
         /// Gateway在PD里面也是一个ActorHost, 只是提供的服务名为`IGateway`, 进行了特殊处理
         /// </summary>
-        public static readonly string ServiceGateway = typeof(IGateway).Name;
+        public static readonly string ServiceGateway = "GatewayImpl";
 
         private bool IsGateway(PlacementActorHostInfo server) => server.ActorType.Count == 1 && server.ActorType[0] == ServiceGateway;
 

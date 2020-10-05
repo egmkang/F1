@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Codecs;
-using F1.Abstractions.Network;
 using DotNetty.Transport.Libuv;
 using DotNetty.Buffers;
-using System.Net;
 using DotNetty.Handlers.Timeout;
-using System.Runtime.InteropServices;
 using F1.Core.Utils;
+using F1.Abstractions.Network;
 
 namespace F1.Core.Network
 {
@@ -26,6 +26,7 @@ namespace F1.Core.Network
         private readonly IConnectionManager connectionManager;
         private readonly IConnectionSessionInfoFactory channelSessionInfoFactory;
         private readonly List<ServerBootstrap> ports = new List<ServerBootstrap>();
+        private readonly Dictionary<int, IMessageHandlerFactory> factoryContext = new Dictionary<int, IMessageHandlerFactory>();
 
         public IServiceProvider ServiceProvider { get; private set; }
 
@@ -48,8 +49,10 @@ namespace F1.Core.Network
             workGroup = new WorkerEventLoopGroup(dispatcher, config.EventLoopCount);
         }
 
-        public async Task BindAsync(int port, IMessageHandlerFactory factory)
+        public async Task BindAsync(int port, IMessageHandlerFactory handlerFactory)
         {
+            factoryContext[port] = handlerFactory;
+
             var bootstrap = new ServerBootstrap();
             bootstrap.Group(this.bossGroup, this.workGroup)
                 .Channel<TcpServerChannel>();
@@ -72,8 +75,10 @@ namespace F1.Core.Network
                 .ChildOption(ChannelOption.SoKeepalive, true)
                 .ChildOption(ChannelOption.WriteBufferHighWaterMark, this.config.WriteBufferHighWaterMark)
                 .ChildOption(ChannelOption.WriteBufferLowWaterMark, this.config.WriteBufferLowWaterMark)
-                .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+                .ChildHandler(new ActionChannelInitializer<IChannel>((channel) =>
                 {
+                    var factory = this.factoryContext[(channel.LocalAddress as IPEndPoint).Port];
+
                     var info = this.channelSessionInfoFactory.NewSessionInfo(factory);
                     channel.GetAttribute(ChannelExt.SESSION_INFO).Set(info);
 
@@ -92,7 +97,7 @@ namespace F1.Core.Network
 
             await bootstrap.BindAsync(port);
             ports.Add(bootstrap);
-            logger.LogInformation("Listen Port:{0}, {1}", port, factory.NewHandler().GetType());
+            logger.LogInformation("Listen Port:{0}, {1}, Codec:{2}", port, handlerFactory.NewHandler().GetType(), handlerFactory.Codec.GetType());
         }
 
 

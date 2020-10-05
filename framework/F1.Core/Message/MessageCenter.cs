@@ -196,6 +196,7 @@ namespace F1.Core.Message
             {
                 this.logger.LogError("RegisterMessageProc, MessageName:{0} exists", messageName);
             }
+            this.logger.LogInformation("RegisterMessageProc, MessageName:{0}", messageName);
         }
 
         private void ProcessInboundMessage(InboundMessage message) 

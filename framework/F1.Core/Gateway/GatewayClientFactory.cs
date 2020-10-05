@@ -81,7 +81,7 @@ namespace F1.Core.Gateway
                 return;
             }
             var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSecond;
-            if (elapsedTime > 50)
+            if (elapsedTime > 1)
             {
                 var sessionInfo = message.SourceConnection.GetSessionInfo();
                 this.logger.LogWarning("ProcessHearBeat, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, Elapsed Time:{3}ms",
