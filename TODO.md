@@ -1,5 +1,18 @@
 C# Framework:
 
+v0.2
+* [ ] PlacementDriver
+    * [ ] Interface and Impl Map
+    * [ ] PD Server Alive
+* [ ] Gateway
+    * [ ] Abstract
+* [ ] Sample
+    * [ ] LogicServer
+    * [ ] GameServer
+    * [ ] MultiPlayer(One OpenID)
+
+v0.1
+
 * [x] Placement SDK
     * [x] RegisterServer
     * [x] KeepAliveServer
@@ -15,6 +28,8 @@ C# Framework:
     * [x] TcpServer
     * [x] TcpClient
     * [x] Codec
+        * [x] ProtobufCodec
+        * [x] BlockMessageCodec
     * [x] ConnectionManager
     * [x] MessageCenter
     * [x] SendingLoop
@@ -48,6 +63,3 @@ C# Framework:
         * [ ] Message Process
         * [ ] Gateway Service
     * [ ] Actor Model
-* [ ] Virtual Actor
-    * [ ] impl
-    * [ ] sample

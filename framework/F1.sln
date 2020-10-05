@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlacementTest", "test\Place
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActorTest", "test\ActorTest\ActorTest.csproj", "{E7DF6A85-80C6-4063-B328-897119F79A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "F1.Gateway", "F1.Gateway\F1.Gateway.csproj", "{31E9CCA2-C05C-470C-9608-FB6246D28855}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F1.Gateway", "F1.Gateway\F1.Gateway.csproj", "{31E9CCA2-C05C-470C-9608-FB6246D28855}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{791DC787-C539-46A4-AB11-B4FCC7D387F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
