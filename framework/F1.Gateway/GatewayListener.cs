@@ -34,8 +34,6 @@ namespace F1.Gateway
 
                 await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
                 logger.LogInformation("ListenGateway success, Port:{0}", port);
-
-                gatewayMessageHandler.RegisterMessageCallback(messageCenter);
             }
             catch (Exception e) 
             {
