@@ -77,7 +77,7 @@ namespace F1.Core.Network
                     this.bootstraps.TryAdd(factory, bootstrap);
                 }
             }
-            var channel = await bootstrap.ConnectAsync(address);
+            var channel = await bootstrap.ConnectAsync(address).ConfigureAwait(false);
             channel.GetSessionInfo().RemoteAddress = channel.RemoteAddress as IPEndPoint;
             this.connectionManager.AddConnection(channel);
             return channel;
@@ -85,7 +85,7 @@ namespace F1.Core.Network
 
         public async Task ShutdDownAsync()
         {
-            if (this.group != null) await this.group.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
+            if (this.group != null) await this.group.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)).ConfigureAwait(false);
         }
     }
 }

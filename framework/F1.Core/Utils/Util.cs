@@ -17,7 +17,7 @@ namespace F1.Core.Utils
 
                 try
                 {
-                    await f();
+                    await f().ConfigureAwait(false);
                 }
                 catch (Exception e) 
                 {
@@ -26,7 +26,7 @@ namespace F1.Core.Utils
                 var sleep = beginMilliSeconds + count * interval - Platform.GetMilliSeconds();
                 if (sleep > 0) 
                 {
-                    await Task.Delay((int)sleep);
+                    await Task.Delay((int)sleep).ConfigureAwait(false);
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace F1.Core.Utils
                 var sleep = beginMilliSeconds + count * interval - Platform.GetMilliSeconds();
                 if (sleep > 0) 
                 {
-                    await Task.Delay((int)sleep);
+                    await Task.Delay((int)sleep).ConfigureAwait(false);
                 }
             }
         }

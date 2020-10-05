@@ -23,12 +23,12 @@ namespace F1.Gateway
             });
             builder.Build();
 
-            await builder.InitAsync("127.0.0.1:2379", 20001);
-            await builder.ListenGateway(20000);
+            await builder.InitAsync("127.0.0.1:2379", 20001).ConfigureAwait(false);
+            await builder.ListenGateway(20000).ConfigureAwait(false);
 
             while (true) 
             {
-                await Task.Delay(1000);
+                await Task.Delay(1000).ConfigureAwait(false);
             }
         }
     }

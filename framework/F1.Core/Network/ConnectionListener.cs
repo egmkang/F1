@@ -103,8 +103,8 @@ namespace F1.Core.Network
 
         public async Task ShutdDownAsync()
         {
-            if (this.bossGroup != null) await this.bossGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
-            if(this.workGroup != null) await this.workGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5));
+            if (this.bossGroup != null) await this.bossGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)).ConfigureAwait(false);
+            if(this.workGroup != null) await this.workGroup.ShutdownGracefullyAsync(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)).ConfigureAwait(false);
         }
     }
 }

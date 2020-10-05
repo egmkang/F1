@@ -20,7 +20,7 @@ namespace F1.Core.Utils
 
         public async ValueTask<ConcurrentQueue<T>> ReadAsync()
         {
-            await this.semaphore.WaitAsync();
+            await this.semaphore.WaitAsync().ConfigureAwait(false);
             return queue;
         }
     }

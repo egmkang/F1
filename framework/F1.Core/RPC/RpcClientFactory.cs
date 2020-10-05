@@ -104,7 +104,7 @@ namespace F1.Core.RPC
             {
                 try
                 {
-                    var position = await this.placement.FindActorPositonAsync(actor);
+                    var position = await this.placement.FindActorPositonAsync(actor).ConfigureAwait(false);
                     if (position != null) 
                     {
                         if (this.logger.IsEnabled(LogLevel.Trace)) 
@@ -115,7 +115,7 @@ namespace F1.Core.RPC
                         var server = this.GetChannelByServerID(position.ServerID);
                         if (server != null) 
                         {
-                            return await this.SendRpcMessage(server, message);
+                            return await this.SendRpcMessage(server, message).ConfigureAwait(false);
                         }
                     }
                 }
@@ -123,7 +123,7 @@ namespace F1.Core.RPC
                 {
                     if (e.GetType() == typeof(PlacementException)) 
                     {
-                        await Task.Delay(1000);
+                        await Task.Delay(1000).ConfigureAwait(false);
                     }
                     this.logger.LogError("TrySendRpcRequest, Actor:{0}@{1}, Exception:{2}",
                         actor.ActorImplType, actor.ActorID, e.Message);

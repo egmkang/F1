@@ -67,10 +67,10 @@ namespace F1.Core.Network
 
                 if (this.GetChannelByServerID(serverID) == null) 
                 {
-                    await this.TryConnectAsync(serverID, endPoint, heartBeatMessageFn);
+                    await this.TryConnectAsync(serverID, endPoint, heartBeatMessageFn).ConfigureAwait(false);
                 }
 
-                await Task.Delay(AutoReconnectInterval);
+                await Task.Delay(AutoReconnectInterval).ConfigureAwait(false);
             }
         }
 
@@ -86,7 +86,7 @@ namespace F1.Core.Network
                 }
                 this.logger.LogInformation("TryConnectAsync, ServerID:{0}, Address:{1} Start", serverID, endPoint);
 
-                var channel = await this.connectionFactory.ConnectAsync(endPoint, this.messageHandlerFactory);
+                var channel = await this.connectionFactory.ConnectAsync(endPoint, this.messageHandlerFactory).ConfigureAwait(false);
                 var sessionInfo = channel.GetSessionInfo();
                 this.logger.LogInformation("TryConnectAsync, ServerID:{0}, Address:{1}, SessionID:{2}",
                     serverID, endPoint, sessionInfo.SessionID);
@@ -123,7 +123,7 @@ namespace F1.Core.Network
                 var msg = new OutboundMessage(channel, heartBeatMessageFn());
                 sessionInfo.PutOutboundMessage(msg);
 
-                await Task.Delay(HeartBeatInterval);
+                await Task.Delay(HeartBeatInterval).ConfigureAwait(false);
             }
         }
 

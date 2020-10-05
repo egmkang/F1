@@ -43,7 +43,7 @@ namespace F1.Core.RPC
 
             if (!t.IsCompleted)
             {
-                await t;
+                await t.ConfigureAwait(false);
             }
 
             return this.func != null ? this.func(t) : null;

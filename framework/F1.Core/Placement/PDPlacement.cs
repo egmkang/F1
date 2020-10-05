@@ -66,16 +66,16 @@ namespace F1.Core.Placement
         private async Task<ValueTuple<int, string>> GetAsync(string path) 
         {
             var url = $"{this.PlacementServerAddress}{path}";
-            var response = await this.httpClient.GetAsync(url);
-            var str = await response.Content.ReadAsStringAsync();
+            var response = await this.httpClient.GetAsync(url).ConfigureAwait(false);
+            var str = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return new ValueTuple<int, string>((int)response.StatusCode, str);
         }
 
         private async Task<ValueTuple<int, string>> PostAsync(string path, object o) 
         {
             var url = $"{this.PlacementServerAddress}{path}";
-            var response = await this.httpClient.PostAsync(url, o.AsJson());
-            var str = await response.Content.ReadAsStringAsync();
+            var response = await this.httpClient.PostAsync(url, o.AsJson()).ConfigureAwait(false);
+            var str = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return new ValueTuple<int, string>((int)response.StatusCode, str);
         }
 
@@ -108,7 +108,7 @@ namespace F1.Core.Placement
             }
             this.positionLru.Remove(uniqueName);
 
-            var (code, str) = await this.PostAsync("/pd/api/v1/actor/find_position", request);
+            var (code, str) = await this.PostAsync("/pd/api/v1/actor/find_position", request).ConfigureAwait(false);
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("FindActorPositionAsync fail, ActorType:{0}, ActorID:{1}, TTL:{2}, ErrorMessage:{3}",
@@ -135,7 +135,7 @@ namespace F1.Core.Placement
         public async Task<long> GenerateNewSequenceAsync(string sequenceType, int step)
         {
             var path =$"/pd/api/v1/id/new_sequence/{sequenceType}/{step}";
-            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson());
+            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson()).ConfigureAwait(false);
 
             if (code != (int)HttpStatusCode.OK) 
             {
@@ -151,7 +151,7 @@ namespace F1.Core.Placement
         public async Task<long> GenerateNewTokenAsync()
         {
             var path  = "/pd/api/v1/actor/new_token";
-            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson());
+            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson()).ConfigureAwait(false);
 
             if (code != (int)HttpStatusCode.OK) 
             {
@@ -166,7 +166,7 @@ namespace F1.Core.Placement
         public async Task<long> GenerateServerIDAsync()
         {
             var path  = "/pd/api/v1/id/new_server_id";
-            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson());
+            var (code, str) = await this.PostAsync(path, EmptyObject.AsJson()).ConfigureAwait(false);
 
             if (code != (int)HttpStatusCode.OK) 
             {
@@ -186,7 +186,7 @@ namespace F1.Core.Placement
                 ServerID = serverID,
                 LeaseID = leaseID,
                 Load = load,
-            });
+            }).ConfigureAwait(false);
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("KeepAliveServerAsync fail, ErrorMessage:{0}", str);
@@ -209,7 +209,7 @@ namespace F1.Core.Placement
                 info.TTL = 15;
             }
             var path = "/pd/api/v1/server/register";
-            var (code, str) = await this.PostAsync(path, info);
+            var (code, str) = await this.PostAsync(path, info).ConfigureAwait(false);
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("RegisterServerAsync fail, ErrorMessage:{0}", str);
@@ -232,7 +232,7 @@ namespace F1.Core.Placement
 
         public async Task<PlacementVersionInfo> GetVersionAsync()
         {
-            var (code, str) = await this.GetAsync("/pd/api/v1/version");
+            var (code, str) = await this.GetAsync("/pd/api/v1/version").ConfigureAwait(false);
 
             if (code != (int)HttpStatusCode.OK) 
             {
@@ -265,7 +265,9 @@ namespace F1.Core.Placement
         private async Task PullOnce(CancellationToken cancellationToken) 
         {
             if (cancellationToken.IsCancellationRequested) return;
-            var response = await this.KeepAliveServerAsync(this.currentServerInfo.ServerID, this.currentServerInfo.LeaseID, this.currentServerInfo.Load);
+            var response = await this.KeepAliveServerAsync(this.currentServerInfo.ServerID, 
+                                                            this.currentServerInfo.LeaseID, 
+                                                            this.currentServerInfo.Load).ConfigureAwait(false);
 
             if (this.logger.IsEnabled(LogLevel.Trace)) 
             {
@@ -381,7 +383,7 @@ namespace F1.Core.Placement
                 {
                     try
                     {
-                        await this.PullOnce(pullingCancelTokenSource.Token);
+                        await this.PullOnce(pullingCancelTokenSource.Token).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -399,7 +401,7 @@ namespace F1.Core.Placement
                         var delay = (Platform.GetMilliSeconds() - currentMilliSeconds) - timerCount * timerInterval;
                         if (delay > 0)
                         {
-                            await Task.Delay((int)delay);
+                            await Task.Delay((int)delay).ConfigureAwait(false);
                         }
                     }
                 }

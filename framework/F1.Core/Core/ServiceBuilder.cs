@@ -33,7 +33,7 @@ namespace F1.Core.Core
             var placement = this.serviceProvider.GetRequiredService<IPlacement>();
             placement.SetPlacementServerInfo(pdAddress);
             var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
-            await runtime.InitActorRuntime(port);
+            await runtime.InitActorRuntime(port).ConfigureAwait(false);
         }
 
         public void ShutDown()

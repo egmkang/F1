@@ -147,7 +147,7 @@ namespace F1.Core.Gateway
             Task.Run(async () =>
             {
                 //1分钟后GC掉
-                await Task.Delay(60 * 1000);
+                await Task.Delay(60 * 1000).ConfigureAwait(false);
                 this.RemoveSessionInfo(msg.SessionId);
             });
         }

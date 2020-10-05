@@ -93,11 +93,11 @@ namespace F1.Core.RPC
 
                 if (this.SendHook != null)
                 {
-                    response = await this.SendHook(this.PositionRequest, request, false);
+                    response = await this.SendHook(this.PositionRequest, request, false).ConfigureAwait(false);
                 }
                 else 
                 {
-                    response = await this.RpcClientFactory.TrySendRpcRequest(this.PositionRequest, request, false);
+                    response = await this.RpcClientFactory.TrySendRpcRequest(this.PositionRequest, request, false).ConfigureAwait(false);
                 }
 
                 if (response != null) 

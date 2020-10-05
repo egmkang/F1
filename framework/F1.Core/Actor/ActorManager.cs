@@ -134,7 +134,7 @@ namespace F1.Core.Actor
                 //慢路径, 需要到pd里面查询是否没问题
                 //这边要处理Actor的位置, 万一Actor的位置发生变化
                 //那么需要告诉对端重新请求
-                var response = await this.placement.FindActorPositonAsync(args);
+                var response = await this.placement.FindActorPositonAsync(args).ConfigureAwait(false);
                 if (response != null && response.ServerID == this.placement.CurrentServerID)
                 {
                     this.DisptachRequestRPC(inboundMessage, requestRpc);
@@ -255,7 +255,7 @@ namespace F1.Core.Actor
                 //慢路径, 需要到pd里面查询是否没问题
                 //这边要处理Actor的位置, 万一Actor的位置发生变化
                 //这边帮Gateway把消息转发到对应的服务器上面去
-                var response = await this.placement.FindActorPositonAsync(args);
+                var response = await this.placement.FindActorPositonAsync(args).ConfigureAwait(false);
                 if (response != null && response.ServerID == this.placement.CurrentServerID)
                 {
                     var actor = this.GetActor(type, actorID);

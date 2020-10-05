@@ -33,7 +33,7 @@ namespace F1.Core.Actor
         {
             try 
             {
-                await this.OnActivateAsync();
+                await this.OnActivateAsync().ConfigureAwait(false);
                 this.Logger.LogInformation("ActorActiveAsync success, ID:{0}", this.UniqueID);
             }
             catch (Exception e) 
@@ -50,7 +50,7 @@ namespace F1.Core.Actor
         {
             try 
             {
-                await this.OnDeactivateASync();
+                await this.OnDeactivateAsync().ConfigureAwait(false);
                 this.Logger.LogInformation("ActorDeactivateAsync success, ID:{0}", this.UniqueID);
             }
             catch (Exception e)
@@ -58,7 +58,7 @@ namespace F1.Core.Actor
                 this.Logger.LogError("ActorDeactivateAsync fail, ID:{0}, Exception:{1}", this.UniqueID, e.ToString());
             }
         }
-        protected virtual Task OnDeactivateASync() 
+        protected virtual Task OnDeactivateAsync() 
         {
             return Task.CompletedTask;
         }

@@ -32,7 +32,7 @@ namespace F1.Gateway
 
                 var gatewayMessageHandler = serviceProvider.GetRequiredService<GatewayMessageHandler>();
 
-                await connectionListener.BindAsync(port, messageHandlerFactory);
+                await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
                 logger.LogInformation("ListenGateway success, Port:{0}", port);
 
                 gatewayMessageHandler.RegisterMessageCallback(messageCenter);

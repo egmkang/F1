@@ -102,7 +102,7 @@ namespace F1.Core.Actor
             clientFactory.Init(new NetworkConfiguration() { });
 
             connectionListener.Init(new NetworkConfiguration() { });
-            await connectionListener.BindAsync(port, messageHandlerFactory);
+            await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
         }
 
         public async Task InitActorRuntime(int port) 
@@ -115,7 +115,7 @@ namespace F1.Core.Actor
 
             try
             {
-                this.ServerID = await this.placement.GenerateServerIDAsync();
+                this.ServerID = await this.placement.GenerateServerIDAsync().ConfigureAwait(false);
                 this.UniqueSequence.SetHighPart(this.ServerID);
                 this.logger.LogInformation("ActorHost ServerID:{0}", this.ServerID);
 
@@ -128,7 +128,7 @@ namespace F1.Core.Actor
 
             try
             {
-                await this.Listen(port);
+                await this.Listen(port).ConfigureAwait(false);
             }
             catch (Exception e) 
             {
@@ -149,7 +149,7 @@ namespace F1.Core.Actor
                     logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
                 }
 
-                var lease_id = await placement.RegisterServerAsync(server_info);
+                var lease_id = await placement.RegisterServerAsync(server_info).ConfigureAwait(false);
                 logger.LogInformation("Register ServerID:{1}, LeaseID:{0}", this.ServerID, lease_id);
 
                 _ = placement.StartPullingAsync();

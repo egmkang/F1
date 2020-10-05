@@ -53,7 +53,7 @@ namespace F1.Core.Actor
                 if (requestRpc.SrcServer == this.CurrentRequest.ServerID &&
                     requestRpc.SrcRequestId == this.CurrentRequest.RequestID)
                 {
-                    Task.Run(async () => await this.DispatchMessage(inboundMessage));
+                    Task.Run(async () => await this.DispatchMessage(inboundMessage).ConfigureAwait(false));
                     return;
                 }
             }
@@ -103,7 +103,7 @@ namespace F1.Core.Actor
                 try
                 {
                     var asyncReturnValue = this.Dispatcher.Invoke(requestRpc.Method, this.Actor, inputArgs);
-                    var value = await asyncReturnValue.GetReturnValueAsync();
+                    var value = await asyncReturnValue.GetReturnValueAsync().ConfigureAwait(false);
                     ActorUtils.SendResponseRpc(inboundMessage, this.MessageCenter, value, this.Serializer);
                     this.LastMessageTime = Platform.GetMilliSeconds();
                 }
@@ -128,13 +128,13 @@ namespace F1.Core.Actor
             }
             else 
             {
-                await this.Actor.DispatchUserMessage(inboundMessage);
+                await this.Actor.DispatchUserMessage(inboundMessage).ConfigureAwait(false);
             }
         }
 
         private async Task RunningLoop() 
         {
-            await this.Actor.ActivateAsync();
+            await this.Actor.ActivateAsync().ConfigureAwait(false);
 
             //TODO: 判断协程ID
 
@@ -142,13 +142,13 @@ namespace F1.Core.Actor
             {
                 await Task.Yield();
 
-                var queue = await this.mailBox.ReadAsync();
+                var queue = await this.mailBox.ReadAsync().ConfigureAwait(false);
 
                 while (queue.TryDequeue(out var inboundMessage) && inboundMessage.Inner != null)
                 {
                     try 
                     {
-                        await this.DispatchMessage(inboundMessage);
+                        await this.DispatchMessage(inboundMessage).ConfigureAwait(false);
                     }
                     catch (Exception e) 
                     {
@@ -158,7 +158,7 @@ namespace F1.Core.Actor
                 }
             }
 
-            await this.Actor.DeactivateAsync();
+            await this.Actor.DeactivateAsync().ConfigureAwait(false);
         }
     }
 }
