@@ -32,7 +32,8 @@ namespace F1.Core.Core
             services.TryAddSingleton<IMessageCenter, MessageCenter>();
             services.TryAddSingleton<IMessageHandlerFactory, MessageHandlerFactory>();
             services.TryAddSingleton<IPlacement, PDPlacement>();
-            services.TryAddSingleton<UniqueSequence>();
+            services.TryAddSingleton<TimeBasedSequence>();
+            services.TryAddSingleton<SessionUniqueSequence>();
             services.TryAddSingleton<RpcMetadata>();
             services.TryAddSingleton<RpcDispatchProxyFactory>();
             services.TryAddSingleton<DispatchHandler>();

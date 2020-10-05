@@ -40,7 +40,7 @@ namespace F1.Core.RPC
         private readonly ILogger logger;
         private readonly IServiceProvider serviceProvider;
         private readonly RpcMetadata metadata;
-        private readonly UniqueSequence uniqueSequence;
+        private TimeBasedSequence timeBasedSequence;
         private RpcClientFactory rpcClientFactory;
         private readonly IParametersSerializer serializer;
         private readonly Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler> newCompletionSourceDict = new Dictionary<ValueTuple<Type, MethodInfo>, RequestDisptachProxyClientHandler>();
@@ -49,11 +49,11 @@ namespace F1.Core.RPC
                                             IServiceProvider serviceProvider,
                                             IParametersSerializer serializer,
                                             RpcMetadata metadata,
-                                            UniqueSequence uniqueSequence)
+                                            TimeBasedSequence timeBasedSequence)
         {
             this.metadata = metadata;
             this.serviceProvider = serviceProvider;
-            this.uniqueSequence = uniqueSequence;
+            this.timeBasedSequence = timeBasedSequence;
             this.rpcClientFactory = serviceProvider.GetService<RpcClientFactory>();
             this.serializer = serializer;
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
@@ -143,7 +143,7 @@ namespace F1.Core.RPC
 
         public long GetNewSequence() 
         {
-            return this.uniqueSequence.GetNewSequence();
+            return this.timeBasedSequence.GetNewSequence();
         }
 
         private void RegisterClientProxyHandler()

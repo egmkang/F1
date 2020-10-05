@@ -11,27 +11,27 @@ namespace F1.Core.Network
 {
     public sealed class DefaultConnectionSessionInfoFactory : IConnectionSessionInfoFactory
     {
-        private static readonly DateTime RelativeTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private long SessionIDSeed = 0;
         private readonly ILogger logger;
         private readonly IMessageCenter messageCenter;
         private readonly SendingThreads sendingThreads;
+        private readonly SessionUniqueSequence sessionUniqueSequence;
 
-        public DefaultConnectionSessionInfoFactory(ILoggerFactory loggerFactory, IMessageCenter messageCenter, SendingThreads sendingThreads) 
+        public DefaultConnectionSessionInfoFactory(ILoggerFactory loggerFactory, 
+                                                    IMessageCenter messageCenter,
+                                                    SendingThreads sendingThreads,
+                                                    SessionUniqueSequence sessionUniqueSequence) 
         {
             this.logger = loggerFactory.CreateLogger("F1.SessionInfo");
             this.messageCenter = messageCenter;
             this.sendingThreads = sendingThreads;
-            var relativeSeconds = Platform.GetRelativeSeconds(RelativeTime);
-            SessionIDSeed = relativeSeconds  * 10000000000;
+            this.sessionUniqueSequence = sessionUniqueSequence;
 
-            logger.LogInformation("DefaultChannelSessionInfo, SessionIDSeed:{0}, RelativeSeconds:{1}",
-                SessionIDSeed, relativeSeconds);
+            logger.LogInformation("DefaultChannelSessionInfo, SessionIDSeed:{0}", this.sessionUniqueSequence.GetNewSequence());
         }
 
         public IConnectionSessionInfo NewSessionInfo(IMessageHandlerFactory handlerFactory)
         {
-            return new DefaultConnectionSessionInfo(Interlocked.Increment(ref this.SessionIDSeed),
+            return new DefaultConnectionSessionInfo(this.sessionUniqueSequence.GetNewSequence(),
                 this.logger, this.messageCenter, handlerFactory.Codec, this.sendingThreads);
         }
     }

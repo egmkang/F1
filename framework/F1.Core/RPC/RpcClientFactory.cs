@@ -24,16 +24,16 @@ namespace F1.Core.RPC
         private readonly IPlacement placement;
         private readonly IMessageCenter messageCenter;
         private readonly ILogger logger;
-        private readonly UniqueSequence uniqueSequence;
         private readonly TaskCompletionSourceManager taskCompletionSourceManager;
         private readonly GatewayClientFactory gatewayClientFactory;
         private readonly ClientConnectionPool clientConnectionPool;
+        private readonly TimeBasedSequence timeBasedSequence;
 
 
         public RpcClientFactory(ILoggerFactory loggerFactory,
             IMessageCenter messageCenter,
             IPlacement placement,
-            UniqueSequence uniqueSequence,
+            TimeBasedSequence timeBasedSequence,
             TaskCompletionSourceManager taskCompletionSourceManager,
             ClientConnectionPool clientConnectionPool,
             IServiceProvider serviceProvider) 
@@ -41,7 +41,7 @@ namespace F1.Core.RPC
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
             this.placement = placement;
-            this.uniqueSequence = uniqueSequence;
+            this.timeBasedSequence = timeBasedSequence;
             this.taskCompletionSourceManager = taskCompletionSourceManager;
             this.gatewayClientFactory = serviceProvider.GetService<GatewayClientFactory>();
             this.clientConnectionPool = clientConnectionPool;
@@ -53,7 +53,7 @@ namespace F1.Core.RPC
             this.messageCenter.RegisterMessageProc(typeof(ResponseRpcHeartBeat).FullName, this.ProcessRpcHeartBeatResponse);
         }
 
-        private long NewSequenceID => this.uniqueSequence.GetNewSequence();
+        private long NewSequenceID => this.timeBasedSequence.GetNewSequence();
         /// <summary>
         /// Gateway在PD里面也是一个ActorHost, 只是提供的服务名为`IGateway`, 进行了特殊处理
         /// </summary>

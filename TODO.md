@@ -1,11 +1,20 @@
-C# Framework:
+F1 Framework:
 
 v0.2
 * [ ] PlacementDriver
     * [ ] Interface and Impl Map
     * [ ] PD Server Alive
+    * [ ] configuration(from TiDB's PD)
+    * [ ] modify Actor Placement
+* [x] Utils
+    * [x] SequenceID
+    * [x] SessionUniqueID
+* [ ] Actor
+    * [ ] Interface And Impl Map
+    * [ ] GC
 * [ ] Gateway
     * [ ] Abstract
+    * [ ] Authentication
 * [ ] Sample
     * [ ] LogicServer
     * [ ] GameServer
@@ -13,6 +22,18 @@ v0.2
 
 v0.1
 
+* [x] PlacementDriver
+    * [x] ID Generator
+      * [x] ServerID Generator
+      * [x] Sequence Generatro
+    * [x] Virtual Actor Host Node
+      * [x] register server instance
+      * [x] keep alive server
+      * [x] actor service index
+      * [x] pull recent event
+    * [x] Actor
+      * [x] Placement
+      * [x] OneTime Actor(never move to another actor host)
 * [x] Placement SDK
     * [x] RegisterServer
     * [x] KeepAliveServer

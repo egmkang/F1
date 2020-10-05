@@ -27,7 +27,6 @@ namespace F1.Core.Gateway
         private readonly IPlacement placement;
         private readonly IMessageCenter messageCenter;
         private readonly ILogger logger;
-        private readonly UniqueSequence uniqueSequence;
         private readonly ClientConnectionPool clientConnectionPool;
         private readonly LRU<long, GatewayPlayerInfo> sessionInfos = new LRU<long, GatewayPlayerInfo>(SessionInfosCount);
 
@@ -36,14 +35,12 @@ namespace F1.Core.Gateway
             IPlacement placement,
             IClientConnectionFactory connectionFactory,
             IMessageHandlerFactory messageHandlerFactory,
-            UniqueSequence uniqueSequence,
             ClientConnectionPool clientPool
             )
         {
             this.logger = loggerFactory.CreateLogger("F1.Core");
             this.messageCenter = messageCenter;
             this.placement = placement;
-            this.uniqueSequence = uniqueSequence;
             this.clientConnectionPool = clientPool;
 
             //消息处理
@@ -52,8 +49,6 @@ namespace F1.Core.Gateway
             this.messageCenter.RegisterMessageProc(typeof(NotifyConnectionAborted).FullName, this.ProcessNotifyConnectionAborted);
             this.messageCenter.RegisterMessageProc(typeof(NotifyNewMessage).FullName, this.ProcessNotifyNewMessage);
         }
-
-        private long NewSequenceID => this.uniqueSequence.GetNewSequence();
 
         public void OnAddServer(PlacementActorHostInfo server)
         {

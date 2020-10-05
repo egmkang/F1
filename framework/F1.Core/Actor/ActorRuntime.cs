@@ -17,9 +17,12 @@ namespace F1.Core.Actor
 {
     internal class ActorRuntime
     {
+        private static readonly DateTime RelativeTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
         public IServiceProvider ServiceProvider { get; internal set; }
         public long ServerID { get; internal set; }
-        public UniqueSequence UniqueSequence { get; internal set; }
+        public TimeBasedSequence TimeSequence { get; internal set; }
+        public SessionUniqueSequence SessionSequence { get; internal set; }
         private readonly ILogger logger;
         private readonly IPlacement placement;
         private readonly RpcMetadata rpcMetadata;
@@ -38,8 +41,8 @@ namespace F1.Core.Actor
             public long RunningLoopID => throw new NotImplementedException();
 
             private long ServerID;
-            private readonly UniqueSequence UniqueSequence;
-            public ServerSequenceContext(long ServerID, UniqueSequence uniqueSequence)
+            private readonly TimeBasedSequence UniqueSequence;
+            public ServerSequenceContext(long ServerID, TimeBasedSequence uniqueSequence)
             {
                 this.ServerID = ServerID;
                 this.UniqueSequence = uniqueSequence;
@@ -60,15 +63,17 @@ namespace F1.Core.Actor
         #endregion
 
         public ActorRuntime(IServiceProvider serviceProvider, 
-                            UniqueSequence uniqueSequence,
                             IPlacement placement,
                             RpcMetadata rpcMetadata,
-                            ILoggerFactory loggerFactory) 
+                            ILoggerFactory loggerFactory,
+                            TimeBasedSequence timeBasedSequence,
+                            SessionUniqueSequence sessionUniqueSequence) 
         {
             this.ServiceProvider = serviceProvider;
-            this.UniqueSequence = uniqueSequence;
             this.placement = placement;
             this.rpcMetadata = rpcMetadata;
+            this.TimeSequence = timeBasedSequence;
+            this.SessionSequence = sessionUniqueSequence;
 
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
         }
@@ -116,10 +121,13 @@ namespace F1.Core.Actor
             try
             {
                 this.ServerID = await this.placement.GenerateServerIDAsync().ConfigureAwait(false);
-                this.UniqueSequence.SetHighPart(this.ServerID);
+
+                this.SessionSequence.SetServerID(this.ServerID);
+                this.TimeSequence.SetTime(Platform.GetRelativeSeconds(RelativeTime));
+
                 this.logger.LogInformation("ActorHost ServerID:{0}", this.ServerID);
 
-                this.Context = new ServerSequenceContext(this.ServerID, this.UniqueSequence);
+                this.Context = new ServerSequenceContext(this.ServerID, this.TimeSequence);
             }
             catch (Exception e) 
             {
