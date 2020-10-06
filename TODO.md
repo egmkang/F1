@@ -9,12 +9,19 @@ v0.2
 * [x] Utils
     * [x] SequenceID
     * [x] SessionUniqueID
-* [ ] Actor
+* [ ] Load Balance
+* [ ] Configuration
+  * [ ] network
+  * [ ] actor
+* [ ] Abstraction
+  * [ ] Gateway
+    * [ ] Authentication
+    * [ ] Message Codec
+    * [ ] Message Processing
+  * [ ] Actor
     * [ ] Interface And Impl Map
     * [ ] GC
-* [ ] Gateway
-    * [ ] Abstract
-    * [ ] Authentication
+    * [ ] Actor LifeTime Configuration
 * [ ] Sample
     * [ ] LogicServer
     * [ ] GameServer
@@ -44,7 +51,7 @@ v0.1
         * [x] Remove
         * [x] Offline
     * [x] Remove Domain
-    * [ ] Gateway
+    * [x] Gateway
 * [x] Socket
     * [x] TcpServer
     * [x] TcpClient
@@ -79,8 +86,10 @@ v0.1
     * [x] ActorLifeTime
     * [x] ActorClientProxyFactory
     * [x] Multi Interface
-    * [ ] Gateway
-        * [x] Gateway Client
-        * [ ] Message Process
-        * [ ] Gateway Service
     * [ ] Actor Model
+* [ ] Gateway
+    * [x] Gateway Client
+    * [ ] Message Process
+    * [x] Gateway Service
+* [ ] GameServer
+  * [ ] DispatchUserMessage
