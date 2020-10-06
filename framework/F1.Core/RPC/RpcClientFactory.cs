@@ -49,8 +49,8 @@ namespace F1.Core.RPC
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
 
-            this.messageCenter.RegisterMessageProc(typeof(ResponseRpc).FullName, this.ProcessRpcResponse);
-            this.messageCenter.RegisterMessageProc(typeof(ResponseRpcHeartBeat).FullName, this.ProcessRpcHeartBeatResponse);
+            this.messageCenter.RegisterTypedMessageProc<ResponseRpc>(this.ProcessRpcResponse);
+            this.messageCenter.RegisterTypedMessageProc<ResponseRpcHeartBeat>(this.ProcessRpcHeartBeatResponse);
         }
 
         private long NewSequenceID => this.timeBasedSequence.GetNewSequence();

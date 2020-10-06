@@ -11,6 +11,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Utils;
 using F1.Core.Network;
 using GatewayMessage;
+using F1.Core.Message;
 
 namespace F1.Core.Gateway
 {
@@ -44,10 +45,10 @@ namespace F1.Core.Gateway
             this.clientConnectionPool = clientPool;
 
             //消息处理
-            this.messageCenter.RegisterMessageProc(typeof(ResponseHeartBeat).FullName, this.ProcessHeartBeatResponse);
-            this.messageCenter.RegisterMessageProc(typeof(NotifyConnectionComing).FullName, this.ProcessNotifyConnectionComing);
-            this.messageCenter.RegisterMessageProc(typeof(NotifyConnectionAborted).FullName, this.ProcessNotifyConnectionAborted);
-            this.messageCenter.RegisterMessageProc(typeof(NotifyNewMessage).FullName, this.ProcessNotifyNewMessage);
+            this.messageCenter.RegisterTypedMessageProc<ResponseHeartBeat>(this.ProcessHeartBeatResponse);
+            this.messageCenter.RegisterTypedMessageProc<NotifyConnectionComing>(this.ProcessNotifyConnectionComing);
+            this.messageCenter.RegisterTypedMessageProc<NotifyConnectionAborted>(this.ProcessNotifyConnectionAborted);
+            this.messageCenter.RegisterTypedMessageProc<NotifyNewMessage>(this.ProcessNotifyNewMessage);
         }
 
         public void OnAddServer(PlacementActorHostInfo server)

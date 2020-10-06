@@ -184,17 +184,27 @@ namespace F1.Core.Message
             }
         }
 
-        public void RegisterMessageProc(string messageName, Action<InboundMessage> action)
+        public void RegisterDefaultMessageProc(Action<InboundMessage> inboundMessageProc)
+        {
+            this.defaultInboundMessageProc = inboundMessageProc;
+            this.logger.LogInformation("RegisterMessageProc default proc");
+        }
+
+        public void RegisterMessageProc(string messageName, Action<InboundMessage> inboundMessageProc, bool replace)
         {
             if (string.IsNullOrEmpty(messageName)) 
             {
-                this.defaultInboundMessageProc = action;
-                this.logger.LogInformation("RegisterMessageProc default proc");
+                this.logger.LogError("RegisterMessageProc, MessageName is null or empty");
                 return;
             }
-            if (!this.inboudMessageProc.TryAdd(messageName, action))
+            if (replace) 
+            {
+                this.inboudMessageProc.Remove(messageName);
+            }
+            if (!this.inboudMessageProc.TryAdd(messageName, inboundMessageProc))
             {
                 this.logger.LogError("RegisterMessageProc, MessageName:{0} exists", messageName);
+                return;
             }
             this.logger.LogInformation("RegisterMessageProc, MessageName:{0}", messageName);
         }

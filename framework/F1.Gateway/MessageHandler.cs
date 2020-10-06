@@ -4,34 +4,40 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using DotNetty.Buffers;
 using F1.Abstractions.Network;
+using F1.Abstractions.Actor.Gateway;
+using F1.Abstractions.Placement;
 using F1.Core.Message;
 using F1.Core.Network;
-using F1.Core.Utils;
 using GatewayMessage;
 
 namespace F1.Gateway
 {
-    internal class GatewayMessageHandler
+    internal class GatewayDefaultMessageHandler
     {
         public readonly ILogger logger;
         public readonly IMessageCenter messageCenter;
         public readonly IConnectionManager connectionManager;
+        public readonly IAuthentication authentication;
+        public readonly IPlacement placement;
 
-        public GatewayMessageHandler(ILoggerFactory loggerFactory,
+        public GatewayDefaultMessageHandler(ILoggerFactory loggerFactory,
                                         IMessageCenter messageCenter,
-                                        IConnectionManager connectionManager) 
+                                        IConnectionManager connectionManager,
+                                        IAuthentication authentication,
+                                        IPlacement placement) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Gateway");
             this.messageCenter = messageCenter;
             this.connectionManager = connectionManager;
+            this.authentication = authentication;
+            this.placement = placement;
 
-            this.messageCenter.RegisterMessageProc(BlockMessageCodec.MessageName, GatewayIncommingMessage);
+            this.messageCenter.RegisterMessageProc(BlockMessageCodec.MessageName, GatewayIncommingMessage, false);
 
-            this.messageCenter.RegisterMessageProc(typeof(RequestHeartBeat).FullName, ProcessGatewayHeartBeat);
-            this.messageCenter.RegisterMessageProc(typeof(RequestCloseConnection).FullName, ProcessGatewayCloseConnection);
-            this.messageCenter.RegisterMessageProc(typeof(RequestSendMessageToPlayer).FullName, ProcessGatewaySendMessageToPlayer);
+            this.messageCenter.RegisterTypedMessageProc<RequestHeartBeat>(ProcessGatewayHeartBeat);
+            this.messageCenter.RegisterTypedMessageProc<RequestCloseConnection>(ProcessGatewayCloseConnection);
+            this.messageCenter.RegisterTypedMessageProc<RequestSendMessageToPlayer>(ProcessGatewaySendMessageToPlayer);
         }
 
         private void GatewayIncommingMessage(InboundMessage inboundMessage)
@@ -39,9 +45,14 @@ namespace F1.Gateway
             var sessionInfo = inboundMessage.SourceConnection.GetSessionInfo();
             var playerInfo = sessionInfo.GetPlayerInfo();
 
-            //TODO: 第一个消息
-            if (string.IsNullOrEmpty(playerInfo.OpenID))
+            //第一个消息
+            if (string.IsNullOrEmpty(playerInfo.PlayerID))
             {
+                var playerID = this.authentication.DecodeToken(inboundMessage.Inner as byte[]) as string;
+                logger.LogInformation("GatewayIncomingMessage, SessionID:{0} FirstMessage, PlayerID:{1}",
+                    sessionInfo.SessionID, playerID);
+                playerInfo.PlayerID = playerID;
+
 
             }
             else 

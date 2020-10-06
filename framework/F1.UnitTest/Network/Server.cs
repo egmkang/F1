@@ -106,7 +106,7 @@ namespace F1.UnitTest.Network
                 {
                     Console.WriteLine("message dropped");
                 });
-            messageCenter.RegisterMessageProc("", 
+            messageCenter.RegisterDefaultMessageProc(
                 (inboundMessage) =>
                 {
                     var channel = inboundMessage.SourceConnection;

@@ -8,8 +8,7 @@ namespace F1.Gateway
 
     public class GatewayPlayerSessionInfo 
     {
-        public long PlayerID;
-        public string OpenID;
+        public string PlayerID;
         public byte[] Token;
     }
     public static partial class Ext

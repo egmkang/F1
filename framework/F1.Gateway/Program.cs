@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
+using System.Collections.Generic;
 using F1.Core.Core;
+using F1.Sample.Impl;
+using F1.Gateway.Actor;
 
 namespace F1.Gateway
 {
@@ -11,17 +11,22 @@ namespace F1.Gateway
     {
         static async Task Main(string[] args)
         {
+            Load.LoadByForce();
 
             var builder = new ServiceBuilder();
+
             builder.AddDefaultServices();
-            builder.ServiceCollection.AddSingleton<GatewayMessageHandler>();
-            builder.ServiceCollection.AddLogging(builder =>
-            {
-                builder.ClearProviders();
-                builder.SetMinimumLevel(LogLevel.Information);
-                builder.AddNLog();
-            });
+            builder.AddGatewayServices();
+            builder.AddLog();
+
             builder.Build();
+
+            //TODO
+            //通过Hack的方式先绕过去
+            builder.ConfigActorServices(new List<string>()
+            {
+                typeof(GatewayImpl).Name,
+            });
 
             await builder.InitAsync("127.0.0.1:2379", 20001).ConfigureAwait(false);
             await builder.ListenGateway(20000).ConfigureAwait(false);

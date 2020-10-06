@@ -30,7 +30,7 @@ namespace F1.Gateway
                 var messageHandlerFactory = new MessageHandlerFactory(serviceProvider, logFactory, messageCenter);
                 messageHandlerFactory.Codec = codec;
 
-                var gatewayMessageHandler = serviceProvider.GetRequiredService<GatewayMessageHandler>();
+                var gatewayMessageHandler = serviceProvider.GetRequiredService<GatewayDefaultMessageHandler>();
 
                 await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
                 logger.LogInformation("ListenGateway success, Port:{0}", port);

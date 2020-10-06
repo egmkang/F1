@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using F1.Abstractions;
 using F1.Abstractions.Network;
 using F1.Abstractions.Actor;
@@ -47,6 +49,18 @@ namespace F1.Core.Core
             services.TryAddSingleton<IActorClientFactory, ActorClientFactory>();
             services.TryAddSingleton<ActorRuntime>();
             services.TryAddSingleton<SendingThreads>();
+        }
+
+        public static void AddLog(this IServiceBuilder serviceBuilder, LogLevel logLevel = LogLevel.Information) 
+        {
+            var services = serviceBuilder.ServiceCollection;
+
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.SetMinimumLevel(logLevel);
+                builder.AddNLog();
+            });
         }
     }
 }

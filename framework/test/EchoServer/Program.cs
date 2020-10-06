@@ -60,7 +60,7 @@ namespace sample
                     logger.LogError("Message Dropped, Dest SessionID:{0}", outboundMessage.DestConnection.GetSessionInfo().SessionID);
                 });
 
-            messageCenter.RegisterMessageProc("",
+            messageCenter.RegisterDefaultMessageProc(
                 (inboundMessage) =>
                 {
                     var channel = inboundMessage.SourceConnection;

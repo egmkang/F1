@@ -26,6 +26,7 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         private readonly IPlacement placement;
         private readonly RpcMetadata rpcMetadata;
+        private readonly List<string> services = new List<string>();
 
         public IActorContext Context { get; internal set; }
 
@@ -98,7 +99,7 @@ namespace F1.Core.Actor
                     logger.LogError("Message Dropped, Dest SessionID:{0}", outboundMessage.DestConnection.GetSessionInfo().SessionID);
                 });
 
-            messageCenter.RegisterMessageProc("",
+            messageCenter.RegisterDefaultMessageProc(
                 (inboundMessage) =>
                 {
                     logger.LogWarning("Message Dropped, MessageName:{0} not find a processor", inboundMessage.MessageName);
@@ -108,6 +109,11 @@ namespace F1.Core.Actor
 
             connectionListener.Init(new NetworkConfiguration() { });
             await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
+        }
+
+        public void ConfigActorServices(List<string> svc) 
+        {
+            this.services.AddRange(svc);
         }
 
         public async Task InitActorRuntime(int port) 
@@ -150,11 +156,25 @@ namespace F1.Core.Actor
                 server_info.StartTime = Platform.GetMilliSeconds();
                 server_info.Address = $"{Platform.GetLocalAddresss()}:{port}";
 
-                var serverTypes = this.rpcMetadata.RpcServerTypes;
-                foreach (var (key, value) in serverTypes)
+                //TODO
+                //先通过这种方式绕过去
+                //后面改一下PD的实现和协议, 接口和实现分离
+                if (this.services.Count == 0)
                 {
-                    server_info.ActorType.Add(value.Name);
-                    logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
+                    var serverTypes = this.rpcMetadata.RpcServerTypes;
+                    foreach (var (key, value) in serverTypes)
+                    {
+                        server_info.ActorType.Add(value.Name);
+                        logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
+                    }
+                }
+                else 
+                {
+                    foreach (var value in this.services) 
+                    {
+                        server_info.ActorType.Add(value);
+                        logger.LogTrace("Register ServiceType:{0}", value);
+                    }
                 }
 
                 var lease_id = await placement.RegisterServerAsync(server_info).ConfigureAwait(false);
