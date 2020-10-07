@@ -55,12 +55,11 @@ namespace F1.Core.Actor
 
             var actor = constractor();
             var context = new ActorContext(actor, this.logger);
-            actor.InitActor(type, id, context);
+            actor.InitActor(type, id, context, this.messageCenter);
             actor.Logger = this.logger;
             actor.ProxyFactory = this.proxyFactory;
             context.Dispatcher = this.requestDispatchHandler;
             context.Serializer = this.parametersSerializer;
-            context.MessageCenter = this.messageCenter;
 
             this.logger.LogInformation("CreateActor, ID:{0}", actor.UniqueID);
 

@@ -136,9 +136,10 @@ namespace F1.Core.Gateway
                 return;
             } 
             this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerID, message);
+
             Task.Run(async () =>
             {
-                //1分钟后GC掉
+                //1分钟后GC掉SessionInfo
                 await Task.Delay(60 * 1000).ConfigureAwait(false);
                 this.RemoveSessionInfo(msg.SessionId);
             });

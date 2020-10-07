@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using DotNetty.Buffers;
 using F1.Abstractions.Network;
+using F1.Core.Utils;
 using Google.Protobuf;
 
 
@@ -24,13 +22,7 @@ namespace F1.Core.Message
 
         static MessageEncoder() 
         {
-            var paramBuffer = Expression.Parameter(typeof(byte[]), "buffer");
-            var paramOffset = Expression.Parameter(typeof(int), "offset");
-            var paramLength = Expression.Parameter(typeof(int), "length");
-            var ctor = typeof(CodedOutputStream).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(byte[]), typeof(int), typeof(int) }, null);
-            var lambda = Expression.Lambda<Func<byte[], int, int, CodedOutputStream>>(
-                Expression.New(ctor, paramBuffer, paramOffset, paramLength), paramBuffer, paramOffset, paramLength);
-            GetNewStream = lambda.Compile();
+            GetNewStream = Util.GetNewCodecOutputStream();
         }
 
         public IByteBuffer Encode(IByteBufferAllocator bufferAllocator, IMessage message) 

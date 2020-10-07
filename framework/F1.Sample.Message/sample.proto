@@ -1,0 +1,12 @@
+﻿syntax="proto3";
+package sample;
+
+message RequestSayHello
+{
+string name = 1;
+}
+
+message ResponseSayHello
+{
+string content = 1;
+}

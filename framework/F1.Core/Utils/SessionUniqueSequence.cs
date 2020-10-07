@@ -6,7 +6,7 @@ namespace F1.Core.Utils
 {
     public class SessionUniqueSequence: UniqueSequence
     {
-        public long GetServerID(long seq) 
+        public static long GetServerID(long seq) 
         {
             return seq / HighPartShift;
         }

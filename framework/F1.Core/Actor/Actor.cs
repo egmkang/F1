@@ -19,14 +19,16 @@ namespace F1.Core.Actor
         internal RpcDispatchProxyFactory ProxyFactory { get; set; }
         public ILogger Logger { get; internal set; }
         private ActorTimerManager TimerManager { get; set; }
+        public IMessageCenter MessageCenter { get; private set; }
 
-        internal void InitActor(Type type, string id, IActorContext context)
+        internal void InitActor(Type type, string id, IActorContext context, IMessageCenter messageCenter)
         {
             this.ActorType = type;
             this.ID = id;
             this.Context = context;
             this.UniqueID = $"{this.ActorType.Name}@{this.ID}";
             this.TimerManager = new ActorTimerManager(this);
+            this.MessageCenter = messageCenter;
         }
 
         internal async Task ActivateAsync() 

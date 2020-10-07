@@ -21,7 +21,6 @@ namespace F1.Core.Actor
         internal Actor Actor { get; set; }
         internal IParametersSerializer Serializer { get; set; }
         internal DispatchHandler Dispatcher { get; set; }
-        internal IMessageCenter MessageCenter { get; set; }
         internal volatile bool stop = false;
 
         public (long ServerID, long RequestID) CurrentRequest { get; internal set; }
@@ -104,7 +103,7 @@ namespace F1.Core.Actor
                 {
                     var asyncReturnValue = this.Dispatcher.Invoke(requestRpc.Method, this.Actor, inputArgs);
                     var value = await asyncReturnValue.GetReturnValueAsync().ConfigureAwait(false);
-                    ActorUtils.SendResponseRpc(inboundMessage, this.MessageCenter, value, this.Serializer);
+                    ActorUtils.SendResponseRpc(inboundMessage, this.Actor.MessageCenter, value, this.Serializer);
                     this.LastMessageTime = Platform.GetMilliSeconds();
                 }
                 catch (Exception e)
@@ -114,11 +113,11 @@ namespace F1.Core.Actor
 
                     if (e is RpcDispatchException)
                     {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, RpcErrorCode.MethodNotFound, e.ToString());
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.Actor.MessageCenter, RpcErrorCode.MethodNotFound, e.ToString());
                     }
                     else 
                     {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.MessageCenter, RpcErrorCode.Others, e.ToString());
+                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.Actor.MessageCenter, RpcErrorCode.Others, e.ToString());
                     }
                 }
                 finally 
