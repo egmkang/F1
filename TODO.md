@@ -87,9 +87,9 @@ v0.1
     * [x] ActorClientProxyFactory
     * [x] Multi Interface
     * [ ] Actor Model
-* [ ] Gateway
+* [x] Gateway
     * [x] Gateway Client
-    * [ ] Message Process
+    * [x] Message Process
     * [x] Gateway Service
-* [ ] GameServer
-  * [ ] DispatchUserMessage
+* [x] GameServer
+  * [x] DispatchUserMessage
