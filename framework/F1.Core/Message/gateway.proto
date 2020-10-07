@@ -20,8 +20,7 @@ message NotifyConnectionComing
 {
 string service_type = 1;
 sfixed64 session_id = 2;
-string open_id = 3;
-sfixed64 player_id = 4;
+string player_id = 4;
 bytes token = 5;
 }
 
@@ -50,11 +49,4 @@ message RequestSendMessageToPlayer
 {
 repeated sfixed64 session_ids = 1;
 bytes msg = 2;
-}
-
-//设置游戏玩家的地址
-message RequestSetGamePlayerLocation
-{
-sfixed64 session_id = 1;
-sfixed64 new_game_server = 2;
 }

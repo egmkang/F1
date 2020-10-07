@@ -4,11 +4,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Google.Protobuf;
+using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Abstractions.Actor.Gateway;
 using F1.Abstractions.Placement;
 using F1.Core.Message;
 using F1.Core.Network;
+using F1.Sample.Interface;
+using F1.Core.Placement;
 using GatewayMessage;
 
 namespace F1.Gateway
@@ -19,13 +23,13 @@ namespace F1.Gateway
         public readonly IMessageCenter messageCenter;
         public readonly IConnectionManager connectionManager;
         public readonly IAuthentication authentication;
-        public readonly IPlacement placement;
+        public readonly PlacementExtension placement;
 
         public GatewayDefaultMessageHandler(ILoggerFactory loggerFactory,
                                         IMessageCenter messageCenter,
                                         IConnectionManager connectionManager,
                                         IAuthentication authentication,
-                                        IPlacement placement) 
+                                        PlacementExtension placement) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Gateway");
             this.messageCenter = messageCenter;
@@ -44,25 +48,85 @@ namespace F1.Gateway
         {
             var sessionInfo = inboundMessage.SourceConnection.GetSessionInfo();
             var playerInfo = sessionInfo.GetPlayerInfo();
+            var data = inboundMessage.Inner as byte[];
 
             //第一个消息
             if (string.IsNullOrEmpty(playerInfo.PlayerID))
             {
-                var playerID = this.authentication.DecodeToken(inboundMessage.Inner as byte[]) as string;
+                var playerID = this.authentication.DecodeToken(data) as string;
                 logger.LogInformation("GatewayIncomingMessage, SessionID:{0} FirstMessage, PlayerID:{1}",
                     sessionInfo.SessionID, playerID);
                 playerInfo.PlayerID = playerID;
-
-
+                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerID, data, true);
             }
             else 
             {
-
+                if (sessionInfo.ServerID != 0)
+                {
+                    var result = this.messageCenter.SendMessageToServer(sessionInfo.ServerID, new NotifyNewMessage()
+                    {
+                        Msg = ByteString.CopyFrom(data),
+                        ServiceType = typeof(IPlayer).Name,
+                        SessionId = sessionInfo.SessionID,
+                    });
+                    if (result) return;
+                }
+                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo.PlayerID, data, false);
             }
         }
 
-        private async Task ProcessGatewayMessageSlow() 
+        private async Task ProcessGatewayMessageSlow(IChannel channel,
+                                                    IConnectionSessionInfo sessionInfo, 
+                                                    string playerID, 
+                                                    byte[] data, 
+                                                    bool isFirstPacket)
         {
+            var serviceType = typeof(IPlayer).Name;
+            try
+            {
+                var position = await this.placement.FindActorPositonAsync(serviceType, playerID).ConfigureAwait(false);
+                if (position == null) 
+                {
+                    this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, PlayerID:{1} not found DestServer",
+                        sessionInfo.SessionID, playerID);
+                    return;
+                }
+                sessionInfo.ServerID = position.ServerID;
+
+                if (isFirstPacket)
+                {
+
+                    this.logger.LogInformation("IncomingConnection, SessionID:{0}, PlayerID:{1}, DestServerID:{2}",
+                        sessionInfo.SessionID, playerID, position.ServerID);
+
+                    var msg = new NotifyConnectionComing()
+                    {
+                        Token = ByteString.CopyFrom(data),
+                        SessionId = sessionInfo.SessionID,
+                        PlayerId = playerID,
+                        ServiceType = serviceType,
+                    };
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg);
+                }
+                else
+                {
+                    this.logger.LogInformation("NotifyNewMessage, SessionID:{0}, PlayerID:{1}, DestServerID:{2}",
+                        sessionInfo.SessionID, playerID, position.ServerID);
+
+                    var msg = new NotifyNewMessage()
+                    {
+                        Msg = ByteString.CopyFrom(data),
+                        SessionId = sessionInfo.SessionID,
+                        ServiceType = serviceType,
+                    };
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg);
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, PlayerID:{1}, Exception:{2}",
+                    sessionInfo.SessionID, playerID, e);
+            }
         }
 
         private void ProcessGatewayHeartBeat(InboundMessage inboundMessage) 

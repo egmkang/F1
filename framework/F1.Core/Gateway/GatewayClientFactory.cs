@@ -18,9 +18,7 @@ namespace F1.Core.Gateway
     internal class GatewayPlayerInfo 
     {
         public long SessionID;
-        public long PlayerID;
-        public string PlayerIDString;
-        public string OpenID;
+        public string PlayerID;
     }
     internal class GatewayClientFactory
     {
@@ -91,10 +89,8 @@ namespace F1.Core.Gateway
             //还要考虑GC, 暂时用LRU来GC
             this.sessionInfos.Add(message.SessionId, new GatewayPlayerInfo()
             {
-                OpenID = message.OpenId,
                 PlayerID = message.PlayerId,
                 SessionID = message.SessionId,
-                PlayerIDString = message.PlayerId.ToString(),
             });
         }
 
@@ -103,14 +99,14 @@ namespace F1.Core.Gateway
             this.sessionInfos.Remove(sessionID);
         }
 
-        private (string OpenID, string PlayerIDString, long PlayerID) GetSessionInfo(long sessionID)
+        private string GetSessionInfo(long sessionID)
         {
             var session = this.sessionInfos.Get(sessionID);
             if (session != null) 
             {
-                return (session.OpenID, session.PlayerIDString, session.PlayerID);
+                return session.PlayerID;
             }
-            return ("", "", 0);
+            return "";
         }
 
         private void ProcessNotifyConnectionComing(InboundMessage message) 
@@ -133,13 +129,13 @@ namespace F1.Core.Gateway
                 this.logger.LogError("ProcessNotifyConnectionAborted input message type:{0}", message.Inner?.GetType());
                 return;
             }
-            var (openID, playerIDString, playerID) = this.GetSessionInfo(msg.SessionId);
-            if (playerID == 0) 
+            var playerID = this.GetSessionInfo(msg.SessionId);
+            if (string.IsNullOrEmpty(playerID)) 
             {
                 this.logger.LogWarning("ProcessNotifyConnectionAborted, SessionID:{0}, PlayerID not found", msg.SessionId);
                 return;
             } 
-            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerIDString, message);
+            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerID, message);
             Task.Run(async () =>
             {
                 //1分钟后GC掉
@@ -156,13 +152,13 @@ namespace F1.Core.Gateway
                 this.logger.LogError("ProcessNewMessage input message type:{0}", message.Inner?.GetType());
                 return;
             }
-            var (openID, playerIDString, playerID) = this.GetSessionInfo(msg.SessionId);
-            if (playerID == 0) 
+            var playerID = this.GetSessionInfo(msg.SessionId);
+            if (string.IsNullOrEmpty(playerID)) 
             {
                 this.logger.LogWarning("ProcessNewMessage, SessionID:{0}, PlayerID not found", msg.SessionId);
                 return;
             }
-            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerIDString, message);
+            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerID, message);
         }
 
     }

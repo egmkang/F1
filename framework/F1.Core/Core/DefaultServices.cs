@@ -49,6 +49,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<IActorClientFactory, ActorClientFactory>();
             services.TryAddSingleton<ActorRuntime>();
             services.TryAddSingleton<SendingThreads>();
+            services.TryAddSingleton<PlacementExtension>();
         }
 
         public static void AddLog(this IServiceBuilder serviceBuilder, LogLevel logLevel = LogLevel.Information) 

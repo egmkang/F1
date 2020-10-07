@@ -26,29 +26,26 @@ namespace GatewayMessage {
           string.Concat(
             "ChVNZXNzYWdlL2dhdGV3YXkucHJvdG8SDkdhdGV3YXlNZXNzYWdlIigKEFJl",
             "cXVlc3RIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgQIikKEVJlc3Bv",
-            "bnNlSGVhcnRCZWF0EhQKDG1pbGxpX3NlY29uZBgBIAEoECJ1ChZOb3RpZnlD",
+            "bnNlSGVhcnRCZWF0EhQKDG1pbGxpX3NlY29uZBgBIAEoECJkChZOb3RpZnlD",
             "b25uZWN0aW9uQ29taW5nEhQKDHNlcnZpY2VfdHlwZRgBIAEoCRISCgpzZXNz",
-            "aW9uX2lkGAIgASgQEg8KB29wZW5faWQYAyABKAkSEQoJcGxheWVyX2lkGAQg",
-            "ASgQEg0KBXRva2VuGAUgASgMIkMKF05vdGlmeUNvbm5lY3Rpb25BYm9ydGVk",
-            "EhIKCnNlc3Npb25faWQYASABKBASFAoMc2VydmljZV90eXBlGAIgASgJIkIK",
-            "FlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
-            "CgxzZXJ2aWNlX3R5cGUYAiABKAkiSQoQTm90aWZ5TmV3TWVzc2FnZRISCgpz",
-            "ZXNzaW9uX2lkGAEgASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCRILCgNtc2cY",
-            "AyABKAwiPgoaUmVxdWVzdFNlbmRNZXNzYWdlVG9QbGF5ZXISEwoLc2Vzc2lv",
-            "bl9pZHMYASADKBASCwoDbXNnGAIgASgMIksKHFJlcXVlc3RTZXRHYW1lUGxh",
-            "eWVyTG9jYXRpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIXCg9uZXdfZ2FtZV9z",
-            "ZXJ2ZXIYAiABKBBiBnByb3RvMw=="));
+            "aW9uX2lkGAIgASgQEhEKCXBsYXllcl9pZBgEIAEoCRINCgV0b2tlbhgFIAEo",
+            "DCJDChdOb3RpZnlDb25uZWN0aW9uQWJvcnRlZBISCgpzZXNzaW9uX2lkGAEg",
+            "ASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCSJCChZSZXF1ZXN0Q2xvc2VDb25u",
+            "ZWN0aW9uEhIKCnNlc3Npb25faWQYASABKBASFAoMc2VydmljZV90eXBlGAIg",
+            "ASgJIkkKEE5vdGlmeU5ld01lc3NhZ2USEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
+            "CgxzZXJ2aWNlX3R5cGUYAiABKAkSCwoDbXNnGAMgASgMIj4KGlJlcXVlc3RT",
+            "ZW5kTWVzc2FnZVRvUGxheWVyEhMKC3Nlc3Npb25faWRzGAEgAygQEgsKA21z",
+            "ZxgCIAEoDGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestHeartBeat), global::GatewayMessage.RequestHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.ResponseHeartBeat), global::GatewayMessage.ResponseHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "SessionId", "OpenId", "PlayerId", "Token" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "SessionId", "PlayerId", "Token" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "Msg" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSetGamePlayerLocation), global::GatewayMessage.RequestSetGamePlayerLocation.Parser, new[]{ "SessionId", "NewGameServer" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null)
           }));
     }
     #endregion
@@ -348,7 +345,6 @@ namespace GatewayMessage {
     public NotifyConnectionComing(NotifyConnectionComing other) : this() {
       serviceType_ = other.serviceType_;
       sessionId_ = other.sessionId_;
-      openId_ = other.openId_;
       playerId_ = other.playerId_;
       token_ = other.token_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -381,25 +377,14 @@ namespace GatewayMessage {
       }
     }
 
-    /// <summary>Field number for the "open_id" field.</summary>
-    public const int OpenIdFieldNumber = 3;
-    private string openId_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string OpenId {
-      get { return openId_; }
-      set {
-        openId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "player_id" field.</summary>
     public const int PlayerIdFieldNumber = 4;
-    private long playerId_;
+    private string playerId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long PlayerId {
+    public string PlayerId {
       get { return playerId_; }
       set {
-        playerId_ = value;
+        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -429,7 +414,6 @@ namespace GatewayMessage {
       }
       if (ServiceType != other.ServiceType) return false;
       if (SessionId != other.SessionId) return false;
-      if (OpenId != other.OpenId) return false;
       if (PlayerId != other.PlayerId) return false;
       if (Token != other.Token) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -440,8 +424,7 @@ namespace GatewayMessage {
       int hash = 1;
       if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
-      if (OpenId.Length != 0) hash ^= OpenId.GetHashCode();
-      if (PlayerId != 0L) hash ^= PlayerId.GetHashCode();
+      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
       if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -464,13 +447,9 @@ namespace GatewayMessage {
         output.WriteRawTag(17);
         output.WriteSFixed64(SessionId);
       }
-      if (OpenId.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(OpenId);
-      }
-      if (PlayerId != 0L) {
-        output.WriteRawTag(33);
-        output.WriteSFixed64(PlayerId);
+      if (PlayerId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(PlayerId);
       }
       if (Token.Length != 0) {
         output.WriteRawTag(42);
@@ -490,11 +469,8 @@ namespace GatewayMessage {
       if (SessionId != 0L) {
         size += 1 + 8;
       }
-      if (OpenId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(OpenId);
-      }
-      if (PlayerId != 0L) {
-        size += 1 + 8;
+      if (PlayerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
       }
       if (Token.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Token);
@@ -516,10 +492,7 @@ namespace GatewayMessage {
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
       }
-      if (other.OpenId.Length != 0) {
-        OpenId = other.OpenId;
-      }
-      if (other.PlayerId != 0L) {
+      if (other.PlayerId.Length != 0) {
         PlayerId = other.PlayerId;
       }
       if (other.Token.Length != 0) {
@@ -544,12 +517,8 @@ namespace GatewayMessage {
             SessionId = input.ReadSFixed64();
             break;
           }
-          case 26: {
-            OpenId = input.ReadString();
-            break;
-          }
-          case 33: {
-            PlayerId = input.ReadSFixed64();
+          case 34: {
+            PlayerId = input.ReadString();
             break;
           }
           case 42: {
@@ -1207,166 +1176,6 @@ namespace GatewayMessage {
           }
           case 18: {
             Msg = input.ReadBytes();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  /// <summary>
-  ///设置游戏玩家的地址
-  /// </summary>
-  public sealed partial class RequestSetGamePlayerLocation : pb::IMessage<RequestSetGamePlayerLocation> {
-    private static readonly pb::MessageParser<RequestSetGamePlayerLocation> _parser = new pb::MessageParser<RequestSetGamePlayerLocation>(() => new RequestSetGamePlayerLocation());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RequestSetGamePlayerLocation> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[7]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestSetGamePlayerLocation() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestSetGamePlayerLocation(RequestSetGamePlayerLocation other) : this() {
-      sessionId_ = other.sessionId_;
-      newGameServer_ = other.newGameServer_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestSetGamePlayerLocation Clone() {
-      return new RequestSetGamePlayerLocation(this);
-    }
-
-    /// <summary>Field number for the "session_id" field.</summary>
-    public const int SessionIdFieldNumber = 1;
-    private long sessionId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long SessionId {
-      get { return sessionId_; }
-      set {
-        sessionId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "new_game_server" field.</summary>
-    public const int NewGameServerFieldNumber = 2;
-    private long newGameServer_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long NewGameServer {
-      get { return newGameServer_; }
-      set {
-        newGameServer_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RequestSetGamePlayerLocation);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RequestSetGamePlayerLocation other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (SessionId != other.SessionId) return false;
-      if (NewGameServer != other.NewGameServer) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
-      if (NewGameServer != 0L) hash ^= NewGameServer.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (SessionId != 0L) {
-        output.WriteRawTag(9);
-        output.WriteSFixed64(SessionId);
-      }
-      if (NewGameServer != 0L) {
-        output.WriteRawTag(17);
-        output.WriteSFixed64(NewGameServer);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (SessionId != 0L) {
-        size += 1 + 8;
-      }
-      if (NewGameServer != 0L) {
-        size += 1 + 8;
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RequestSetGamePlayerLocation other) {
-      if (other == null) {
-        return;
-      }
-      if (other.SessionId != 0L) {
-        SessionId = other.SessionId;
-      }
-      if (other.NewGameServer != 0L) {
-        NewGameServer = other.NewGameServer;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 9: {
-            SessionId = input.ReadSFixed64();
-            break;
-          }
-          case 17: {
-            NewGameServer = input.ReadSFixed64();
             break;
           }
         }

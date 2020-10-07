@@ -27,14 +27,14 @@ namespace RpcMessage {
             "ChFNZXNzYWdlL3JwYy5wcm90bxIKUnBjTWVzc2FnZSLSAQoKUmVxdWVzdFJw",
             "YxISCgphY3Rvcl90eXBlGAEgASgJEhAKCGFjdG9yX2lkGAIgASgJEg4KBm1l",
             "dGhvZBgDIAEoCRIMCgRhcmdzGAQgASgMEhMKC25lZWRfcmVzdWx0GAUgASgI",
-            "EhYKDmRlc3Rfc2VydmVyX2lkGAYgASgDEhIKCnNyY19zZXJ2ZXIYCiABKBAS",
+            "EhYKDmRlc3Rfc2VydmVyX2lkGAYgASgQEhIKCnNyY19zZXJ2ZXIYCiABKBAS",
             "FgoOc3JjX3JlcXVlc3RfaWQYCyABKBASEgoKcmVxdWVzdF9pZBgMIAEoEBIT",
             "CgtyZXNwb25zZV9pZBgNIAEoECKYAQoLUmVzcG9uc2VScGMSJwoHcmVxdWVz",
             "dBgBIAEoCzIWLlJwY01lc3NhZ2UuUmVxdWVzdFJwYxISCgpyZXF1ZXN0X2lk",
             "GAogASgQEhMKC3Jlc3BvbnNlX2lkGAsgASgQEhIKCmVycm9yX2NvZGUYDCAB",
             "KAUSEQoJZXJyb3JfbXNnGA0gASgJEhAKCHJlc3BvbnNlGA4gASgMIiwKE1Jl",
-            "cXVlc3RScGNIZWFydEJlYXQSFQoNbWlsbGlfc2Vjb25kcxgBIAEoAyItChRS",
-            "ZXNwb25zZVJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgDYgZw",
+            "cXVlc3RScGNIZWFydEJlYXQSFQoNbWlsbGlfc2Vjb25kcxgBIAEoECItChRS",
+            "ZXNwb25zZVJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgQYgZw",
             "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
@@ -302,8 +302,8 @@ namespace RpcMessage {
         output.WriteBool(NeedResult);
       }
       if (DestServerId != 0L) {
-        output.WriteRawTag(48);
-        output.WriteInt64(DestServerId);
+        output.WriteRawTag(49);
+        output.WriteSFixed64(DestServerId);
       }
       if (SrcServer != 0L) {
         output.WriteRawTag(81);
@@ -345,7 +345,7 @@ namespace RpcMessage {
         size += 1 + 1;
       }
       if (DestServerId != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(DestServerId);
+        size += 1 + 8;
       }
       if (SrcServer != 0L) {
         size += 1 + 8;
@@ -431,8 +431,8 @@ namespace RpcMessage {
             NeedResult = input.ReadBool();
             break;
           }
-          case 48: {
-            DestServerId = input.ReadInt64();
+          case 49: {
+            DestServerId = input.ReadSFixed64();
             break;
           }
           case 81: {
@@ -815,8 +815,8 @@ namespace RpcMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
       if (MilliSeconds != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(MilliSeconds);
+        output.WriteRawTag(9);
+        output.WriteSFixed64(MilliSeconds);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -827,7 +827,7 @@ namespace RpcMessage {
     public int CalculateSize() {
       int size = 0;
       if (MilliSeconds != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MilliSeconds);
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -854,8 +854,8 @@ namespace RpcMessage {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            MilliSeconds = input.ReadInt64();
+          case 9: {
+            MilliSeconds = input.ReadSFixed64();
             break;
           }
         }
@@ -944,8 +944,8 @@ namespace RpcMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
       if (MilliSeconds != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(MilliSeconds);
+        output.WriteRawTag(9);
+        output.WriteSFixed64(MilliSeconds);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -956,7 +956,7 @@ namespace RpcMessage {
     public int CalculateSize() {
       int size = 0;
       if (MilliSeconds != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MilliSeconds);
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -983,8 +983,8 @@ namespace RpcMessage {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            MilliSeconds = input.ReadInt64();
+          case 9: {
+            MilliSeconds = input.ReadSFixed64();
             break;
           }
         }
