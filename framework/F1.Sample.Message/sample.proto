@@ -3,15 +3,15 @@ package sample;
 
 message ResponseLogin
 {
-string error = 1;
+string ok = 1;
 }
 
-message RequestSayHello
+message RequestEcho
 {
-string name = 1;
+string content = 1;
 }
 
-message ResponseSayHello
+message ResponseEcho
 {
 string content = 1;
 }

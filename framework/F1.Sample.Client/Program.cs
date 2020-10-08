@@ -43,9 +43,9 @@ namespace F1.Sample.Client
         {
             var name = message.Descriptor.FullName;
             var bytes = nameByteArray.Value;
-            var count = Encoding.UTF8.GetBytes(name, 0, name.Length, bytes, 1);
-            bytes[0] = (byte)count;
-            return new ArraySegment<byte>(bytes, 0, count + 1);
+            var nameLength = Encoding.UTF8.GetBytes(name, 0, name.Length, bytes, 1);
+            bytes[0] = (byte)nameLength;
+            return new ArraySegment<byte>(bytes, 0, nameLength + 1);
         }
 
         public static Func<byte[], int, int, CodedOutputStream> GetNewStream = GetNewCodecOutputStream();
@@ -85,7 +85,7 @@ namespace F1.Sample.Client
         public static ArraySegment<byte> Encode(this string hello) 
         {
             var bytes = nameByteArray.Value;
-            var count = Encoding.UTF8.GetBytes(hello, 0, hello.Length, bytes, 1);
+            var count = Encoding.UTF8.GetBytes(hello, 0, hello.Length, bytes, 0);
             var helloArray = new ArraySegment<byte>(bytes, 0, count);
 
             return Combine(count.ToByteArray(), helloArray);
@@ -102,15 +102,16 @@ namespace F1.Sample.Client
                 var nameLength = pointer[offset];
                 offset += 1;
                 var name = Encoding.UTF8.GetString(bytes, offset, nameLength);
+                offset += nameLength;
 
                 IMessage msg = null;
                 if (name == ResponseLogin.Descriptor.FullName)
                 {
                     msg = new ResponseLogin();
                 }
-                else if (name == ResponseSayHello.Descriptor.FullName)
+                else if (name == ResponseEcho.Descriptor.FullName)
                 {
-                    msg = new ResponseSayHello();
+                    msg = new ResponseEcho();
                 }
 
                 using var stream = new CodedInputStream(bytes, offset, length - 1 - name.Length);
@@ -138,7 +139,7 @@ namespace F1.Sample.Client
 
             var recvBuffer = new byte[1024];
 
-            var echoMessage = new RequestSayHello();
+            var echoMessage = new RequestEcho();
 
             try
             {
@@ -146,9 +147,10 @@ namespace F1.Sample.Client
                 {
                     var length = await stream.ReadAsync(recvBuffer);
                     var resp = new ArraySegment<byte>(recvBuffer, 0, length);
-                    Console.WriteLine("Response:{0}", resp);
+                    var msg = resp.Decode();
+                    Console.WriteLine("Response:{0}", msg);
 
-                    echoMessage.Name = Content.Substring(0, (NextInt % Content.Length) + 1);
+                    echoMessage.Content = Content.Substring(0, (NextInt % Content.Length) + 1);
                     await stream.WriteAsync(echoMessage.Encode());
                 }
             }

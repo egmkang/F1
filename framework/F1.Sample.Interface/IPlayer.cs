@@ -10,6 +10,6 @@ namespace F1.Sample.Interface
     public interface IPlayer
     {
         Task AuthTokenAsync(byte[] token);
-        Task<string> SayHelloAsync(string name);
+        Task<string> EchoAsync(string name);
     }
 }

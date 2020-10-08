@@ -164,6 +164,7 @@ namespace F1.Core.Actor
                     var serverTypes = this.rpcMetadata.RpcServerTypes;
                     foreach (var (key, value) in serverTypes)
                     {
+                        if (value == null) continue;
                         server_info.ActorType.Add(value.Name);
                         logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
                     }

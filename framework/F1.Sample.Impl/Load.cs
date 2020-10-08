@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Sample;
 
 namespace F1.Sample.Impl
 {
@@ -10,7 +11,8 @@ namespace F1.Sample.Impl
         /// 暂时先不处理这个, 强制加载dll
         /// </summary>
         public static void LoadByForce() 
-        { 
+        {
+            var _ = new ResponseLogin();
         }
     }
 }

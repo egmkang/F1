@@ -103,7 +103,7 @@ namespace F1.Core.Network
                     serverID, endPoint, e.Message);
             }
         }
-        private async Task TrySendHeartBeatLoop(IChannel channel, Func<object> heartBeatMessageFn) 
+        private async Task TrySendHeartBeatLoop(IChannel channel, Func<object> heartBeatMessageFn)
         {
             if (heartBeatMessageFn == null) return;
 
@@ -111,20 +111,30 @@ namespace F1.Core.Network
 
             while (sessionInfo.IsActive)
             {
-                if (Platform.GetMilliSeconds() - sessionInfo.ActiveTime > HeartBeatTimeOut)
+                //this.logger.LogTrace("TrySendHeartBeat, SessionID:{0}", sessionInfo.SessionID);
+                try
                 {
-                    this.logger.LogError("HearBeatTimeOut, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, TimeOut:{3}",
-                        sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, Platform.GetMilliSeconds() - sessionInfo.ActiveTime);
+                    if (Platform.GetMilliSeconds() - sessionInfo.ActiveTime > HeartBeatTimeOut)
+                    {
+                        this.logger.LogError("HearBeatTimeOut, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, TimeOut:{3}",
+                            sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, Platform.GetMilliSeconds() - sessionInfo.ActiveTime);
 
-                    this.TryCloseCurrentClient(sessionInfo.ServerID);
-                    break;
+                        this.TryCloseCurrentClient(sessionInfo.ServerID);
+                        break;
+                    }
+
+                    var msg = new OutboundMessage(channel, heartBeatMessageFn());
+                    sessionInfo.PutOutboundMessage(msg);
                 }
-
-                var msg = new OutboundMessage(channel, heartBeatMessageFn());
-                sessionInfo.PutOutboundMessage(msg);
+                catch (Exception e)
+                {
+                    this.logger.LogError("TrySendHeartBeatLoop, SessionID:{0}, Exception:{1}",
+                        sessionInfo.SessionID, e);
+                }
 
                 await Task.Delay(HeartBeatInterval).ConfigureAwait(false);
             }
+            this.logger.LogInformation("TrySednHeartBeatLoop Exit, SessionID:{0}", sessionInfo.SessionID);
         }
 
         private void TryCloseCurrentClient(long serverID) 

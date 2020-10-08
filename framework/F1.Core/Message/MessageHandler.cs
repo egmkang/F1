@@ -49,6 +49,9 @@ namespace F1.Core.Message
                     logger.LogError("Decode Fail, SessionID:{0}", context.Channel.GetSessionInfo().SessionID);
                     break;
                 }
+
+                //this.logger.LogTrace("DecodeMessage:{0}", typeName);
+
                 sessionInfo.ActiveTime = currentMilliSeconds;
 
                 var inboundMessage = new InboundMessage(context.Channel, typeName, message, Platform.GetMilliSeconds());

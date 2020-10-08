@@ -34,9 +34,9 @@ namespace F1.Sample.Impl
             return Task.CompletedTask;
         }
 
-        public Task<string> SayHelloAsync(string name)
+        public Task<string> EchoAsync(string name)
         {
-            this.Logger.LogInformation("PlayerID:{0} SayHelloAsync, Name:{1}", this.ID, name);
+            //this.Logger.LogInformation("PlayerID:{0} SayHelloAsync, Name:{1}", this.ID, name);
             return Task.FromResult(name);
         }
 
@@ -77,6 +77,7 @@ namespace F1.Sample.Impl
             this.SetSessionID(msg.SessionId);
 
             var resp = new ResponseLogin();
+            resp.Ok = "12121212";
 
             this.SendMessageToPlayer(resp);
             await Task.CompletedTask;
@@ -107,7 +108,7 @@ namespace F1.Sample.Impl
         public void SendMessageToPlayer(IMessage message) 
         {
             var serverId = SessionUniqueSequence.GetServerID(this.currentSessionID);
-            if (serverId != 0) 
+            if (serverId != 0)
             {
                 var gatewayMessage = new RequestSendMessageToPlayer();
                 gatewayMessage.SessionIds.Add(this.currentSessionID);
@@ -115,7 +116,16 @@ namespace F1.Sample.Impl
                 var bytes = codec.EncodeMessage(message);
                 gatewayMessage.Msg = ByteString.CopyFrom(bytes);
 
-                this.MessageCenter.SendMessageToServer(serverId, gatewayMessage);
+                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage))
+                {
+                    this.Logger.LogWarning("SendMessageToPlayer, PlayerID:{0}, DestServerID:{1}",
+                        this.ID, serverId);
+                }
+            }
+            else 
+            {
+                this.Logger.LogWarning("SendMessageToPlayer, PlayerID:{0}, DestServerID:{1}",
+                    this.ID, serverId);
             }
         }
 
@@ -124,15 +134,21 @@ namespace F1.Sample.Impl
             try 
             {
                 var msg = codec.DecodeMessage(newMessage.Msg.ToByteArray());
-                if (msg is RequestSayHello hello) 
+
+                if (msg is RequestEcho hello)
                 {
-                    var content = await this.SayHelloAsync(hello.Name).ConfigureAwait(false);
-                    var resp = new ResponseSayHello()
+                    var content = await this.EchoAsync(hello.Content).ConfigureAwait(false);
+                    var resp = new ResponseEcho()
                     {
                         Content = content,
                     };
 
                     this.SendMessageToPlayer(resp);
+                }
+                else
+                {
+                    this.Logger.LogInformation("ProcessNotifyNewMessage, PlayerID:{0}, Type:{2}, Msg:{1}",
+                        this.ID, msg, msg.GetType().Name);
                 }
             }
             catch (Exception e) 

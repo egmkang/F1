@@ -36,7 +36,6 @@ namespace F1.Sample.Impl
             }
             finally
             {
-                bodyBuffer.Release();
                 buffer.Release();
             }
         }
@@ -49,6 +48,8 @@ namespace F1.Sample.Impl
 
             var bytes = new byte[length];
             var buffer = Unpooled.WrappedBuffer(bytes);
+            buffer.SetWriterIndex(0);
+            buffer.SetReaderIndex(0);
 
             buffer.WriteByte(messageName.Length);
             buffer.WriteBytes(messageName);

@@ -88,6 +88,7 @@ namespace F1.Core.Network
             {
                 try
                 {
+                    //this.logger.LogTrace("Encoding Msg:{0}", message.Inner.GetType().Name);
                     var msg = this.codec.Encode(allocator, message.Inner);
                     using var _ = new SafeReleaseByteBuffer(msg);
                     buffer.WriteBytes(msg);

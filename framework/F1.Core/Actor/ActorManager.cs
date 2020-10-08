@@ -165,6 +165,7 @@ namespace F1.Core.Actor
                 MilliSeconds = (inboundMessage.Inner as RequestRpcHeartBeat).MilliSeconds,
             };
             this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, response));
+            //this.logger.LogInformation("ProcessRequestRpcHeartBeat, SessionID:{0}", inboundMessage.SourceConnection.GetSessionInfo().SessionID);
         }
 
         private void DisptachRequestRPC(InboundMessage inboundMessage, RequestRpc requestRpc)
