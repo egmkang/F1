@@ -18,8 +18,4 @@
 	<ItemGroup>
 	  <None Remove="sample.proto" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\F1.Core\F1.Core.csproj" />
-	</ItemGroup>
 </Project>

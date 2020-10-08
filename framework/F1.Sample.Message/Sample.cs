@@ -24,12 +24,13 @@ namespace Sample {
     static SampleReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgxzYW1wbGUucHJvdG8SBnNhbXBsZSIfCg9SZXF1ZXN0U2F5SGVsbG8SDAoE",
-            "bmFtZRgBIAEoCSIjChBSZXNwb25zZVNheUhlbGxvEg8KB2NvbnRlbnQYASAB",
-            "KAliBnByb3RvMw=="));
+            "CgxzYW1wbGUucHJvdG8SBnNhbXBsZSIeCg1SZXNwb25zZUxvZ2luEg0KBWVy",
+            "cm9yGAEgASgJIh8KD1JlcXVlc3RTYXlIZWxsbxIMCgRuYW1lGAEgASgJIiMK",
+            "EFJlc3BvbnNlU2F5SGVsbG8SDwoHY29udGVudBgBIAEoCWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseLogin), global::Sample.ResponseLogin.Parser, new[]{ "Error" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestSayHello), global::Sample.RequestSayHello.Parser, new[]{ "Name" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseSayHello), global::Sample.ResponseSayHello.Parser, new[]{ "Content" }, null, null, null, null)
           }));
@@ -38,6 +39,135 @@ namespace Sample {
 
   }
   #region Messages
+  public sealed partial class ResponseLogin : pb::IMessage<ResponseLogin> {
+    private static readonly pb::MessageParser<ResponseLogin> _parser = new pb::MessageParser<ResponseLogin>(() => new ResponseLogin());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ResponseLogin> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Sample.SampleReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ResponseLogin() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ResponseLogin(ResponseLogin other) : this() {
+      error_ = other.error_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ResponseLogin Clone() {
+      return new ResponseLogin(this);
+    }
+
+    /// <summary>Field number for the "error" field.</summary>
+    public const int ErrorFieldNumber = 1;
+    private string error_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Error {
+      get { return error_; }
+      set {
+        error_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ResponseLogin);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ResponseLogin other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Error != other.Error) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Error.Length != 0) hash ^= Error.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Error.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Error);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Error.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Error);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ResponseLogin other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Error.Length != 0) {
+        Error = other.Error;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Error = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class RequestSayHello : pb::IMessage<RequestSayHello> {
     private static readonly pb::MessageParser<RequestSayHello> _parser = new pb::MessageParser<RequestSayHello>(() => new RequestSayHello());
     private pb::UnknownFieldSet _unknownFields;
@@ -46,7 +176,7 @@ namespace Sample {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Sample.SampleReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Sample.SampleReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -175,7 +305,7 @@ namespace Sample {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Sample.SampleReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Sample.SampleReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

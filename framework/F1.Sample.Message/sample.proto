@@ -1,6 +1,11 @@
 ﻿syntax="proto3";
 package sample;
 
+message ResponseLogin
+{
+string error = 1;
+}
+
 message RequestSayHello
 {
 string name = 1;

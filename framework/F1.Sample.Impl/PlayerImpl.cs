@@ -8,9 +8,9 @@ using Google.Protobuf;
 using F1.Core.Actor;
 using F1.Sample.Interface;
 using F1.Abstractions.Network;
+using F1.Core.Utils;
 using GatewayMessage;
 using Sample;
-using F1.Core.Utils;
 
 namespace F1.Sample.Impl
 {
@@ -76,6 +76,9 @@ namespace F1.Sample.Impl
                 this.ID, msg.SessionId, msg.Token);
             this.SetSessionID(msg.SessionId);
 
+            var resp = new ResponseLogin();
+
+            this.SendMessageToPlayer(resp);
             await Task.CompletedTask;
         }
 

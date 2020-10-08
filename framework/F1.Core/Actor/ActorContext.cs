@@ -52,7 +52,7 @@ namespace F1.Core.Actor
                 if (requestRpc.SrcServer == this.CurrentRequest.ServerID &&
                     requestRpc.SrcRequestId == this.CurrentRequest.RequestID)
                 {
-                    Task.Run(async () => await this.DispatchMessage(inboundMessage).ConfigureAwait(false));
+                    _ = this.DispatchMessage(inboundMessage).ConfigureAwait(false);
                     return;
                 }
             }
