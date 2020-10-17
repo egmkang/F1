@@ -3,6 +3,7 @@ module pd
 go 1.13
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
@@ -13,17 +14,15 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.12.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.3
 	github.com/json-iterator/go v1.1.8 // indirect
-	github.com/pingcap/errors v0.11.0
-
-	github.com/pingcap/log v0.0.0-20190715063458-479153f07ebd
-	github.com/pkg/errors v0.8.1
+	github.com/pingcap/check v0.0.0-20191216031241-8a5a85928f12 // indirect
+	github.com/pingcap/errors v0.11.5-0.20200917111840-a15ef68f753d
+	github.com/pingcap/log v0.0.0-20200511115504-543df19646ad
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.2.1 // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5 // indirect
 	github.com/unrolled/render v0.0.0-20171102162132-65450fb6b2d3
-
 	go.etcd.io/etcd v0.5.0-alpha.5.0.20191023171146-3cf2f69b5738
-	go.uber.org/zap v1.13.0
-
+	go.uber.org/zap v1.15.0
 	golang.org/x/net v0.0.0-20191119073136-fc4aabc6c914 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/grpc v1.25.1 // indirect
