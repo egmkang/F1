@@ -4,7 +4,7 @@ v0.2
 * [ ] PlacementDriver
     * [ ] Interface and Impl Map
     * [ ] PD Server Alive
-    * [ ] configuration(from TiDB's PD)
+    * [x] configuration(from TiDB's PD)
     * [ ] modify Actor Placement
 * [x] Utils
     * [x] SequenceID

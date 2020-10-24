@@ -22,6 +22,7 @@ import (
 	"github.com/pingcap/log"
 	"go.etcd.io/etcd/embed"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -239,7 +240,28 @@ func (c *Config) Parse(arguments []string) error {
 	}
 
 	err = c.Adjust(meta)
+
 	return err
+}
+
+func (c *Config) SetupLogger() error {
+	lg, p, err := log.InitLogger(&c.Log, zap.AddStacktrace(zapcore.FatalLevel))
+	if err != nil {
+		return errs.ErrInitLogger.Wrap(err).FastGenWithCause()
+	}
+	c.logger = lg
+	c.logProps = p
+	return nil
+}
+
+// GetZapLogger gets the created zap logger.
+func (c *Config) GetZapLogger() *zap.Logger {
+	return c.logger
+}
+
+// GetZapLogProperties gets properties of the zap logger.
+func (c *Config) GetZapLogProperties() *log.ZapProperties {
+	return c.logProps
 }
 
 // Utility to test if a configuration is defined.
