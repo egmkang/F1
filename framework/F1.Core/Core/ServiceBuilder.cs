@@ -28,7 +28,7 @@ namespace F1.Core.Core
             return this;
         }
 
-        public void ConfigActorServices(List<string> svc) 
+        public void ConfigActorServices(List<ValueTuple<string, string>> svc) 
         {
             var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
             runtime.ConfigActorServices(svc);

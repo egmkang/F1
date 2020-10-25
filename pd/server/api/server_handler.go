@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"pd/server"
 	"pd/server/util"
+	"strings"
 )
 
 //默认存活时间是15秒, 5秒一个心跳
@@ -71,13 +72,29 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 
 	this.server.AddActorHostID(serverInfo.ServerID)
 
+	var sb = strings.Builder{}
+	for _, s := range serverInfo.Services {
+		if len(s.ImplType) == 0 {
+			continue
+		}
+		sb.WriteString(s.ActorType)
+		sb.WriteString(" => ")
+		sb.WriteString(s.ImplType)
+		sb.WriteString(", ")
+	}
+
+	var services = sb.String()
+	if len(services) > 2 {
+		services = services[0 : len(services)-2]
+	}
+
 	log.Info("RegisterNewServer",
 		zap.Int64("ServerID", serverInfo.ServerID),
 		zap.Int64("LeaseID", serverInfo.LeaseID),
 		zap.Int64("TTL", serverInfo.TTL),
 		zap.Int64("StartTime", serverInfo.StartTime),
 		zap.String("Address", serverInfo.Address),
-		zap.Strings("ActorType", serverInfo.ActorType))
+		zap.String("Services", services))
 
 	data := &RegisterNewServerResp{LeaseID: serverInfo.LeaseID}
 	this.render.JSON(w, http.StatusOK, data)

@@ -87,7 +87,7 @@ namespace F1.Core.Placement
 
         public PlacementFindActorPositionResponse FindActorPositionInCache(PlacementFindActorPositionRequest request)
         {
-            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
             var pos = this.positionLru.Get(uniqueName);
             if (pos != null && this.IsServerValid(pos.ServerID))
             {
@@ -99,7 +99,7 @@ namespace F1.Core.Placement
         public async Task<PlacementFindActorPositionResponse> FindActorPositonAsync(PlacementFindActorPositionRequest request)
         {
             //check actor position cache
-            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
 
             var pos = this.positionLru.Get(uniqueName);
             if (pos != null && this.IsServerValid(pos.ServerID))
@@ -112,7 +112,7 @@ namespace F1.Core.Placement
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("FindActorPositionAsync fail, ActorType:{0}, ActorID:{1}, TTL:{2}, ErrorMessage:{3}",
-                    request.ActorImplType, request.ActorID, request.TTL, str);
+                    request.ActorType, request.ActorID, request.TTL, str);
                 throw new PlacementException(code, str); 
             }
 
@@ -221,7 +221,7 @@ namespace F1.Core.Placement
                 this.currentServerInfo.ServerID = info.ServerID;
                 this.currentServerInfo.StartTime = info.StartTime;
                 this.currentServerInfo.Address = info.Address;
-                this.currentServerInfo.ActorType = info.ActorType.ToList();
+                this.currentServerInfo.Services = info.Services.ToList();
                 this.currentServerInfo.TTL = info.TTL;
 
                 this.currentServerInfo.LeaseID = response.LeaseID;
@@ -418,7 +418,7 @@ namespace F1.Core.Placement
 
         public void ClearActorPositionCache(PlacementFindActorPositionRequest request)
         {
-            var uniqueName = $"{request.ActorImplType}/{request.ActorID}";
+            var uniqueName = $"{request.ActorType}/{request.ActorID}";
             this.positionLru.Remove(uniqueName);
             this.logger.LogInformation("ClearActorPosition, UniqueName:{0}", uniqueName);
         }

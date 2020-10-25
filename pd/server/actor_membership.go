@@ -22,14 +22,19 @@ func GenerateServerKey(serverID int64) string {
 	return fmt.Sprintf("%s/%d", ActorHostServerPrefix, serverID)
 }
 
+type ActorServiceInfo struct {
+	ActorType string `json:"actor_type"`
+	ImplType  string `json:"impl_type"`
+}
+
 type ActorHostInfo struct {
-	ServerID  int64    `json:"server_id"`  //服务器ID
-	LeaseID   int64    `json:"lease_id"`   //租约的ID
-	Load      int64    `json:"load"`       //负载
-	StartTime int64    `json:"start_time"` //服务器注册的时间(单位毫秒)
-	TTL       int64    `json:"ttl"`        //存活时间(心跳时间*3)
-	Address   string   `json:"address"`    //服务器地址
-	ActorType []string `json:"actor_type"` //可以提供服务的类型
+	ServerID  int64              `json:"server_id"`  //服务器ID
+	LeaseID   int64              `json:"lease_id"`   //租约的ID
+	Load      int64              `json:"load"`       //负载
+	StartTime int64              `json:"start_time"` //服务器注册的时间(单位毫秒)
+	TTL       int64              `json:"ttl"`        //存活时间(心跳时间*3)
+	Address   string             `json:"address"`    //服务器地址
+	Services  []ActorServiceInfo `json:"services"`   //可以提供服务的类型
 }
 
 type ActorHostIndex struct {
@@ -206,12 +211,16 @@ func buildIndexFromArray(list []*ActorHostInfo) *ActorHostIndex {
 		//id的索引
 		index.ids[v.ServerID] = v
 		//注册类型的索引
-		for _, typeName := range v.ActorType {
-			var realTypeName = typeName
-			if _, ok := index.types[realTypeName]; !ok {
-				index.types[realTypeName] = map[int64]*ActorHostInfo{}
+		for _, serviceName := range v.Services {
+			var interfaceName = serviceName.ActorType
+			var implName = serviceName.ImplType
+			if len(implName) == 0 {
+				continue
 			}
-			s := index.types[realTypeName]
+			if _, ok := index.types[interfaceName]; !ok {
+				index.types[interfaceName] = map[int64]*ActorHostInfo{}
+			}
+			s := index.types[interfaceName]
 			s[v.ServerID] = v
 		}
 	}

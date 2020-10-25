@@ -66,7 +66,7 @@ namespace F1.Core.RPC
             var currentRequest = this.Context == null ? (0, 0) : this.Context.CurrentRequest;
             var request = new RequestRpc()
             {
-                ActorType = this.PositionRequest.ActorInterfaceType,
+                ActorType = this.PositionRequest.ActorType,
                 ActorId = this.PositionRequest.ActorID,
                 Method = handler.Name,
 

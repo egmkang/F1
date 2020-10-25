@@ -2,7 +2,7 @@ F1 Framework:
 
 v0.2
 * [ ] PlacementDriver
-    * [ ] Interface and Impl Map
+    * [x] Interface and Impl Map
     * [ ] PD Server Alive
     * [x] configuration(from TiDB's PD)
     * [ ] modify Actor Placement
@@ -19,7 +19,7 @@ v0.2
     * [ ] Message Codec
     * [ ] Message Processing
   * [ ] Actor
-    * [ ] Interface And Impl Map
+    * [x] Interface And Impl Map
     * [ ] GC
     * [ ] Actor LifeTime Configuration
 * [ ] Sample

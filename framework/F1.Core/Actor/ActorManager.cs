@@ -124,8 +124,7 @@ namespace F1.Core.Actor
             }
             var args = new PlacementFindActorPositionRequest()
             {
-                ActorInterfaceType = requestRpc.ActorType,
-                ActorImplType = implType.Name,
+                ActorType = requestRpc.ActorType,
                 ActorID = requestRpc.ActorId,
                 TTL = 0,
             };
@@ -197,8 +196,7 @@ namespace F1.Core.Actor
             }
 
             var args = pdPositionArgsCache.Value;
-            args.ActorInterfaceType = type;
-            args.ActorImplType = "";
+            args.ActorType = type;
             args.ActorID = actorID;
             args.TTL = 0;
 
@@ -246,8 +244,7 @@ namespace F1.Core.Actor
             }
             var args = new PlacementFindActorPositionRequest()
             {
-                ActorInterfaceType = type,
-                ActorImplType = implType.Name,
+                ActorType = type,
                 ActorID = actorID,
                 TTL = 0,
             };
@@ -297,8 +294,7 @@ namespace F1.Core.Actor
                     return;
                 }
                 var args = pdPositionArgsCache.Value;
-                args.ActorInterfaceType = requestRpc.ActorType;
-                args.ActorImplType = implType.Name;
+                args.ActorType = requestRpc.ActorType;
                 args.ActorID = requestRpc.ActorId;
                 args.TTL = 0;
 

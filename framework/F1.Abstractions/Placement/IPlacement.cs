@@ -6,6 +6,19 @@ using Newtonsoft.Json;
 
 namespace F1.Abstractions.Placement
 {
+    public struct ActorServiceInfo 
+    {
+        /// <summary>
+        /// 接口的类型
+        /// </summary>
+        [JsonProperty("actor_type")]
+        public string ActorType;
+        /// <summary>
+        /// 实现的类型
+        /// </summary>
+        [JsonProperty("impl_type")]
+        public string ImplType;
+    }
     /// <summary>
     /// PD服务器上, Actor宿主服务器的信息
     /// </summary>
@@ -44,8 +57,8 @@ namespace F1.Abstractions.Placement
         /// <summary>
         /// 服务器能提供的Actor对象类型, 即服务能力
         /// </summary>
-        [JsonProperty("actor_type")]
-        public List<string> ActorType = new List<string>();
+        [JsonProperty("services")]
+        public List<ActorServiceInfo> Services = new List<ActorServiceInfo>();
     }
 
     /// <summary>
@@ -93,14 +106,10 @@ namespace F1.Abstractions.Placement
     public class PlacementFindActorPositionRequest 
     {
         /// <summary>
-        /// Actor的实现类型
+        /// Actor的接口类型, PD里面有实现的类型
         /// </summary>
         [JsonProperty("actor_type")]
-        public string ActorImplType = "";
-        /// <summary>
-        /// Actor的接口类型, 参见ActorType
-        /// </summary>
-        public string ActorInterfaceType = "";
+        public string ActorType = "";
         /// <summary>
         /// Actor的ID, 在该ActorType下必须唯一
         /// </summary>

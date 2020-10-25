@@ -83,8 +83,7 @@ namespace F1.Core.RPC
             }
             proxy.PositionRequest = new PlacementFindActorPositionRequest()
             {
-                ActorImplType = implType.Name,
-                ActorInterfaceType = interfaceName,
+                ActorType = interfaceName,
                 ActorID = actor,
                 TTL = 0,
             };

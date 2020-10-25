@@ -57,9 +57,9 @@ namespace F1.Core.RPC
         /// <summary>
         /// Gateway在PD里面也是一个ActorHost, 只是提供的服务名为`IGateway`, 进行了特殊处理
         /// </summary>
-        public static readonly string ServiceGateway = "GatewayImpl";
+        public static readonly string ServiceGateway = typeof(IGateway).Name;
 
-        private bool IsGateway(PlacementActorHostInfo server) => server.ActorType.Count == 1 && server.ActorType[0] == ServiceGateway;
+        private bool IsGateway(PlacementActorHostInfo server) => server.Services.Count == 1 && server.Services[0].ActorType == ServiceGateway;
 
         private void OnAddServer(PlacementActorHostInfo server) 
         {
@@ -110,7 +110,7 @@ namespace F1.Core.RPC
                         if (this.logger.IsEnabled(LogLevel.Trace)) 
                         {
                             this.logger.LogTrace("FindActorPosition, Actor:{0}@{1}, Position:{2}",
-                                actor.ActorImplType, actor.ActorID, position.ServerID);
+                                actor.ActorType, actor.ActorID, position.ServerID);
                         }
                         var server = this.GetChannelByServerID(position.ServerID);
                         if (server != null) 
@@ -126,7 +126,7 @@ namespace F1.Core.RPC
                         await Task.Delay(1000).ConfigureAwait(false);
                     }
                     this.logger.LogError("TrySendRpcRequest, Actor:{0}@{1}, Exception:{2}",
-                        actor.ActorImplType, actor.ActorID, e.Message);
+                        actor.ActorType, actor.ActorID, e.Message);
                 }
             }
 
@@ -172,7 +172,7 @@ namespace F1.Core.RPC
                 var actorInfo = new PlacementFindActorPositionRequest()
                 {
                     ActorID = msg.Request.ActorId,
-                    ActorImplType = msg.Request.ActorType,
+                    ActorType = msg.Request.ActorType,
                     TTL = 0,
                 };
 

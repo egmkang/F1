@@ -26,7 +26,7 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         private readonly IPlacement placement;
         private readonly RpcMetadata rpcMetadata;
-        private readonly List<string> services = new List<string>();
+        private readonly List<ValueTuple<string, string>> services = new List<ValueTuple<string, string>>();
 
         public IActorContext Context { get; internal set; }
 
@@ -111,7 +111,7 @@ namespace F1.Core.Actor
             await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
         }
 
-        public void ConfigActorServices(List<string> svc) 
+        public void ConfigActorServices(List<ValueTuple<string, string>> svc) 
         {
             this.services.AddRange(svc);
         }
@@ -165,16 +165,24 @@ namespace F1.Core.Actor
                     foreach (var (key, value) in serverTypes)
                     {
                         if (value == null) continue;
-                        server_info.ActorType.Add(value.Name);
-                        logger.LogTrace("Register InterfaceType:{1}, ServiceType:{0}", value.Name, key);
+                        server_info.Services.Add(new ActorServiceInfo
+                        {
+                            ActorType = key,
+                            ImplType = value.Name,
+                        });
+                        logger.LogTrace("Register ServiceType:{0} => {1}", key, value.Name);
                     }
                 }
                 else 
                 {
                     foreach (var value in this.services) 
                     {
-                        server_info.ActorType.Add(value);
-                        logger.LogTrace("Register ServiceType:{0}", value);
+                        server_info.Services.Add(new ActorServiceInfo
+                        {
+                            ActorType = value.Item1,
+                            ImplType = value.Item2,
+                        });
+                        logger.LogTrace("Register ServiceType:{0} => {1}", value.Item1, value.Item2);
                     }
                 }
 

@@ -22,16 +22,8 @@ namespace F1.Core.Placement
         static ThreadLocal<PlacementFindActorPositionRequest> pdPositionArgsCache = new ThreadLocal<PlacementFindActorPositionRequest>(() => new PlacementFindActorPositionRequest());
         public async Task<PlacementFindActorPositionResponse> FindActorPositonAsync(string actorInterfaceType, string actorID, long ttl = 0)
         {
-            //TODO:
-            //等PD修改好了之后, 就不需要查询本地的实现类型
-            var implType = this.rpcMetadata.GetServerType(actorInterfaceType);
-            if (implType == null)
-            {
-                throw new Exception($"ActorInterfaceType:{actorInterfaceType} not found ImplType");
-            }
             var args = pdPositionArgsCache.Value;
-            args.ActorInterfaceType = actorInterfaceType;
-            args.ActorImplType = implType.Name;
+            args.ActorType = actorInterfaceType;
             args.ActorID = actorID;
             args.TTL = ttl;
 
@@ -39,8 +31,7 @@ namespace F1.Core.Placement
             if (destPosition != null) return destPosition;
 
             args = new PlacementFindActorPositionRequest();
-            args.ActorInterfaceType = actorInterfaceType;
-            args.ActorImplType = implType.Name;
+            args.ActorType = actorInterfaceType;
             args.ActorID = actorID;
             args.TTL = ttl;
 
