@@ -9,8 +9,6 @@ namespace F1.Host
     {
         static async Task  Main(string[] args)
         {
-            Load.LoadByForce();
-
             var builder = new ServiceBuilder();
 
             builder.AddDefaultServices();

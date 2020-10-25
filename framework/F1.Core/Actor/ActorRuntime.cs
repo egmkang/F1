@@ -26,7 +26,6 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         private readonly IPlacement placement;
         private readonly RpcMetadata rpcMetadata;
-        private readonly List<ValueTuple<string, string>> services = new List<ValueTuple<string, string>>();
 
         public IActorContext Context { get; internal set; }
 
@@ -111,11 +110,6 @@ namespace F1.Core.Actor
             await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
         }
 
-        public void ConfigActorServices(List<ValueTuple<string, string>> svc) 
-        {
-            this.services.AddRange(svc);
-        }
-
         public async Task InitActorRuntime(int port) 
         {
             var sendThreads = this.ServiceProvider.GetRequiredService<SendingThreads>();
@@ -156,38 +150,22 @@ namespace F1.Core.Actor
                 server_info.StartTime = Platform.GetMilliSeconds();
                 server_info.Address = $"{Platform.GetLocalAddresss()}:{port}";
 
-                //TODO
-                //先通过这种方式绕过去
-                //后面改一下PD的实现和协议, 接口和实现分离
-                if (this.services.Count == 0)
+                //当前服务器只需要注册自己内实现的接口
+                //这样PD上就有全部的接口和实现信息
+                var serverTypes = this.rpcMetadata.RpcServerTypes;
+                foreach (var (key, value) in serverTypes)
                 {
-                    var serverTypes = this.rpcMetadata.RpcServerTypes;
-                    foreach (var (key, value) in serverTypes)
+                    if (value == null) continue;
+                    server_info.Services.Add(new ActorServiceInfo
                     {
-                        if (value == null) continue;
-                        server_info.Services.Add(new ActorServiceInfo
-                        {
-                            ActorType = key,
-                            ImplType = value.Name,
-                        });
-                        logger.LogTrace("Register ServiceType:{0} => {1}", key, value.Name);
-                    }
-                }
-                else 
-                {
-                    foreach (var value in this.services) 
-                    {
-                        server_info.Services.Add(new ActorServiceInfo
-                        {
-                            ActorType = value.Item1,
-                            ImplType = value.Item2,
-                        });
-                        logger.LogTrace("Register ServiceType:{0} => {1}", value.Item1, value.Item2);
-                    }
+                        ActorType = key,
+                        ImplType = value.Name,
+                    });
+                    logger.LogTrace("Register ServiceType:{0} => {1}", key, value.Name);
                 }
 
                 var lease_id = await placement.RegisterServerAsync(server_info).ConfigureAwait(false);
-                logger.LogInformation("Register ServerID:{1}, LeaseID:{0}", this.ServerID, lease_id);
+                logger.LogInformation("Register ServerID:{0}, LeaseID:{1}", this.ServerID, lease_id);
 
                 _ = placement.StartPullingAsync();
             }

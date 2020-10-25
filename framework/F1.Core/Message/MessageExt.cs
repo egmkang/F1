@@ -47,14 +47,7 @@ namespace F1.Core.Message
             }
         }
 
-
-        static MessageExt()
-        {
-            Load();
-        }
-
-
-        static void Load()
+        public static void Load()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)

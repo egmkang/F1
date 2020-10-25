@@ -28,12 +28,6 @@ namespace F1.Core.Core
             return this;
         }
 
-        public void ConfigActorServices(List<ValueTuple<string, string>> svc) 
-        {
-            var runtime = this.serviceProvider.GetRequiredService<ActorRuntime>();
-            runtime.ConfigActorServices(svc);
-        }
-
         public async Task InitAsync(string pdAddress, int port) 
         {
             var placement = this.serviceProvider.GetRequiredService<IPlacement>();

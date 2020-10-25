@@ -134,8 +134,9 @@ namespace F1.Sample.Impl
             try 
             {
                 var msg = codec.DecodeMessage(newMessage.Msg.ToByteArray());
+                //this.Logger.LogInformation("ProcessNotifyNewMessage, MsgType:{0}, Content:{1}", msg.GetType(), msg);
 
-                if (msg is RequestEcho hello)
+                if (msg is RequestEcho hello) 
                 {
                     var content = await this.EchoAsync(hello.Content).ConfigureAwait(false);
                     var resp = new ResponseEcho()

@@ -24,6 +24,9 @@ namespace F1.Core.Core
     {
         public static void AddDefaultServices(this IServiceBuilder builder)
         {
+            AssemblyLoader.LoadAssemblies();
+            MessageExt.Load();
+
             var services = builder.ServiceCollection;
 
             services.AddLogging();
