@@ -1,18 +1,30 @@
 F1 Framework:
 
-v0.2
+v0.5
+* [ ] tracing
+
+v0.4
 * [ ] PlacementDriver
+  * [ ] Consul Raft / DragonBoat
+  * [ ] Virtual Nodes Management
+  * [ ] Object Location
+* [ ] Load Balance
+
+v0.3
+* [ ] RPC重新实现
+
+v0.2
+* [x] PlacementDriver
     * [x] Interface and Impl Map
-    * [ ] PD Server Alive
     * [x] configuration(from TiDB's PD)
-    * [ ] modify Actor Placement
 * [x] Utils
     * [x] SequenceID
     * [x] SessionUniqueID
-* [ ] Load Balance
 * [ ] Configuration
   * [ ] network
   * [ ] actor
+  * [ ] host
+  * [ ] gateway
 * [ ] Abstraction
   * [ ] Gateway
     * [ ] Authentication
