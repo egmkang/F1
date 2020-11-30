@@ -29,7 +29,9 @@ namespace F1.Core.Core
 
             var services = builder.ServiceCollection;
 
+            services.AddOptions();
             services.AddLogging();
+
             services.TryAddSingleton<IConnectionManager, ConnectionManager>();
             services.TryAddSingleton<IConnectionSessionInfoFactory, DefaultConnectionSessionInfoFactory>();
             services.TryAddSingleton<IClientConnectionFactory, ClientConnectionFactory>();

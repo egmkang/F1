@@ -13,8 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\F1.Abstractions\F1.Abstractions.csproj" />
     <ProjectReference Include="..\F1.Core\F1.Core.csproj" />
-    <ProjectReference Include="..\F1.Sample.Impl\F1.Sample.Impl.csproj" />
-    <ProjectReference Include="..\F1.Sample.Interface\F1.Sample.Interface.csproj" />
   </ItemGroup>
 
   <ItemGroup>
