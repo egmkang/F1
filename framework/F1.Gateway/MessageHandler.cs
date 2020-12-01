@@ -11,7 +11,6 @@ using F1.Abstractions.Actor.Gateway;
 using F1.Abstractions.Placement;
 using F1.Core.Message;
 using F1.Core.Network;
-using F1.Sample.Interface;
 using F1.Core.Placement;
 using GatewayMessage;
 
@@ -24,6 +23,8 @@ namespace F1.Gateway
         public readonly IConnectionManager connectionManager;
         public readonly IAuthentication authentication;
         public readonly PlacementExtension placement;
+
+        public string ServiceTypeName { get; internal set; } = "IPlayer";
 
         public GatewayDefaultMessageHandler(ILoggerFactory loggerFactory,
                                         IMessageCenter messageCenter,
@@ -66,7 +67,7 @@ namespace F1.Gateway
                     var result = this.messageCenter.SendMessageToServer(sessionInfo.ServerID, new NotifyNewMessage()
                     {
                         Msg = ByteString.CopyFrom(data),
-                        ServiceType = typeof(IPlayer).Name,
+                        ServiceType = this.ServiceTypeName,
                         SessionId = sessionInfo.SessionID,
                     });
                     if (result) return;
@@ -81,7 +82,7 @@ namespace F1.Gateway
                                                     byte[] data, 
                                                     bool isFirstPacket)
         {
-            var serviceType = typeof(IPlayer).Name;
+            var serviceType = this.ServiceTypeName;
             try
             {
                 var position = await this.placement.FindActorPositonAsync(serviceType, playerID).ConfigureAwait(false);

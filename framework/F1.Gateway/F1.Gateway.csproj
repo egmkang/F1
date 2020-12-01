@@ -8,10 +8,12 @@
   <ItemGroup>
     <ProjectReference Include="..\F1.Abstractions\F1.Abstractions.csproj" />
     <ProjectReference Include="..\F1.Core\F1.Core.csproj" />
-    <ProjectReference Include="..\F1.Sample.Interface\F1.Sample.Interface.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

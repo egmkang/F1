@@ -12,6 +12,10 @@ v0.4
 
 v0.3
 * [ ] RPC重新实现
+  * [ ] RPC Meta
+  * [ ] RPC Protocol
+  * [ ] lz4
+* [ ] Protobuf Codec (Span Support)
 
 v0.2
 * [x] PlacementDriver

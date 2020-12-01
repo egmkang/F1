@@ -10,7 +10,7 @@ using F1.Core.Config;
 
 namespace F1.Core.Core
 {
-    public static class HostExtension
+    public static class HostExtensions
     {
         public static void Configure(this ServiceBuilder builder, Action<HostConfiguration> action)
         {
@@ -19,7 +19,7 @@ namespace F1.Core.Core
 
         public static async Task RunHostAsync(this ServiceBuilder builder) 
         {
-            var config = builder.ServiceProvider.GetRequiredService<IOptionsSnapshot<HostConfiguration>>().Value;
+            var config = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<HostConfiguration>>().CurrentValue;
             var logger = builder.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("F1.Core");
 
             logger.LogInformation("RunHostAsync, PlacementDriverAddress:{0}, Host ListenPort:{1}",

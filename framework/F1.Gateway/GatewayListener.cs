@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using F1.Abstractions.Network;
 using F1.Core.Core;
 using F1.Core.Message;
+using F1.Core.Config;
 
 namespace F1.Gateway
 {
@@ -24,6 +26,7 @@ namespace F1.Gateway
 
             try
             {
+                var config = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<GatewayConfiguration>>().CurrentValue;
                 var connectionListener = serviceProvider.GetRequiredService<IConnectionListener>();
                 var messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
 
@@ -31,6 +34,7 @@ namespace F1.Gateway
                 messageHandlerFactory.Codec = codec;
 
                 var gatewayMessageHandler = serviceProvider.GetRequiredService<GatewayDefaultMessageHandler>();
+                gatewayMessageHandler.ServiceTypeName = config.ServiceTypeName;
 
                 await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
                 logger.LogInformation("ListenGateway success, Port:{0}", port);
