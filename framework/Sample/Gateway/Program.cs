@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using F1.Core.Core;
 using F1.Gateway.Actor;
 using F1.Abstractions.Abstractions.Gateway;
+using F1.Gateway;
+using F1.Core.Config;
 
-namespace F1.Gateway
+namespace Sample.Gateway
 {
     class Program
     {
@@ -18,7 +20,7 @@ namespace F1.Gateway
 
             var builder = new ServiceBuilder();
 
-            builder.Configure((config) =>
+            builder.Configure<GatewayConfiguration>((config) =>
             {
                 configuration.GetSection("Gateway").Bind(config);
             });

@@ -20,7 +20,7 @@ using F1.Core.Actor;
 
 namespace F1.Core.Core
 {
-    public static class DefaultServices
+    public static class Extensions
     {
         public static void AddDefaultServices(this IServiceBuilder builder)
         {
@@ -67,6 +67,11 @@ namespace F1.Core.Core
                 builder.SetMinimumLevel(logLevel);
                 builder.AddNLog();
             });
+        }
+
+        public static void Configure<T>(this ServiceBuilder builder, Action<T> action) where T : class
+        {
+            builder.ServiceCollection.Configure<T>(action);
         }
     }
 }

@@ -12,11 +12,6 @@ namespace F1.Core.Core
 {
     public static class HostExtensions
     {
-        public static void Configure(this ServiceBuilder builder, Action<HostConfiguration> action)
-        {
-            builder.ServiceCollection.Configure<HostConfiguration>(action);
-        }
-
         public static async Task RunHostAsync(this ServiceBuilder builder) 
         {
             var config = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<HostConfiguration>>().CurrentValue;

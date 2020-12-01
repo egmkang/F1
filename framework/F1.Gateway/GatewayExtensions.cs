@@ -34,15 +34,10 @@ namespace F1.Gateway
             return info;
         }
 
-        public static void Configure(this ServiceBuilder builder, Action<GatewayConfiguration> action)
-        {
-            builder.ServiceCollection.Configure<GatewayConfiguration>(action);
-        }
-
         public static async Task RunGatewayAsync(this ServiceBuilder builder) 
         {
             var config = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<GatewayConfiguration>>().CurrentValue;
-            var logger = builder.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("F1.Core");
+            var logger = builder.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("F1.Gateway");
 
             logger.LogInformation("RunGatewayAsync, PlacementDriverAddress:{0}, Host ListenPort:{1}, Gateway ListenPort:{2}, ServiceTypeName:{3}",
                                     config.PlacementDriverAddress, config.ListenPort, config.GatewayPort, config.ServiceTypeName);

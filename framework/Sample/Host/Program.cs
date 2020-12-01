@@ -18,7 +18,7 @@ namespace F1.Host
 
             var builder = new ServiceBuilder();
 
-            builder.Configure((config) =>
+            builder.Configure<HostConfiguration>((config) =>
             {
                 configuration.GetSection("Host").Bind(config);
             });
