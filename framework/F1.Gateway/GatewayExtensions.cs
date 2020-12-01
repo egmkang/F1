@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using F1.Abstractions.Network;
 using F1.Core.Config;
 using F1.Core.Core;
+using F1.Abstractions.Actor.Gateway;
 
 namespace F1.Gateway
 {
@@ -46,6 +48,15 @@ namespace F1.Gateway
                                     config.PlacementDriverAddress, config.ListenPort, config.GatewayPort, config.ServiceTypeName);
             await builder.InitAsync(config.PlacementDriverAddress, config.ListenPort).ConfigureAwait(false);
             await builder.ListenGateway(config.GatewayPort).ConfigureAwait(false);
+        }
+
+        public static void AddGatewayServices(this ServiceBuilder builder) 
+        {
+            var services = builder.ServiceCollection;
+
+
+            services.TryAddSingleton<IAuthentication, Authentication>();
+            services.AddSingleton<GatewayDefaultMessageHandler>();
         }
     }
 }

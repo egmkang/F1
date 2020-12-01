@@ -27,8 +27,8 @@ v0.2
 * [ ] Configuration
   * [ ] network
   * [ ] actor
-  * [ ] host
-  * [ ] gateway
+  * [x] host
+  * [x] gateway
 * [ ] Abstraction
   * [ ] Gateway
     * [ ] Authentication
