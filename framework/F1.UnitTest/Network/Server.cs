@@ -19,7 +19,6 @@ namespace F1.UnitTest.Network
     {
         static Random random = new Random();
         static int Port = random.Next(10000, 30000);
-        static NetworkConfiguration config = new NetworkConfiguration();
 
         IServiceBuilder MakeBuilder() 
         {
@@ -115,11 +114,11 @@ namespace F1.UnitTest.Network
                     count++;
                 });
 
-            connectionListener.Init(config);
+            connectionListener.Init();
             connectionListener.BindAsync(Port, messageHandlerFactory);
 
 
-            connectionFactory.Init(config);
+            connectionFactory.Init();
             var client = connectionFactory.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), Port), messageHandlerFactory);
             client.ContinueWith((v) =>
             {

@@ -104,9 +104,9 @@ namespace F1.Core.Actor
                     logger.LogWarning("Message Dropped, MessageName:{0} not find a processor", inboundMessage.MessageName);
                 });
 
-            clientFactory.Init(new NetworkConfiguration() { });
+            clientFactory.Init();
 
-            connectionListener.Init(new NetworkConfiguration() { });
+            connectionListener.Init();
             await connectionListener.BindAsync(port, messageHandlerFactory).ConfigureAwait(false);
         }
 

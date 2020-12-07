@@ -25,7 +25,7 @@ v0.2
     * [x] SequenceID
     * [x] SessionUniqueID
 * [ ] Configuration
-  * [ ] network
+  * [x] network
   * [ ] actor
   * [x] host
   * [x] gateway

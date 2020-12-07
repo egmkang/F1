@@ -15,7 +15,6 @@ namespace sample
     {
         static Random random = new Random();
         static int Port = random.Next(10000, 30000);
-        static NetworkConfiguration config = new NetworkConfiguration();
 
         static IServiceBuilder MakeBuilder()
         {
@@ -69,7 +68,7 @@ namespace sample
                     count++;
                 });
 
-            connectionListener.Init(config);
+            connectionListener.Init();
             connectionListener.BindAsync(Port, messageHandlerFactory);
 
 

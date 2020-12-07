@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 using DotNetty.Buffers;
 using DotNetty.Handlers.Timeout;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using F1.Abstractions.Network;
-using Microsoft.Extensions.Logging;
 
 namespace F1.Core.Network
 {
@@ -38,9 +40,9 @@ namespace F1.Core.Network
         }
 
 
-        public void Init(NetworkConfiguration config)
+        public void Init()
         {
-            this.config = config;
+            this.config = this.ServiceProvider.GetService<IOptionsMonitor<NetworkConfiguration>>().CurrentValue;
             this.group = new MultithreadEventLoopGroup(this.config.EventLoopCount);
         }
 

@@ -9,7 +9,7 @@ namespace F1.Abstractions.Network
 {
     public interface IClientConnectionFactory
     {
-        void Init(NetworkConfiguration config);
+        void Init();
         Task<IChannel> ConnectAsync(EndPoint address, IMessageHandlerFactory factory);
         Task ShutdDownAsync();
     }

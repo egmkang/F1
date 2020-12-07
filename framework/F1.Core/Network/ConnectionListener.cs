@@ -6,6 +6,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Codecs;
@@ -41,9 +42,9 @@ namespace F1.Core.Network
             this.logger = loggerFactory.CreateLogger("F1.Sockets");
         }
 
-        public void Init(NetworkConfiguration config)
+        public void Init()
         {
-            this.config = config;
+            this.config = this.ServiceProvider.GetService<IOptionsMonitor<NetworkConfiguration>>().CurrentValue;
             var dispatcher = new DispatcherEventLoopGroup();
             bossGroup = dispatcher;
             workGroup = new WorkerEventLoopGroup(dispatcher, config.EventLoopCount);

@@ -2,5 +2,16 @@
   "Host": {
     "PlacementDriverAddress": "http://127.0.0.1:2379",
     "ListenPort": 20010
+  },
+  "Network": {
+    "SoBackLog": 1024,
+    "SendWindowSize": 262144,
+    "RecvWindowSize": 262144,
+    "WriteBufferHighWaterMark": 262144,
+    "WriteBufferLowWaterMark": 131072,
+    "ReadTimeout": 15,
+    "WriteTimeout": 15,
+    "ConnectTimeout": 5,
+    "EventLoopCount": 3
   }
 }

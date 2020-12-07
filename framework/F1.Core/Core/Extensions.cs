@@ -69,9 +69,10 @@ namespace F1.Core.Core
             });
         }
 
-        public static void Configure<T>(this ServiceBuilder builder, Action<T> action) where T : class
+        public static ServiceBuilder Configure<T>(this ServiceBuilder builder, Action<T> action) where T : class
         {
             builder.ServiceCollection.Configure<T>(action);
+            return builder;
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using F1.Core.Config;
 using F1.Core.Core;
+using F1.Abstractions.Network;
 
 namespace F1.Host
 {
@@ -18,15 +19,15 @@ namespace F1.Host
 
             var builder = new ServiceBuilder();
 
-            builder.Configure<HostConfiguration>((config) =>
-            {
-                configuration.GetSection("Host").Bind(config);
-            });
+            builder.Configure<HostConfiguration>((config) => configuration.GetSection("Host").Bind(config))
+                    .Configure<NetworkConfiguration>((config) => configuration.GetSection("Network").Bind(config));
 
             builder.AddDefaultServices();
             builder.AddLog();
 
             builder.Build();
+
+            var network = builder.ServiceProvider.GetRequiredService<IOptionsMonitor<NetworkConfiguration>>().CurrentValue;
 
             await builder.RunHostAsync();
 

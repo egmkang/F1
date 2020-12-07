@@ -7,7 +7,7 @@ namespace F1.Abstractions.Network
 {
     public interface IConnectionListener
     {
-        void Init(NetworkConfiguration config);
+        void Init();
         Task BindAsync(int port, IMessageHandlerFactory factory);
         Task ShutdDownAsync();
     }
