@@ -8,7 +8,7 @@ namespace F1.Core.Utils
 {
     public class UniqueSequence
     {
-        public const long HighPartShift = 1_000_000_000_000;
+        public const long HighPartShift = 10_000_000_000;
 
         public long GetNewSequence() 
         {

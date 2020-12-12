@@ -398,7 +398,7 @@ namespace F1.Core.Placement
                     finally
                     {
                         timerCount++;
-                        var delay = (Platform.GetMilliSeconds() - currentMilliSeconds) - timerCount * timerInterval;
+                        var delay = timerCount * timerInterval -  (Platform.GetMilliSeconds() - currentMilliSeconds);
                         if (delay > 0)
                         {
                             await Task.Delay((int)delay).ConfigureAwait(false);
