@@ -93,7 +93,8 @@ namespace F1.Core.Network
                     pipeline.AddLast("TimeOut", new IdleStateHandler(this.config.ReadTimeout, this.config.WriteTimeout, this.config.ReadTimeout));
                     pipeline.AddLast(factory.NewHandler());
 
-                    logger.LogInformation("NewSession SessionID:{0} IpAddr:{1}", info.SessionID, info.RemoteAddress?.ToString());
+                    logger.LogInformation("NewSession SessionID:{0} IpAddr:{1}, CodecName:{2}",
+                            info.SessionID, info.RemoteAddress?.ToString(), factory.Codec.CodecName);
                 }));
 
             await bootstrap.BindAsync(port);

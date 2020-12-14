@@ -8,6 +8,7 @@ namespace F1.Abstractions.Network
 {
     public interface IMessageCodec 
     {
+        string CodecName { get; }
         IByteBuffer Encode(IByteBufferAllocator allocator, object msg);
         (long length, string typeName, object msg) Decode(IByteBuffer input);
     }

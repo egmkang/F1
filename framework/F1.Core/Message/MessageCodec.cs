@@ -97,6 +97,8 @@ namespace F1.Core.Message
         private readonly MessageEncoder encoder = new MessageEncoder();
         private readonly MessageDecoder decoder = new MessageDecoder();
 
+        public string CodecName => "ProtobufMessageCodec";
+
         public (long length, string typeName, object msg) Decode(IByteBuffer input)
         {
             var (length, msg) = decoder.Decode(input);
@@ -112,6 +114,8 @@ namespace F1.Core.Message
 
     public sealed class StringMessageCodec : IMessageCodec
     {
+        public string CodecName => "StringMessageCodec";
+
         public (long length, string typeName, object msg) Decode(IByteBuffer input)
         {
             var length = input.ReadableBytes;
@@ -139,6 +143,8 @@ namespace F1.Core.Message
         public const int HeaderLength = sizeof(uint);
         public const string MessageName = "BlockMessage";
         public int MaxPacketLength { get; set; } = 1 * 1024 * 1024;
+
+        public string CodecName => "BlockMessageCodec";
 
         public (long length, string typeName, object msg) Decode(IByteBuffer input)
         {

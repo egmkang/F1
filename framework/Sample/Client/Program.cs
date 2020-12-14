@@ -162,7 +162,7 @@ namespace F1.Sample.Client
 
         static void Main(string[] args)
         {
-            _ = Connect("127.0.0.1", 20000, "30001");
+            _ = Connect("127.0.0.1", 18888, "30001");
 
             while (true) 
             {
