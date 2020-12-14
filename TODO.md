@@ -29,18 +29,11 @@ v0.2
   * [ ] actor
   * [x] host
   * [x] gateway
-* [ ] Abstraction
-  * [ ] Gateway
-    * [ ] Authentication
-    * [ ] Message Codec
-    * [ ] Message Processing
-  * [ ] Actor
-    * [x] Interface And Impl Map
-    * [ ] GC
-    * [ ] Actor LifeTime Configuration
+* [ ] Actor
+  * [x] Interface And Impl Map
+  * [ ] GC
+  * [ ] Actor LifeTime Configuration
 * [ ] Sample
-    * [ ] LogicServer
-    * [ ] GameServer
     * [ ] MultiPlayer(One OpenID)
 
 v0.1
