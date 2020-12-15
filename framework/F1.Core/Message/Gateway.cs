@@ -35,7 +35,9 @@ namespace GatewayMessage {
             "ASgJIkkKEE5vdGlmeU5ld01lc3NhZ2USEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
             "CgxzZXJ2aWNlX3R5cGUYAiABKAkSCwoDbXNnGAMgASgMIj4KGlJlcXVlc3RT",
             "ZW5kTWVzc2FnZVRvUGxheWVyEhMKC3Nlc3Npb25faWRzGAEgAygQEgsKA21z",
-            "ZxgCIAEoDGIGcHJvdG8z"));
+            "ZxgCIAEoDCJlCh9SZXF1ZXN0Q2hhbmdlTWVzc2FnZURlc3RpbmF0aW9uEhIK",
+            "CnNlc3Npb25faWQYASABKBASGAoQbmV3X3NlcnZpY2VfdHlwZRgCIAEoCRIU",
+            "CgxuZXdfYWN0b3JfaWQYAyABKAliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -45,7 +47,8 @@ namespace GatewayMessage {
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "Msg" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestChangeMessageDestination), global::GatewayMessage.RequestChangeMessageDestination.Parser, new[]{ "SessionId", "NewServiceType", "NewActorId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1176,6 +1179,191 @@ namespace GatewayMessage {
           }
           case 18: {
             Msg = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class RequestChangeMessageDestination : pb::IMessage<RequestChangeMessageDestination> {
+    private static readonly pb::MessageParser<RequestChangeMessageDestination> _parser = new pb::MessageParser<RequestChangeMessageDestination>(() => new RequestChangeMessageDestination());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RequestChangeMessageDestination> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::GatewayMessage.GatewayReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RequestChangeMessageDestination() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RequestChangeMessageDestination(RequestChangeMessageDestination other) : this() {
+      sessionId_ = other.sessionId_;
+      newServiceType_ = other.newServiceType_;
+      newActorId_ = other.newActorId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RequestChangeMessageDestination Clone() {
+      return new RequestChangeMessageDestination(this);
+    }
+
+    /// <summary>Field number for the "session_id" field.</summary>
+    public const int SessionIdFieldNumber = 1;
+    private long sessionId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long SessionId {
+      get { return sessionId_; }
+      set {
+        sessionId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "new_service_type" field.</summary>
+    public const int NewServiceTypeFieldNumber = 2;
+    private string newServiceType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NewServiceType {
+      get { return newServiceType_; }
+      set {
+        newServiceType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "new_actor_id" field.</summary>
+    public const int NewActorIdFieldNumber = 3;
+    private string newActorId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NewActorId {
+      get { return newActorId_; }
+      set {
+        newActorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RequestChangeMessageDestination);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RequestChangeMessageDestination other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (SessionId != other.SessionId) return false;
+      if (NewServiceType != other.NewServiceType) return false;
+      if (NewActorId != other.NewActorId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (SessionId != 0L) hash ^= SessionId.GetHashCode();
+      if (NewServiceType.Length != 0) hash ^= NewServiceType.GetHashCode();
+      if (NewActorId.Length != 0) hash ^= NewActorId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (SessionId != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(SessionId);
+      }
+      if (NewServiceType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(NewServiceType);
+      }
+      if (NewActorId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(NewActorId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (SessionId != 0L) {
+        size += 1 + 8;
+      }
+      if (NewServiceType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NewServiceType);
+      }
+      if (NewActorId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NewActorId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RequestChangeMessageDestination other) {
+      if (other == null) {
+        return;
+      }
+      if (other.SessionId != 0L) {
+        SessionId = other.SessionId;
+      }
+      if (other.NewServiceType.Length != 0) {
+        NewServiceType = other.NewServiceType;
+      }
+      if (other.NewActorId.Length != 0) {
+        NewActorId = other.NewActorId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            SessionId = input.ReadSFixed64();
+            break;
+          }
+          case 18: {
+            NewServiceType = input.ReadString();
+            break;
+          }
+          case 26: {
+            NewActorId = input.ReadString();
             break;
           }
         }

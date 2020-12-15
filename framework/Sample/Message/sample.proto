@@ -6,6 +6,34 @@ message ResponseLogin
 string ok = 1;
 }
 
+message RequestPlayerList
+{
+}
+
+message ResposnePlayerList
+{
+repeated string player = 1;
+}
+
+message RequestChangePlayer 
+{
+string player = 1;
+}
+
+message ResponseChangePlayer
+{
+string player = 1;
+string error = 2;
+}
+
+message RequestBackUp
+{
+}
+
+message ResponseBackUp
+{
+}
+
 message RequestEcho
 {
 string content = 1;
@@ -14,4 +42,14 @@ string content = 1;
 message ResponseEcho
 {
 string content = 1;
+}
+
+message RequestGetID
+{
+}
+
+message ResponseGetID
+{
+string actor_type = 1;
+string actor_id = 2;
 }

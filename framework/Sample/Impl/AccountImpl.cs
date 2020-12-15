@@ -5,28 +5,41 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using DotNetty.Transport.Channels;
 using Google.Protobuf;
-using F1.Abstractions.Network;
 using F1.Core.Actor;
-using F1.Core.Utils;
-using F1.Sample.Impl;
-using GatewayMessage;
-using Sample.Interface;
 using F1.Sample.Interface;
+using F1.Abstractions.Network;
+using F1.Core.Utils;
+using GatewayMessage;
+using Sample;
+using Sample.Interface;
 
-namespace Sample.Impl
+namespace F1.Sample.Impl
 {
-    class PlayerImpl : Actor, IPlayer
+    class AccountImpl : Actor, IAccount
     {
         private static SampleCodec codec = new SampleCodec();
 
-        public Task<string> EchoAsync(string name)
+        public Task AuthTokenAsync(byte[] token)
         {
-            return Task.FromResult(name);
+            try 
+            {
+                var playerId = Encoding.UTF8.GetString(token);
+                this.Logger.LogInformation("PlayerID:{0}, Token:{1}", this.ID, playerId);
+            }
+            catch (Exception e) 
+            {
+                this.Logger.LogError("PlayerID:{0}, AuthTokenAsync, Exception:{1}", this.ID, e);
+            }
+            return Task.CompletedTask;
         }
 
         protected override async Task ProcessUserInputMessage(InboundMessage msg)
         {
-            if (msg.Inner is NotifyConnectionAborted)
+            if (msg.Inner is NotifyConnectionComing)
+            {
+                await this.ProcessNotifyConnectionComing(msg.Inner as NotifyConnectionComing).ConfigureAwait(false);
+            }
+            else if (msg.Inner is NotifyConnectionAborted)
             {
                 await this.ProcessNotifyConnectionAborted(msg.Inner as NotifyConnectionAborted).ConfigureAwait(false);
             }
@@ -34,18 +47,31 @@ namespace Sample.Impl
             {
                 await this.ProcessNotifyNewMessage(msg.SourceConnection, msg.Inner as NotifyNewMessage).ConfigureAwait(false);
             }
-            else
+            else 
             {
                 this.Logger.LogWarning("ProdessUserInputMessage, PlayerID:{0} MsgTye:{1} not process",
                     this.ID, msg.Inner.GetType());
             }
         }
 
-        private async Task ProcessNotifyConnectionAborted(NotifyConnectionAborted msg)
+        private async Task ProcessNotifyConnectionComing(NotifyConnectionComing msg) 
+        {
+            this.Logger.LogInformation("ProcessNotifyConnectionComing, PlayerID:{0}, SessionID:{1}, Token:{2}",
+                this.ID, msg.SessionId, msg.Token);
+            this.SetSessionID(msg.SessionId);
+
+            var resp = new ResponseLogin();
+            resp.Ok = "12121212";
+
+            this.SendMessageToPlayer(resp);
+            await Task.CompletedTask;
+        }
+
+        private async Task ProcessNotifyConnectionAborted(NotifyConnectionAborted msg) 
         {
             this.Logger.LogInformation("ProcessNotifyConnectionAborted, PlayerID:{0}, SessionID:{1}",
                 this.ID, msg.SessionId);
-            if (msg.SessionId == this.SessionID)
+            if (msg.SessionId == this.SessionID) 
             {
                 this.SetSessionID(0);
             }
@@ -64,35 +90,35 @@ namespace Sample.Impl
                 var msg = codec.DecodeMessage(newMessage.Msg.ToByteArray());
                 //this.Logger.LogInformation("ProcessNotifyNewMessage, MsgType:{0}, Content:{1}", msg.GetType(), msg);
 
-                if (msg is RequestEcho hello)
+                if (msg is RequestPlayerList list)
                 {
-                    var content = await this.EchoAsync(hello.Content).ConfigureAwait(false);
-                    var resp = new ResponseEcho()
+                    var listResponse = new ResposnePlayerList();
+                    listResponse.Player.Add("131313");
+                    listResponse.Player.Add("56565656");
+                    this.SendMessageToPlayer(listResponse);
+                }
+                else if (msg is RequestChangePlayer changePlayer)
+                {
+                    var changePlayerResponse = new ResponseChangePlayer();
+                    if (changePlayer.Player == "131313" || changePlayer.Player == "56565656")
                     {
-                        Content = content,
-                    };
+                        var player = this.GetActorProxy<IPlayer>(changePlayer.Player);
+                        await player.SetAccount(this.ID);
 
-                    this.SendMessageToPlayer(resp);
-                }
-                else if (msg is RequestBackUp backup)
-                {
-                    var backupResponse = new ResponseBackUp();
-                    this.SendMessageToPlayer(backupResponse);
+                        changePlayerResponse.Player = changePlayer.Player;
 
-                    var changeMessageDestination = new RequestChangeMessageDestination();
-                    changeMessageDestination.SessionId = this.SessionID;
-                    changeMessageDestination.NewServiceType = typeof(IAccount).Name;
-                    changeMessageDestination.NewActorId = this.Account;
+                        var changeDestination = new RequestChangeMessageDestination();
+                        changeDestination.SessionId = this.SessionID;
+                        changeDestination.NewServiceType = typeof(IPlayer).Name;
+                        changeDestination.NewActorId = changePlayer.Player;
 
-                    this.SendMessageToGateway(changeMessageDestination);
-                }
-                else if (msg is RequestGetID getId)
-                {
-                    var getIdResponse = new ResponseGetID();
-                    getIdResponse.ActorType = this.ActorType.Name;
-                    getIdResponse.ActorId = this.ID;
-
-                    this.SendMessageToPlayer(getIdResponse);
+                        this.SendMessageToGateway(changeDestination);
+                    }
+                    else 
+                    {
+                        changePlayerResponse.Error = "player not found";
+                    }
+                    this.SendMessageToPlayer(changePlayerResponse);
                 }
                 else
                 {
@@ -117,7 +143,7 @@ namespace Sample.Impl
             this.MessageCenter.SendMessage(new OutboundMessage(channel, gatewayMessage));
         }
 
-        public void SendMessageToPlayer(IMessage message)
+        public void SendMessageToPlayer(IMessage message) 
         {
             var serverId = SessionUniqueSequence.GetServerID(this.SessionID);
             if (serverId != 0)
@@ -130,17 +156,16 @@ namespace Sample.Impl
 
                 if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage))
                 {
-                    this.Logger.LogWarning("SendMessageToPlayer, Actor:{0}/{1}, DestServerID:{2}",
-                        this.ActorType, this.ID, serverId);
+                    this.Logger.LogWarning("SendMessageToPlayer, PlayerID:{0}, DestServerID:{1}",
+                        this.ID, serverId);
                 }
             }
-            else
+            else 
             {
-                this.Logger.LogWarning("SendMessageToPlayer, Actor:{0}/{1}, DestServerID:{2}",
-                    this.ActorType, this.ID, serverId);
+                this.Logger.LogWarning("SendMessageToPlayer, PlayerID:{0}, DestServerID:{1}",
+                    this.ID, serverId);
             }
         }
-
         public void SendMessageToGateway(IMessage message) 
         {
             var serverId = SessionUniqueSequence.GetServerID(this.SessionID);
@@ -157,14 +182,6 @@ namespace Sample.Impl
                 this.Logger.LogWarning("SendMessageToGateway, Actor:{0}/{1}, DestServerID:{2}",
                     this.ActorType, this.ID, serverId);
             }
-        }
-
- 
-        public string Account { get; set; }
-        public Task SetAccount(string account)
-        {
-            this.Account = account;
-            return Task.CompletedTask;
         }
     }
 }

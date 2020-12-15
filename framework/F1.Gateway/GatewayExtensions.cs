@@ -15,8 +15,11 @@ namespace F1.Gateway
 {
     public class GatewayPlayerSessionInfo 
     {
-        public string PlayerID;
+        public string AccountID;
         public byte[] Token;
+        //下面两个是消息的目的地, 会发生变化
+        public string DestServiceType;
+        public string DestActorID;
     }
 
     public static partial class GatewayExtensions

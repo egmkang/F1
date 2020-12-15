@@ -4,12 +4,11 @@ using System.Text;
 using System.Threading.Tasks;
 using F1.Abstractions.RPC;
 
-namespace Sample.Interface
+namespace F1.Sample.Interface
 {
     [Rpc]
-    public interface IPlayer
+    public interface IAccount
     {
-        Task SetAccount(string account);
-        Task<string> EchoAsync(string name);
+        Task AuthTokenAsync(byte[] token);
     }
 }

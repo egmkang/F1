@@ -24,13 +24,13 @@ namespace F1.Gateway
         public readonly IAuthentication authentication;
         public readonly PlacementExtension placement;
 
-        public string ServiceTypeName { get; internal set; } = "IPlayer";
+        public string ServiceTypeName { get; internal set; } = "IAccount";
 
         public GatewayDefaultMessageHandler(ILoggerFactory loggerFactory,
                                         IMessageCenter messageCenter,
                                         IConnectionManager connectionManager,
                                         IAuthentication authentication,
-                                        PlacementExtension placement) 
+                                        PlacementExtension placement)
         {
             this.logger = loggerFactory.CreateLogger("F1.Gateway");
             this.messageCenter = messageCenter;
@@ -43,6 +43,7 @@ namespace F1.Gateway
             this.messageCenter.RegisterTypedMessageProc<RequestHeartBeat>(ProcessGatewayHeartBeat);
             this.messageCenter.RegisterTypedMessageProc<RequestCloseConnection>(ProcessGatewayCloseConnection);
             this.messageCenter.RegisterTypedMessageProc<RequestSendMessageToPlayer>(ProcessGatewaySendMessageToPlayer);
+            this.messageCenter.RegisterTypedMessageProc<RequestChangeMessageDestination>(ProcessGatewayChangeMessageDestination);
         }
 
         private void GatewayIncommingMessage(InboundMessage inboundMessage)
@@ -52,15 +53,15 @@ namespace F1.Gateway
             var data = inboundMessage.Inner as byte[];
 
             //第一个消息
-            if (string.IsNullOrEmpty(playerInfo.PlayerID))
+            if (string.IsNullOrEmpty(playerInfo.AccountID))
             {
-                var playerID = this.authentication.DecodeToken(data) as string;
-                logger.LogInformation("GatewayIncomingMessage, SessionID:{0} FirstMessage, PlayerID:{1}",
-                    sessionInfo.SessionID, playerID);
-                playerInfo.PlayerID = playerID;
-                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerID, data, true);
+                var accountID = this.authentication.DecodeToken(data) as string;
+                logger.LogInformation("GatewayIncomingMessage, SessionID:{0} FirstMessage, Actor:{1}/{2}",
+                    sessionInfo.SessionID, this.ServiceTypeName, accountID);
+                playerInfo.AccountID = accountID;
+                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo, data, true);
             }
-            else 
+            else
             {
                 if (sessionInfo.ServerID != 0)
                 {
@@ -72,24 +73,31 @@ namespace F1.Gateway
                     });
                     if (result) return;
                 }
-                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo.PlayerID, data, false);
+                _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo, data, false);
             }
         }
 
         private async Task ProcessGatewayMessageSlow(IChannel channel,
-                                                    IConnectionSessionInfo sessionInfo, 
-                                                    string playerID, 
-                                                    byte[] data, 
+                                                    IConnectionSessionInfo sessionInfo,
+                                                    GatewayPlayerSessionInfo gatewayPlayer,
+                                                    byte[] data,
                                                     bool isFirstPacket)
         {
-            var serviceType = this.ServiceTypeName;
+            if (string.IsNullOrEmpty(gatewayPlayer.DestServiceType)) 
+            {
+                gatewayPlayer.DestServiceType = this.ServiceTypeName;
+            }
+            if (string.IsNullOrEmpty(gatewayPlayer.DestActorID)) 
+            {
+                gatewayPlayer.DestActorID = gatewayPlayer.AccountID;
+            }
             try
             {
-                var position = await this.placement.FindActorPositonAsync(serviceType, playerID).ConfigureAwait(false);
-                if (position == null) 
+                var position = await this.placement.FindActorPositonAsync(gatewayPlayer.DestServiceType, gatewayPlayer.DestActorID).ConfigureAwait(false);
+                if (position == null)
                 {
-                    this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, PlayerID:{1} not found DestServer",
-                        sessionInfo.SessionID, playerID);
+                    this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, Actor:{1}/{2} not found DestServer",
+                        sessionInfo.SessionID, gatewayPlayer.DestServiceType, gatewayPlayer.DestActorID);
                     return;
                 }
                 sessionInfo.ServerID = position.ServerID;
@@ -97,43 +105,43 @@ namespace F1.Gateway
                 if (isFirstPacket)
                 {
 
-                    this.logger.LogInformation("IncomingConnection, SessionID:{0}, PlayerID:{1}, DestServerID:{2}",
-                        sessionInfo.SessionID, playerID, position.ServerID);
+                    this.logger.LogInformation("IncomingConnection, SessionID:{0}, Actor:{1}/{2}, DestServerID:{3}",
+                        sessionInfo.SessionID, gatewayPlayer.DestServiceType, gatewayPlayer.DestActorID, position.ServerID);
 
                     var msg = new NotifyConnectionComing()
                     {
                         Token = ByteString.CopyFrom(data),
                         SessionId = sessionInfo.SessionID,
-                        PlayerId = playerID,
-                        ServiceType = serviceType,
+                        PlayerId = gatewayPlayer.DestActorID,
+                        ServiceType = gatewayPlayer.DestServiceType,
                     };
                     this.messageCenter.SendMessageToServer(position.ServerID, msg);
                 }
                 else
                 {
-                    this.logger.LogInformation("NotifyNewMessage, SessionID:{0}, PlayerID:{1}, DestServerID:{2}",
-                        sessionInfo.SessionID, playerID, position.ServerID);
+                    this.logger.LogInformation("NotifyNewMessage, SessionID:{0}, Actor:{1}/{2}, DestServerID:{3}",
+                        sessionInfo.SessionID, gatewayPlayer.DestServiceType, gatewayPlayer.DestActorID, position.ServerID);
 
                     var msg = new NotifyNewMessage()
                     {
                         Msg = ByteString.CopyFrom(data),
                         SessionId = sessionInfo.SessionID,
-                        ServiceType = serviceType,
+                        ServiceType = gatewayPlayer.DestServiceType,
                     };
                     this.messageCenter.SendMessageToServer(position.ServerID, msg);
                 }
             }
             catch (Exception e)
             {
-                this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, PlayerID:{1}, Exception:{2}",
-                    sessionInfo.SessionID, playerID, e);
+                this.logger.LogError("ProcessGatewayMessageSlow, SessionID:{0}, Actor:{1}/{2}, Exception:{3}",
+                    sessionInfo.SessionID, gatewayPlayer.DestServiceType, gatewayPlayer.DestActorID, e);
             }
         }
 
-        private void ProcessGatewayHeartBeat(InboundMessage inboundMessage) 
+        private void ProcessGatewayHeartBeat(InboundMessage inboundMessage)
         {
             var msg = inboundMessage.Inner as RequestHeartBeat;
-            if (msg == null) 
+            if (msg == null)
             {
                 this.logger.LogError("ProcessGatewayHeartBeat, input message type:{0}", inboundMessage.Inner.GetType());
                 return;
@@ -143,10 +151,10 @@ namespace F1.Gateway
                 MilliSecond = msg.MilliSecond,
             }));
         }
-        private void ProcessGatewayCloseConnection(InboundMessage inboundMessage) 
+        private void ProcessGatewayCloseConnection(InboundMessage inboundMessage)
         {
             var msg = inboundMessage.Inner as RequestCloseConnection;
-            if (msg == null) 
+            if (msg == null)
             {
                 this.logger.LogError("ProcessGatewayCloseConnection, input message type:{0}", inboundMessage.Inner.GetType());
                 return;
@@ -156,15 +164,41 @@ namespace F1.Gateway
             {
                 try
                 {
-                   _ = channel.CloseAsync();
+                    _ = channel.CloseAsync();
                 }
                 catch { }
                 this.logger.LogInformation("ProcessGatewayCloseConnection, SessionID:{0} closed", msg.SessionId);
             }
-            else 
+            else
             {
                 this.logger.LogWarning("ProcessGatewayCloseConnection, SessionID:{0} not found", msg.SessionId);
             }
+        }
+
+        private void ProcessGatewayChangeMessageDestination(InboundMessage inboundMessage) 
+        {
+            var msg = inboundMessage.Inner as RequestChangeMessageDestination;
+            if (msg == null) 
+            {
+                this.logger.LogError("ProcessGatewayChangeMessageDestination, input message type:{0}", inboundMessage.Inner.GetType());
+                return;
+            }
+
+            var channel = this.connectionManager.GetConnection(msg.SessionId);
+            if (channel == null) 
+            {
+                this.logger.LogInformation("ProcessGatewayChangeMessageDestination, SessionID:{0} not found", msg.SessionId);
+                return;
+            }
+            var sessionInfo = channel.GetSessionInfo();
+            var playerInfo = sessionInfo.GetPlayerInfo();
+
+            playerInfo.DestServiceType = msg.NewServiceType;
+            playerInfo.DestActorID = msg.NewActorId;
+            sessionInfo.ServerID = 0;
+
+            this.logger.LogInformation("ProcessGatewayChangeMessageDestination, SessionID:{0}, Account:{1}, NewActor:{2}/{3}",
+                sessionInfo.SessionID, playerInfo.AccountID, playerInfo.DestServiceType, playerInfo.DestActorID);
         }
 
         private void ProcessGatewaySendMessageToPlayer(InboundMessage inboundMessage) 

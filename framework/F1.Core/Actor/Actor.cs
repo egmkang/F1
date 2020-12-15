@@ -15,6 +15,7 @@ namespace F1.Core.Actor
         public Type ActorType { get; private set; }
         public string ID { get; private set; }
         public string UniqueID { get; private set; }
+        public long SessionID { get; private set; }
         internal IActorContext Context { get; set; }
         internal RpcDispatchProxyFactory ProxyFactory { get; set; }
         public ILogger Logger { get; internal set; }
@@ -98,6 +99,26 @@ namespace F1.Core.Actor
         public void UnRegisterTimer(long id) 
         {
             this.TimerManager.UnRegisterTimer(id);
+        }
+
+        public void SetSessionID(long newSessionID) 
+        {
+            if (this.SessionID != newSessionID) 
+            {
+                this.Logger.LogInformation("Actor:{0}/{1}, SessionID:{2} => NewSessionID:{3}",
+                    this.ActorType, this.ID, this.SessionID, newSessionID);
+                var oldId = this.SessionID;
+                this.SessionID = newSessionID;
+                try 
+                {
+                    this.OnSessionIDChanged(oldId, newSessionID);
+                }
+                catch { }
+            }
+        }
+
+        protected virtual void OnSessionIDChanged(long oldId, long newId)
+        {
         }
     }
 }

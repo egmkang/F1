@@ -50,3 +50,10 @@ message RequestSendMessageToPlayer
 repeated sfixed64 session_ids = 1;
 bytes msg = 2;
 }
+
+message RequestChangeMessageDestination
+{
+sfixed64 session_id = 1;
+string new_service_type = 2;
+string new_actor_id = 3;
+}
