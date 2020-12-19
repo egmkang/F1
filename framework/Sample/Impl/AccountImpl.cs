@@ -35,6 +35,9 @@ namespace F1.Sample.Impl
 
         protected override async Task ProcessUserInputMessage(InboundMessage msg)
         {
+            //this.Logger.LogInformation("AccountImpl.ProcessUserInputMessage, Type:{1}, Msg:{0}",
+            //                            msg.Inner, msg.Inner.GetType().Name);
+
             if (msg.Inner is NotifyConnectionComing)
             {
                 await this.ProcessNotifyConnectionComing(msg.Inner as NotifyConnectionComing).ConfigureAwait(false);
@@ -78,6 +81,10 @@ namespace F1.Sample.Impl
             await Task.CompletedTask;
         }
 
+        private static readonly HashSet<string> TestPlayerList = new HashSet<string>()
+        {
+            "111111", "22222", "33333", "44444", "55555"
+        };
         private async Task ProcessNotifyNewMessage(IChannel channel, NotifyNewMessage newMessage)
         {
             try
@@ -92,15 +99,14 @@ namespace F1.Sample.Impl
 
                 if (msg is RequestPlayerList list)
                 {
-                    var listResponse = new ResposnePlayerList();
-                    listResponse.Player.Add("131313");
-                    listResponse.Player.Add("56565656");
+                    var listResponse = new ResponsePlayerList();
+                    listResponse.Player.AddRange(TestPlayerList);
                     this.SendMessageToPlayer(listResponse);
                 }
                 else if (msg is RequestChangePlayer changePlayer)
                 {
                     var changePlayerResponse = new ResponseChangePlayer();
-                    if (changePlayer.Player == "131313" || changePlayer.Player == "56565656")
+                    if (TestPlayerList.Contains(changePlayer.Player))
                     {
                         var player = this.GetActorProxy<IPlayer>(changePlayer.Player);
                         await player.SetAccount(this.ID);
@@ -116,7 +122,7 @@ namespace F1.Sample.Impl
                     }
                     else 
                     {
-                        changePlayerResponse.Error = "player not found";
+                        changePlayerResponse.Error = $"player not found: {changePlayerResponse.Player}";
                     }
                     this.SendMessageToPlayer(changePlayerResponse);
                 }

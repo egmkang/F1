@@ -26,28 +26,30 @@ namespace GatewayMessage {
           string.Concat(
             "ChVNZXNzYWdlL2dhdGV3YXkucHJvdG8SDkdhdGV3YXlNZXNzYWdlIigKEFJl",
             "cXVlc3RIZWFydEJlYXQSFAoMbWlsbGlfc2Vjb25kGAEgASgQIikKEVJlc3Bv",
-            "bnNlSGVhcnRCZWF0EhQKDG1pbGxpX3NlY29uZBgBIAEoECJkChZOb3RpZnlD",
-            "b25uZWN0aW9uQ29taW5nEhQKDHNlcnZpY2VfdHlwZRgBIAEoCRISCgpzZXNz",
-            "aW9uX2lkGAIgASgQEhEKCXBsYXllcl9pZBgEIAEoCRINCgV0b2tlbhgFIAEo",
-            "DCJDChdOb3RpZnlDb25uZWN0aW9uQWJvcnRlZBISCgpzZXNzaW9uX2lkGAEg",
-            "ASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCSJCChZSZXF1ZXN0Q2xvc2VDb25u",
-            "ZWN0aW9uEhIKCnNlc3Npb25faWQYASABKBASFAoMc2VydmljZV90eXBlGAIg",
-            "ASgJIkkKEE5vdGlmeU5ld01lc3NhZ2USEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
-            "CgxzZXJ2aWNlX3R5cGUYAiABKAkSCwoDbXNnGAMgASgMIj4KGlJlcXVlc3RT",
-            "ZW5kTWVzc2FnZVRvUGxheWVyEhMKC3Nlc3Npb25faWRzGAEgAygQEgsKA21z",
-            "ZxgCIAEoDCJlCh9SZXF1ZXN0Q2hhbmdlTWVzc2FnZURlc3RpbmF0aW9uEhIK",
-            "CnNlc3Npb25faWQYASABKBASGAoQbmV3X3NlcnZpY2VfdHlwZRgCIAEoCRIU",
-            "CgxuZXdfYWN0b3JfaWQYAyABKAliBnByb3RvMw=="));
+            "bnNlSGVhcnRCZWF0EhQKDG1pbGxpX3NlY29uZBgBIAEoECJjChZOb3RpZnlD",
+            "b25uZWN0aW9uQ29taW5nEhQKDHNlcnZpY2VfdHlwZRgBIAEoCRIQCghhY3Rv",
+            "cl9pZBgCIAEoCRISCgpzZXNzaW9uX2lkGAMgASgQEg0KBXRva2VuGAUgASgM",
+            "IlUKF05vdGlmeUNvbm5lY3Rpb25BYm9ydGVkEhIKCnNlc3Npb25faWQYASAB",
+            "KBASFAoMc2VydmljZV90eXBlGAIgASgJEhAKCGFjdG9yX2lkGAMgASgJIkIK",
+            "FlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
+            "CgxzZXJ2aWNlX3R5cGUYAiABKAkiagoQTm90aWZ5TmV3TWVzc2FnZRISCgpz",
+            "ZXNzaW9uX2lkGAEgASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCRIQCghhY3Rv",
+            "cl9pZBgDIAEoCRILCgNtc2cYBCABKAwSDQoFdHJhY2UYBSABKAkiTQoaUmVx",
+            "dWVzdFNlbmRNZXNzYWdlVG9QbGF5ZXISEwoLc2Vzc2lvbl9pZHMYASADKBAS",
+            "CwoDbXNnGAIgASgMEg0KBXRyYWNlGAMgASgJImUKH1JlcXVlc3RDaGFuZ2VN",
+            "ZXNzYWdlRGVzdGluYXRpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIYChBuZXdf",
+            "c2VydmljZV90eXBlGAIgASgJEhQKDG5ld19hY3Rvcl9pZBgDIAEoCWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestHeartBeat), global::GatewayMessage.RequestHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.ResponseHeartBeat), global::GatewayMessage.ResponseHeartBeat.Parser, new[]{ "MilliSecond" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "SessionId", "PlayerId", "Token" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "ActorId", "SessionId", "Token" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType", "ActorId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "Msg" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "ActorId", "Msg", "Trace" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg", "Trace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestChangeMessageDestination), global::GatewayMessage.RequestChangeMessageDestination.Parser, new[]{ "SessionId", "NewServiceType", "NewActorId" }, null, null, null, null)
           }));
     }
@@ -347,8 +349,8 @@ namespace GatewayMessage {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public NotifyConnectionComing(NotifyConnectionComing other) : this() {
       serviceType_ = other.serviceType_;
+      actorId_ = other.actorId_;
       sessionId_ = other.sessionId_;
-      playerId_ = other.playerId_;
       token_ = other.token_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -369,25 +371,25 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "actor_id" field.</summary>
+    public const int ActorIdFieldNumber = 2;
+    private string actorId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "session_id" field.</summary>
-    public const int SessionIdFieldNumber = 2;
+    public const int SessionIdFieldNumber = 3;
     private long sessionId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long SessionId {
       get { return sessionId_; }
       set {
         sessionId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "player_id" field.</summary>
-    public const int PlayerIdFieldNumber = 4;
-    private string playerId_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string PlayerId {
-      get { return playerId_; }
-      set {
-        playerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -416,8 +418,8 @@ namespace GatewayMessage {
         return true;
       }
       if (ServiceType != other.ServiceType) return false;
+      if (ActorId != other.ActorId) return false;
       if (SessionId != other.SessionId) return false;
-      if (PlayerId != other.PlayerId) return false;
       if (Token != other.Token) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -426,8 +428,8 @@ namespace GatewayMessage {
     public override int GetHashCode() {
       int hash = 1;
       if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
+      if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
-      if (PlayerId.Length != 0) hash ^= PlayerId.GetHashCode();
       if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -446,13 +448,13 @@ namespace GatewayMessage {
         output.WriteRawTag(10);
         output.WriteString(ServiceType);
       }
-      if (SessionId != 0L) {
-        output.WriteRawTag(17);
-        output.WriteSFixed64(SessionId);
+      if (ActorId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ActorId);
       }
-      if (PlayerId.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteString(PlayerId);
+      if (SessionId != 0L) {
+        output.WriteRawTag(25);
+        output.WriteSFixed64(SessionId);
       }
       if (Token.Length != 0) {
         output.WriteRawTag(42);
@@ -469,11 +471,11 @@ namespace GatewayMessage {
       if (ServiceType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
+      if (ActorId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
+      }
       if (SessionId != 0L) {
         size += 1 + 8;
-      }
-      if (PlayerId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerId);
       }
       if (Token.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Token);
@@ -492,11 +494,11 @@ namespace GatewayMessage {
       if (other.ServiceType.Length != 0) {
         ServiceType = other.ServiceType;
       }
+      if (other.ActorId.Length != 0) {
+        ActorId = other.ActorId;
+      }
       if (other.SessionId != 0L) {
         SessionId = other.SessionId;
-      }
-      if (other.PlayerId.Length != 0) {
-        PlayerId = other.PlayerId;
       }
       if (other.Token.Length != 0) {
         Token = other.Token;
@@ -516,12 +518,12 @@ namespace GatewayMessage {
             ServiceType = input.ReadString();
             break;
           }
-          case 17: {
-            SessionId = input.ReadSFixed64();
+          case 18: {
+            ActorId = input.ReadString();
             break;
           }
-          case 34: {
-            PlayerId = input.ReadString();
+          case 25: {
+            SessionId = input.ReadSFixed64();
             break;
           }
           case 42: {
@@ -561,6 +563,7 @@ namespace GatewayMessage {
     public NotifyConnectionAborted(NotifyConnectionAborted other) : this() {
       sessionId_ = other.sessionId_;
       serviceType_ = other.serviceType_;
+      actorId_ = other.actorId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -591,6 +594,17 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "actor_id" field.</summary>
+    public const int ActorIdFieldNumber = 3;
+    private string actorId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as NotifyConnectionAborted);
@@ -606,6 +620,7 @@ namespace GatewayMessage {
       }
       if (SessionId != other.SessionId) return false;
       if (ServiceType != other.ServiceType) return false;
+      if (ActorId != other.ActorId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -614,6 +629,7 @@ namespace GatewayMessage {
       int hash = 1;
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
+      if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -635,6 +651,10 @@ namespace GatewayMessage {
         output.WriteRawTag(18);
         output.WriteString(ServiceType);
       }
+      if (ActorId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(ActorId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -648,6 +668,9 @@ namespace GatewayMessage {
       }
       if (ServiceType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
+      }
+      if (ActorId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -666,6 +689,9 @@ namespace GatewayMessage {
       if (other.ServiceType.Length != 0) {
         ServiceType = other.ServiceType;
       }
+      if (other.ActorId.Length != 0) {
+        ActorId = other.ActorId;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -683,6 +709,10 @@ namespace GatewayMessage {
           }
           case 18: {
             ServiceType = input.ReadString();
+            break;
+          }
+          case 26: {
+            ActorId = input.ReadString();
             break;
           }
         }
@@ -879,7 +909,9 @@ namespace GatewayMessage {
     public NotifyNewMessage(NotifyNewMessage other) : this() {
       sessionId_ = other.sessionId_;
       serviceType_ = other.serviceType_;
+      actorId_ = other.actorId_;
       msg_ = other.msg_;
+      trace_ = other.trace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -910,14 +942,36 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "actor_id" field.</summary>
+    public const int ActorIdFieldNumber = 3;
+    private string actorId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ActorId {
+      get { return actorId_; }
+      set {
+        actorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "msg" field.</summary>
-    public const int MsgFieldNumber = 3;
+    public const int MsgFieldNumber = 4;
     private pb::ByteString msg_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pb::ByteString Msg {
       get { return msg_; }
       set {
         msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "trace" field.</summary>
+    public const int TraceFieldNumber = 5;
+    private string trace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Trace {
+      get { return trace_; }
+      set {
+        trace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -936,7 +990,9 @@ namespace GatewayMessage {
       }
       if (SessionId != other.SessionId) return false;
       if (ServiceType != other.ServiceType) return false;
+      if (ActorId != other.ActorId) return false;
       if (Msg != other.Msg) return false;
+      if (Trace != other.Trace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -945,7 +1001,9 @@ namespace GatewayMessage {
       int hash = 1;
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
+      if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
+      if (Trace.Length != 0) hash ^= Trace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -967,9 +1025,17 @@ namespace GatewayMessage {
         output.WriteRawTag(18);
         output.WriteString(ServiceType);
       }
-      if (Msg.Length != 0) {
+      if (ActorId.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(ActorId);
+      }
+      if (Msg.Length != 0) {
+        output.WriteRawTag(34);
         output.WriteBytes(Msg);
+      }
+      if (Trace.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Trace);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -985,8 +1051,14 @@ namespace GatewayMessage {
       if (ServiceType.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceType);
       }
+      if (ActorId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
+      }
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Msg);
+      }
+      if (Trace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Trace);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1005,8 +1077,14 @@ namespace GatewayMessage {
       if (other.ServiceType.Length != 0) {
         ServiceType = other.ServiceType;
       }
+      if (other.ActorId.Length != 0) {
+        ActorId = other.ActorId;
+      }
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
+      }
+      if (other.Trace.Length != 0) {
+        Trace = other.Trace;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1028,7 +1106,15 @@ namespace GatewayMessage {
             break;
           }
           case 26: {
+            ActorId = input.ReadString();
+            break;
+          }
+          case 34: {
             Msg = input.ReadBytes();
+            break;
+          }
+          case 42: {
+            Trace = input.ReadString();
             break;
           }
         }
@@ -1064,6 +1150,7 @@ namespace GatewayMessage {
     public RequestSendMessageToPlayer(RequestSendMessageToPlayer other) : this() {
       sessionIds_ = other.sessionIds_.Clone();
       msg_ = other.msg_;
+      trace_ = other.trace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1093,6 +1180,17 @@ namespace GatewayMessage {
       }
     }
 
+    /// <summary>Field number for the "trace" field.</summary>
+    public const int TraceFieldNumber = 3;
+    private string trace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Trace {
+      get { return trace_; }
+      set {
+        trace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as RequestSendMessageToPlayer);
@@ -1108,6 +1206,7 @@ namespace GatewayMessage {
       }
       if(!sessionIds_.Equals(other.sessionIds_)) return false;
       if (Msg != other.Msg) return false;
+      if (Trace != other.Trace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1116,6 +1215,7 @@ namespace GatewayMessage {
       int hash = 1;
       hash ^= sessionIds_.GetHashCode();
       if (Msg.Length != 0) hash ^= Msg.GetHashCode();
+      if (Trace.Length != 0) hash ^= Trace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1134,6 +1234,10 @@ namespace GatewayMessage {
         output.WriteRawTag(18);
         output.WriteBytes(Msg);
       }
+      if (Trace.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Trace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1145,6 +1249,9 @@ namespace GatewayMessage {
       size += sessionIds_.CalculateSize(_repeated_sessionIds_codec);
       if (Msg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Msg);
+      }
+      if (Trace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Trace);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1160,6 +1267,9 @@ namespace GatewayMessage {
       sessionIds_.Add(other.sessionIds_);
       if (other.Msg.Length != 0) {
         Msg = other.Msg;
+      }
+      if (other.Trace.Length != 0) {
+        Trace = other.Trace;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1179,6 +1289,10 @@ namespace GatewayMessage {
           }
           case 18: {
             Msg = input.ReadBytes();
+            break;
+          }
+          case 26: {
+            Trace = input.ReadString();
             break;
           }
         }

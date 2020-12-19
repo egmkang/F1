@@ -68,7 +68,8 @@ namespace F1.Gateway
                     var result = this.messageCenter.SendMessageToServer(sessionInfo.ServerID, new NotifyNewMessage()
                     {
                         Msg = ByteString.CopyFrom(data),
-                        ServiceType = this.ServiceTypeName,
+                        ServiceType =  playerInfo.DestServiceType,
+                        ActorId = playerInfo.DestActorID,
                         SessionId = sessionInfo.SessionID,
                     });
                     if (result) return;
@@ -86,6 +87,7 @@ namespace F1.Gateway
             if (string.IsNullOrEmpty(gatewayPlayer.DestServiceType)) 
             {
                 gatewayPlayer.DestServiceType = this.ServiceTypeName;
+                this.logger.LogInformation("ProcessGatewatMessageSlow, ChangeDestServiceType:{0}", gatewayPlayer.DestServiceType);
             }
             if (string.IsNullOrEmpty(gatewayPlayer.DestActorID)) 
             {
@@ -112,7 +114,7 @@ namespace F1.Gateway
                     {
                         Token = ByteString.CopyFrom(data),
                         SessionId = sessionInfo.SessionID,
-                        PlayerId = gatewayPlayer.DestActorID,
+                        ActorId = gatewayPlayer.DestActorID,
                         ServiceType = gatewayPlayer.DestServiceType,
                     };
                     this.messageCenter.SendMessageToServer(position.ServerID, msg);
@@ -127,6 +129,7 @@ namespace F1.Gateway
                         Msg = ByteString.CopyFrom(data),
                         SessionId = sessionInfo.SessionID,
                         ServiceType = gatewayPlayer.DestServiceType,
+                        ActorId = gatewayPlayer.DestActorID,
                     };
                     this.messageCenter.SendMessageToServer(position.ServerID, msg);
                 }
@@ -221,6 +224,10 @@ namespace F1.Gateway
                 else 
                 {
                     this.logger.LogWarning("ProcessGatewaySendMessageToPlayer, SessionID:{0} not found", sessionId);
+                }
+                if (msg.Trace.Length != 0)
+                {
+                    this.logger.LogInformation("ProcessGatewaySendMessageToPlayer, SessionID:{0}, Trace:{1}", sessionId, msg.Trace);
                 }
             }
         }

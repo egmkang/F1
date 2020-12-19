@@ -15,25 +15,16 @@ using F1.Core.Message;
 
 namespace F1.Core.Gateway
 {
-    internal class GatewayPlayerInfo 
-    {
-        public long SessionID;
-        public string PlayerID;
-    }
     internal class GatewayClientFactory
     {
-        private const int SessionInfosCount = 1024 * 100;
         private readonly IPlacement placement;
         private readonly IMessageCenter messageCenter;
         private readonly ILogger logger;
         private readonly ClientConnectionPool clientConnectionPool;
-        private readonly LRU<long, GatewayPlayerInfo> sessionInfos = new LRU<long, GatewayPlayerInfo>(SessionInfosCount);
 
         public GatewayClientFactory(ILoggerFactory loggerFactory,
             IMessageCenter messageCenter,
             IPlacement placement,
-            IClientConnectionFactory connectionFactory,
-            IMessageHandlerFactory messageHandlerFactory,
             ClientConnectionPool clientPool
             )
         {
@@ -75,38 +66,12 @@ namespace F1.Core.Gateway
                 return;
             }
             var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSecond;
-            if (elapsedTime > 1)
+            if (elapsedTime >= 5)
             {
                 var sessionInfo = message.SourceConnection.GetSessionInfo();
                 this.logger.LogWarning("ProcessHearBeat, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, Elapsed Time:{3}ms",
                     sessionInfo.SessionID, sessionInfo.ServerID, sessionInfo.RemoteAddress, elapsedTime);
             }
-        }
-
-        private void UpdateSessionInfo(NotifyConnectionComing message)
-        {
-            //这边要把SessionID对应的OpenID, PlayerID记住
-            //还要考虑GC, 暂时用LRU来GC
-            this.sessionInfos.Add(message.SessionId, new GatewayPlayerInfo()
-            {
-                PlayerID = message.PlayerId,
-                SessionID = message.SessionId,
-            });
-        }
-
-        private void RemoveSessionInfo(long sessionID)
-        {
-            this.sessionInfos.Remove(sessionID);
-        }
-
-        private string GetSessionInfo(long sessionID)
-        {
-            var session = this.sessionInfos.Get(sessionID);
-            if (session != null) 
-            {
-                return session.PlayerID;
-            }
-            return "";
         }
 
         private void ProcessNotifyConnectionComing(InboundMessage message) 
@@ -117,8 +82,7 @@ namespace F1.Core.Gateway
                 this.logger.LogError("ProcessNotifyConnectionComing input message type:{0}", message.Inner?.GetType());
                 return;
             }
-            this.UpdateSessionInfo(msg);
-            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, msg.PlayerId.ToString(), message);
+            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, msg.ActorId, message);
         }
 
         private void ProcessNotifyConnectionAborted(InboundMessage message)
@@ -129,19 +93,18 @@ namespace F1.Core.Gateway
                 this.logger.LogError("ProcessNotifyConnectionAborted input message type:{0}", message.Inner?.GetType());
                 return;
             }
-            var playerID = this.GetSessionInfo(msg.SessionId);
-            if (string.IsNullOrEmpty(playerID)) 
+            var actorID = msg.ActorId;
+            if (string.IsNullOrEmpty(actorID)) 
             {
-                this.logger.LogWarning("ProcessNotifyConnectionAborted, SessionID:{0}, PlayerID not found", msg.SessionId);
+                this.logger.LogWarning("ProcessNotifyConnectionAborted, SessionID:{0}, ActorID not found", msg.SessionId);
                 return;
             } 
-            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerID, message);
+            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, actorID, message);
 
             Task.Run(async () =>
             {
                 //1分钟后GC掉SessionInfo
                 await Task.Delay(60 * 1000).ConfigureAwait(false);
-                this.RemoveSessionInfo(msg.SessionId);
             });
         }
 
@@ -153,13 +116,18 @@ namespace F1.Core.Gateway
                 this.logger.LogError("ProcessNewMessage input message type:{0}", message.Inner?.GetType());
                 return;
             }
-            var playerID = this.GetSessionInfo(msg.SessionId);
-            if (string.IsNullOrEmpty(playerID)) 
+            var actorID = msg.ActorId;
+            if (string.IsNullOrEmpty(actorID)) 
             {
-                this.logger.LogWarning("ProcessNewMessage, SessionID:{0}, PlayerID not found", msg.SessionId);
+                this.logger.LogWarning("ProcessNewMessage, SessionID:{0}, ActorID not found", msg.SessionId);
                 return;
             }
-            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, playerID, message);
+            if (msg.Trace.Length != 0) 
+            {
+                this.logger.LogWarning("PrcessNewMessage, SessionID:{0}, actorID:{1}, Trace:{2}",
+                    msg.SessionId, actorID, msg.Trace);
+            }
+            this.messageCenter.OnReceiveUserMessage(msg.ServiceType, actorID, message);
         }
 
     }

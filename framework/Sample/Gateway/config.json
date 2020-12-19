@@ -3,6 +3,6 @@
     "PlacementDriverAddress": "http://127.0.0.1:2379",
     "ListenPort": 20000,
     "GatewayPort": 18888,
-    "ServiceTypeName": "IPlayer"
+    "ServiceTypeName": "IAccount"
   }
 }

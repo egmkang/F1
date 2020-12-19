@@ -25,11 +25,11 @@ namespace Sample {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgxzYW1wbGUucHJvdG8SBnNhbXBsZSIbCg1SZXNwb25zZUxvZ2luEgoKAm9r",
-            "GAEgASgJIhMKEVJlcXVlc3RQbGF5ZXJMaXN0IiQKElJlc3Bvc25lUGxheWVy",
+            "GAEgASgJIhMKEVJlcXVlc3RQbGF5ZXJMaXN0IiQKElJlc3BvbnNlUGxheWVy",
             "TGlzdBIOCgZwbGF5ZXIYASADKAkiJQoTUmVxdWVzdENoYW5nZVBsYXllchIO",
             "CgZwbGF5ZXIYASABKAkiNQoUUmVzcG9uc2VDaGFuZ2VQbGF5ZXISDgoGcGxh",
-            "eWVyGAEgASgJEg0KBWVycm9yGAIgASgJIg8KDVJlcXVlc3RCYWNrVXAiEAoO",
-            "UmVzcG9uc2VCYWNrVXAiHgoLUmVxdWVzdEVjaG8SDwoHY29udGVudBgBIAEo",
+            "eWVyGAEgASgJEg0KBWVycm9yGAIgASgJIg8KDVJlcXVlc3RHb0JhY2siEAoO",
+            "UmVzcG9uc2VHb0JhY2siHgoLUmVxdWVzdEVjaG8SDwoHY29udGVudBgBIAEo",
             "CSIfCgxSZXNwb25zZUVjaG8SDwoHY29udGVudBgBIAEoCSIOCgxSZXF1ZXN0",
             "R2V0SUQiNQoNUmVzcG9uc2VHZXRJRBISCgphY3Rvcl90eXBlGAEgASgJEhAK",
             "CGFjdG9yX2lkGAIgASgJYgZwcm90bzM="));
@@ -38,11 +38,11 @@ namespace Sample {
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseLogin), global::Sample.ResponseLogin.Parser, new[]{ "Ok" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestPlayerList), global::Sample.RequestPlayerList.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResposnePlayerList), global::Sample.ResposnePlayerList.Parser, new[]{ "Player" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponsePlayerList), global::Sample.ResponsePlayerList.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestChangePlayer), global::Sample.RequestChangePlayer.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseChangePlayer), global::Sample.ResponseChangePlayer.Parser, new[]{ "Player", "Error" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestBackUp), global::Sample.RequestBackUp.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseBackUp), global::Sample.ResponseBackUp.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestGoBack), global::Sample.RequestGoBack.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseGoBack), global::Sample.ResponseGoBack.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestEcho), global::Sample.RequestEcho.Parser, new[]{ "Content" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.ResponseEcho), global::Sample.ResponseEcho.Parser, new[]{ "Content" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Sample.RequestGetID), global::Sample.RequestGetID.Parser, null, null, null, null, null),
@@ -283,11 +283,11 @@ namespace Sample {
 
   }
 
-  public sealed partial class ResposnePlayerList : pb::IMessage<ResposnePlayerList> {
-    private static readonly pb::MessageParser<ResposnePlayerList> _parser = new pb::MessageParser<ResposnePlayerList>(() => new ResposnePlayerList());
+  public sealed partial class ResponsePlayerList : pb::IMessage<ResponsePlayerList> {
+    private static readonly pb::MessageParser<ResponsePlayerList> _parser = new pb::MessageParser<ResponsePlayerList>(() => new ResponsePlayerList());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ResposnePlayerList> Parser { get { return _parser; } }
+    public static pb::MessageParser<ResponsePlayerList> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -300,21 +300,21 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResposnePlayerList() {
+    public ResponsePlayerList() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResposnePlayerList(ResposnePlayerList other) : this() {
+    public ResponsePlayerList(ResponsePlayerList other) : this() {
       player_ = other.player_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResposnePlayerList Clone() {
-      return new ResposnePlayerList(this);
+    public ResponsePlayerList Clone() {
+      return new ResponsePlayerList(this);
     }
 
     /// <summary>Field number for the "player" field.</summary>
@@ -329,11 +329,11 @@ namespace Sample {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as ResposnePlayerList);
+      return Equals(other as ResponsePlayerList);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ResposnePlayerList other) {
+    public bool Equals(ResponsePlayerList other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -378,7 +378,7 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ResposnePlayerList other) {
+    public void MergeFrom(ResponsePlayerList other) {
       if (other == null) {
         return;
       }
@@ -690,11 +690,11 @@ namespace Sample {
 
   }
 
-  public sealed partial class RequestBackUp : pb::IMessage<RequestBackUp> {
-    private static readonly pb::MessageParser<RequestBackUp> _parser = new pb::MessageParser<RequestBackUp>(() => new RequestBackUp());
+  public sealed partial class RequestGoBack : pb::IMessage<RequestGoBack> {
+    private static readonly pb::MessageParser<RequestGoBack> _parser = new pb::MessageParser<RequestGoBack>(() => new RequestGoBack());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RequestBackUp> Parser { get { return _parser; } }
+    public static pb::MessageParser<RequestGoBack> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -707,29 +707,29 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestBackUp() {
+    public RequestGoBack() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestBackUp(RequestBackUp other) : this() {
+    public RequestGoBack(RequestGoBack other) : this() {
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RequestBackUp Clone() {
-      return new RequestBackUp(this);
+    public RequestGoBack Clone() {
+      return new RequestGoBack(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as RequestBackUp);
+      return Equals(other as RequestGoBack);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RequestBackUp other) {
+    public bool Equals(RequestGoBack other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -770,7 +770,7 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RequestBackUp other) {
+    public void MergeFrom(RequestGoBack other) {
       if (other == null) {
         return;
       }
@@ -791,11 +791,11 @@ namespace Sample {
 
   }
 
-  public sealed partial class ResponseBackUp : pb::IMessage<ResponseBackUp> {
-    private static readonly pb::MessageParser<ResponseBackUp> _parser = new pb::MessageParser<ResponseBackUp>(() => new ResponseBackUp());
+  public sealed partial class ResponseGoBack : pb::IMessage<ResponseGoBack> {
+    private static readonly pb::MessageParser<ResponseGoBack> _parser = new pb::MessageParser<ResponseGoBack>(() => new ResponseGoBack());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<ResponseBackUp> Parser { get { return _parser; } }
+    public static pb::MessageParser<ResponseGoBack> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -808,29 +808,29 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseBackUp() {
+    public ResponseGoBack() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseBackUp(ResponseBackUp other) : this() {
+    public ResponseGoBack(ResponseGoBack other) : this() {
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ResponseBackUp Clone() {
-      return new ResponseBackUp(this);
+    public ResponseGoBack Clone() {
+      return new ResponseGoBack(this);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as ResponseBackUp);
+      return Equals(other as ResponseGoBack);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(ResponseBackUp other) {
+    public bool Equals(ResponseGoBack other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -871,7 +871,7 @@ namespace Sample {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(ResponseBackUp other) {
+    public void MergeFrom(ResponseGoBack other) {
       if (other == null) {
         return;
       }

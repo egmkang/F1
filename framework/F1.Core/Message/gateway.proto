@@ -19,8 +19,8 @@ sfixed64 milli_second = 1;
 message NotifyConnectionComing
 {
 string service_type = 1;
-sfixed64 session_id = 2;
-string player_id = 4;
+string actor_id = 2;
+sfixed64 session_id = 3;
 bytes token = 5;
 }
 
@@ -28,6 +28,7 @@ message NotifyConnectionAborted
 {
 sfixed64 session_id = 1;
 string service_type = 2;
+string actor_id = 3;
 }
 
 message RequestCloseConnection
@@ -42,13 +43,16 @@ message NotifyNewMessage
 {
 sfixed64 session_id = 1;
 string service_type = 2;
-bytes msg = 3;
+string actor_id = 3;
+bytes msg = 4;
+string trace = 5;
 }
 
 message RequestSendMessageToPlayer
 {
 repeated sfixed64 session_ids = 1;
 bytes msg = 2;
+string trace = 3;
 }
 
 message RequestChangeMessageDestination

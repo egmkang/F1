@@ -8,10 +8,10 @@ using Google.Protobuf;
 using F1.Abstractions.Network;
 using F1.Core.Actor;
 using F1.Core.Utils;
+using F1.Sample.Interface;
 using F1.Sample.Impl;
 using GatewayMessage;
 using Sample.Interface;
-using F1.Sample.Interface;
 
 namespace Sample.Impl
 {
@@ -26,6 +26,9 @@ namespace Sample.Impl
 
         protected override async Task ProcessUserInputMessage(InboundMessage msg)
         {
+            //this.Logger.LogInformation("PlayerImpl.ProcessUserInputMessage, Type:{1}, Msg:{0}",
+            //                            msg.Inner, msg.Inner.GetType().Name);
+
             if (msg.Inner is NotifyConnectionAborted)
             {
                 await this.ProcessNotifyConnectionAborted(msg.Inner as NotifyConnectionAborted).ConfigureAwait(false);
@@ -73,10 +76,11 @@ namespace Sample.Impl
                     };
 
                     this.SendMessageToPlayer(resp);
+                    //this.SendMessageToPlayer(resp, $"echo response:{content}");
                 }
-                else if (msg is RequestBackUp backup)
+                else if (msg is RequestGoBack goback)
                 {
-                    var backupResponse = new ResponseBackUp();
+                    var backupResponse = new ResponseGoBack();
                     this.SendMessageToPlayer(backupResponse);
 
                     var changeMessageDestination = new RequestChangeMessageDestination();
@@ -117,12 +121,13 @@ namespace Sample.Impl
             this.MessageCenter.SendMessage(new OutboundMessage(channel, gatewayMessage));
         }
 
-        public void SendMessageToPlayer(IMessage message)
+        public void SendMessageToPlayer(IMessage message, string trace = "")
         {
             var serverId = SessionUniqueSequence.GetServerID(this.SessionID);
             if (serverId != 0)
             {
                 var gatewayMessage = new RequestSendMessageToPlayer();
+                gatewayMessage.Trace = trace;
                 gatewayMessage.SessionIds.Add(this.SessionID);
 
                 var bytes = codec.EncodeMessage(message);

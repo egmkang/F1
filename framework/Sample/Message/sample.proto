@@ -10,7 +10,7 @@ message RequestPlayerList
 {
 }
 
-message ResposnePlayerList
+message ResponsePlayerList
 {
 repeated string player = 1;
 }
@@ -26,11 +26,11 @@ string player = 1;
 string error = 2;
 }
 
-message RequestBackUp
+message RequestGoBack
 {
 }
 
-message ResponseBackUp
+message ResponseGoBack
 {
 }
 

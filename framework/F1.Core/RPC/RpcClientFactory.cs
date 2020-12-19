@@ -198,7 +198,7 @@ namespace F1.Core.RPC
                 return;
             }
             var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSeconds;
-            if (elapsedTime > 1) 
+            if (elapsedTime >= 5) 
             {
                 var sessionInfo = message.SourceConnection.GetSessionInfo();
                 this.logger.LogWarning("ProcessRpcHearBeat, SessionID:{0}, ServerID:{1}, RemoteAddress:{2}, Elapsed Time:{3}ms",

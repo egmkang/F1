@@ -1,5 +1,11 @@
 F1 Framework:
 
+v0.6
+* [ ] Reminder
+* [ ] Actor LifeTime Configuration
+* [ ] More Sample
+* [ ] Actor System Support
+
 v0.5
 * [ ] tracing
 
@@ -24,17 +30,14 @@ v0.2
 * [x] Utils
     * [x] SequenceID
     * [x] SessionUniqueID
-* [ ] Configuration
+* [x] Configuration
   * [x] network
-  * [ ] actor
   * [x] host
   * [x] gateway
-* [ ] Actor
+* [x] Actor
   * [x] Interface And Impl Map
-  * [ ] GC
-  * [ ] Actor LifeTime Configuration
-* [ ] Sample
-    * [ ] MultiPlayer(One OpenID)
+* [x] Sample
+    * [x] MultiPlayer(One OpenID)
 
 v0.1
 
@@ -95,7 +98,6 @@ v0.1
     * [x] ActorLifeTime
     * [x] ActorClientProxyFactory
     * [x] Multi Interface
-    * [ ] Actor Model
 * [x] Gateway
     * [x] Gateway Client
     * [x] Message Process
