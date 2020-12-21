@@ -1,13 +1,12 @@
 F1 Framework:
 
-v0.6
+
+v0.5
+* [ ] tracing
 * [ ] Reminder
 * [ ] Actor LifeTime Configuration
 * [ ] More Sample
 * [ ] Actor System Support
-
-v0.5
-* [ ] tracing
 
 v0.4
 * [ ] PlacementDriver
@@ -85,7 +84,7 @@ v0.1
     * [x] ClientProxy
     * [x] ServerInvoker
     * [x] ObjectSerializer
-* [ ] Actor
+* [x] Actor
     * [x] ServerContext
     * [x] Actor
     * [x] ActorContext

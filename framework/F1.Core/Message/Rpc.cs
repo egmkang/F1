@@ -49,7 +49,11 @@ namespace RpcMessage {
 
   }
   #region Messages
-  public sealed partial class RequestRpc : pb::IMessage<RequestRpc> {
+  public sealed partial class RequestRpc : pb::IMessage<RequestRpc>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
     private static readonly pb::MessageParser<RequestRpc> _parser = new pb::MessageParser<RequestRpc>(() => new RequestRpc());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -281,6 +285,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
       if (ActorType.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(ActorType);
@@ -324,7 +331,57 @@ namespace RpcMessage {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ActorType.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ActorType);
+      }
+      if (ActorId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ActorId);
+      }
+      if (Method.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Method);
+      }
+      if (Args.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(Args);
+      }
+      if (NeedResult != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(NeedResult);
+      }
+      if (DestServerId != 0L) {
+        output.WriteRawTag(49);
+        output.WriteSFixed64(DestServerId);
+      }
+      if (SrcServer != 0L) {
+        output.WriteRawTag(81);
+        output.WriteSFixed64(SrcServer);
+      }
+      if (SrcRequestId != 0L) {
+        output.WriteRawTag(89);
+        output.WriteSFixed64(SrcRequestId);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(97);
+        output.WriteSFixed64(RequestId);
+      }
+      if (ResponseId != 0L) {
+        output.WriteRawTag(105);
+        output.WriteSFixed64(ResponseId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
@@ -405,6 +462,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -453,11 +513,70 @@ namespace RpcMessage {
           }
         }
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            ActorType = input.ReadString();
+            break;
+          }
+          case 18: {
+            ActorId = input.ReadString();
+            break;
+          }
+          case 26: {
+            Method = input.ReadString();
+            break;
+          }
+          case 34: {
+            Args = input.ReadBytes();
+            break;
+          }
+          case 40: {
+            NeedResult = input.ReadBool();
+            break;
+          }
+          case 49: {
+            DestServerId = input.ReadSFixed64();
+            break;
+          }
+          case 81: {
+            SrcServer = input.ReadSFixed64();
+            break;
+          }
+          case 89: {
+            SrcRequestId = input.ReadSFixed64();
+            break;
+          }
+          case 97: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 105: {
+            ResponseId = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 
-  public sealed partial class ResponseRpc : pb::IMessage<ResponseRpc> {
+  public sealed partial class ResponseRpc : pb::IMessage<ResponseRpc>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
     private static readonly pb::MessageParser<ResponseRpc> _parser = new pb::MessageParser<ResponseRpc>(() => new ResponseRpc());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -609,6 +728,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
       if (request_ != null) {
         output.WriteRawTag(10);
         output.WriteMessage(Request);
@@ -636,7 +758,41 @@ namespace RpcMessage {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (request_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Request);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(81);
+        output.WriteSFixed64(RequestId);
+      }
+      if (ResponseId != 0L) {
+        output.WriteRawTag(89);
+        output.WriteSFixed64(ResponseId);
+      }
+      if (ErrorCode != 0) {
+        output.WriteRawTag(96);
+        output.WriteInt32(ErrorCode);
+      }
+      if (ErrorMsg.Length != 0) {
+        output.WriteRawTag(106);
+        output.WriteString(ErrorMsg);
+      }
+      if (Response.Length != 0) {
+        output.WriteRawTag(114);
+        output.WriteBytes(Response);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
@@ -696,6 +852,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -731,11 +890,57 @@ namespace RpcMessage {
           }
         }
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (request_ == null) {
+              Request = new global::RpcMessage.RequestRpc();
+            }
+            input.ReadMessage(Request);
+            break;
+          }
+          case 81: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 89: {
+            ResponseId = input.ReadSFixed64();
+            break;
+          }
+          case 96: {
+            ErrorCode = input.ReadInt32();
+            break;
+          }
+          case 106: {
+            ErrorMsg = input.ReadString();
+            break;
+          }
+          case 114: {
+            Response = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 
-  public sealed partial class RequestRpcHeartBeat : pb::IMessage<RequestRpcHeartBeat> {
+  public sealed partial class RequestRpcHeartBeat : pb::IMessage<RequestRpcHeartBeat>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
     private static readonly pb::MessageParser<RequestRpcHeartBeat> _parser = new pb::MessageParser<RequestRpcHeartBeat>(() => new RequestRpcHeartBeat());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -814,6 +1019,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
       if (MilliSeconds != 0L) {
         output.WriteRawTag(9);
         output.WriteSFixed64(MilliSeconds);
@@ -821,7 +1029,21 @@ namespace RpcMessage {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MilliSeconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(MilliSeconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
@@ -848,6 +1070,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -860,11 +1085,34 @@ namespace RpcMessage {
           }
         }
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            MilliSeconds = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 
-  public sealed partial class ResponseRpcHeartBeat : pb::IMessage<ResponseRpcHeartBeat> {
+  public sealed partial class ResponseRpcHeartBeat : pb::IMessage<ResponseRpcHeartBeat>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
     private static readonly pb::MessageParser<ResponseRpcHeartBeat> _parser = new pb::MessageParser<ResponseRpcHeartBeat>(() => new ResponseRpcHeartBeat());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -943,6 +1191,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
       if (MilliSeconds != 0L) {
         output.WriteRawTag(9);
         output.WriteSFixed64(MilliSeconds);
@@ -950,7 +1201,21 @@ namespace RpcMessage {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (MilliSeconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(MilliSeconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
@@ -977,6 +1242,9 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -989,7 +1257,26 @@ namespace RpcMessage {
           }
         }
       }
+    #endif
     }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            MilliSeconds = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 
