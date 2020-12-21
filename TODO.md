@@ -20,7 +20,7 @@ v0.3
   * [ ] RPC Meta
   * [ ] RPC Protocol
   * [ ] lz4
-* [ ] Protobuf Codec (Span Support)
+* [x] Protobuf Codec (Span Support)
 
 v0.2
 * [x] PlacementDriver

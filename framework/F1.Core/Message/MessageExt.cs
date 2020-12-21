@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -24,22 +25,23 @@ namespace F1.Core.Message
 
             try
             {
-                CodedInputStream codedInputStream;
                 if (buffer.IoBufferCount == 1)
                 {
                     ArraySegment<byte> bytes = buffer.GetIoBuffer(buffer.ReaderIndex, length);
-                    codedInputStream = new CodedInputStream(bytes.Array, bytes.Offset, length);
+                    return parser.ParseFrom(new ReadOnlySequence<byte>(bytes.Array, bytes.Offset, length));
                 }
                 else
                 {
                     inputStream = new ReadOnlyByteBufferStream(buffer, false);
-                    codedInputStream = new CodedInputStream(inputStream);
+                    using (var codedInputStream = new CodedInputStream(inputStream)) 
+                    {
+                        return parser.ParseFrom(codedInputStream);
+                    }
                 }
-                return parser.ParseFrom(codedInputStream);
             }
-            catch (Exception exception)
+            catch
             {
-                throw exception;
+                throw;
             }
             finally
             {

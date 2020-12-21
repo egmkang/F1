@@ -18,13 +18,6 @@ namespace F1.Core.Message
 
     internal class MessageEncoder
     {
-        static Func<byte[], int, int, CodedOutputStream> GetNewStream;
-
-        static MessageEncoder() 
-        {
-            GetNewStream = Util.GetNewCodecOutputStream();
-        }
-
         public IByteBuffer Encode(IByteBufferAllocator bufferAllocator, IMessage message) 
         {
             var bodySize = message.CalculateSize();
@@ -37,10 +30,9 @@ namespace F1.Core.Message
             buffer.WriteBytes(messageName);
             
             ArraySegment<byte> data = buffer.GetIoBuffer(buffer.WriterIndex, bodySize);
-            using var stream = GetNewStream(data.Array, data.Offset, bodySize);
-            message.WriteTo(stream);
+            Span<byte> span = data;
+            message.WriteTo(span);
 
-            stream.Flush();
             buffer.SetWriterIndex(buffer.WriterIndex + bodySize);
 
             return buffer;

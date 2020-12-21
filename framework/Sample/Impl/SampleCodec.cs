@@ -11,13 +11,6 @@ namespace F1.Sample.Impl
     public class SampleCodec
     {
 
-        static Func<byte[], int, int, CodedOutputStream> GetNewStream;
-
-        static SampleCodec() 
-        {
-            GetNewStream = Util.GetNewCodecOutputStream();
-        }
-
         public IMessage DecodeMessage(byte[] data) 
         {
             var buffer = Unpooled.WrappedBuffer(data);
@@ -55,10 +48,9 @@ namespace F1.Sample.Impl
             buffer.WriteBytes(messageName);
 
             ArraySegment<byte> data = buffer.GetIoBuffer(buffer.WriterIndex, bodySize);
-            using var stream = GetNewStream(data.Array, data.Offset, bodySize);
-            msg.WriteTo(stream);
+            Span<byte> span = data;
+            msg.WriteTo(span);
 
-            stream.Flush();
             buffer.SetWriterIndex(buffer.WriterIndex + bodySize);
 
             buffer.Release();
