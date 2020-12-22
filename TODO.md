@@ -19,7 +19,11 @@ v0.3
 * [ ] RPC重新实现
   * [ ] RPC Meta
   * [ ] RPC Protocol
-  * [ ] lz4
+    * [ ] codec
+    * [ ] dispatch
+  * [ ] args encoding
+    * [ ] ceras/msgpack
+    * [ ] args encoding manager
 * [x] Protobuf Codec (Span Support)
 
 v0.2
