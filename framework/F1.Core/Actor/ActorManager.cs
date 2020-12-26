@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetty.Transport.Channels;
 using Google.Protobuf;
-using RpcMessage;
+using RpcProto;
 using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Core.Message;
@@ -28,7 +28,7 @@ namespace F1.Core.Actor
         private readonly ConcurrentDictionary<(Type, string), Actor> actorInstances = new ConcurrentDictionary<(Type, string), Actor>();
         private readonly ILogger logger;
         private readonly ActorFactory actorFactory;
-        private readonly RpcMetadata rpcMetadata;
+        private readonly RpcMetaData rpcMetadata;
         private readonly IMessageCenter messageCenter;
         private readonly IPlacement placement;
         private readonly IServiceProvider serviceProvider;
@@ -36,7 +36,7 @@ namespace F1.Core.Actor
 
         public ActorManager(ILoggerFactory loggerFactory,
                             ActorFactory actorFactory,
-                            RpcMetadata rpcMetadata,
+                            RpcMetaData rpcMetadata,
                             IMessageCenter messageCenter,
                             IPlacement placement,
                             IServiceProvider serviceProvider

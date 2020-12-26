@@ -56,13 +56,13 @@ namespace F1.Core.RPC
 
     public class DispatchHandler : IRpcDispatchHandler
     {
-        private readonly RpcMetadata metadata;
+        private readonly RpcMetaData metadata;
         private readonly Dictionary<string, ServerInvoker> invokersMap = new Dictionary<string, ServerInvoker>();
         private readonly Dictionary<string, (Type[] InputArgsType, GetTaskResult GetReturnValueAction)> argsMap = new Dictionary<string, (Type[], GetTaskResult)>();
 
         private readonly ILogger logger;
 
-        public DispatchHandler(ILoggerFactory loggerFactory, RpcMetadata metadata) 
+        public DispatchHandler(ILoggerFactory loggerFactory, RpcMetaData metadata) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
             this.metadata = metadata;

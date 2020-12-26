@@ -25,7 +25,7 @@ namespace F1.Core.Actor
         public SessionUniqueSequence SessionSequence { get; internal set; }
         private readonly ILogger logger;
         private readonly IPlacement placement;
-        private readonly RpcMetadata rpcMetadata;
+        private readonly RpcMetaData rpcMetadata;
 
         public IActorContext Context { get; internal set; }
 
@@ -64,7 +64,7 @@ namespace F1.Core.Actor
 
         public ActorRuntime(IServiceProvider serviceProvider, 
                             IPlacement placement,
-                            RpcMetadata rpcMetadata,
+                            RpcMetaData rpcMetadata,
                             ILoggerFactory loggerFactory,
                             TimeBasedSequence timeBasedSequence,
                             SessionUniqueSequence sessionUniqueSequence) 

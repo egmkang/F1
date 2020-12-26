@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Message", "Sample\Me
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Host", "Sample\Host\Sample.Host.csproj", "{AF259032-FB6D-4D7D-9843-7B609C73DD19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Gateway", "Sample\Gateway\Sample.Gateway.csproj", "{2A6E9A2E-AE79-40D7-9D8E-0518CEE571D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Gateway", "Sample\Gateway\Sample.Gateway.csproj", "{2A6E9A2E-AE79-40D7-9D8E-0518CEE571D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -24,26 +24,29 @@ namespace Rpc {
     static RpcMetaReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMirAEKB1JwY01ldGESJAoH",
+            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMivwEKB1JwY01ldGESJAoH",
             "cmVxdWVzdBgBIAEoCzITLlJwYy5ScGNSZXF1ZXN0TWV0YRImCghyZXNwb25z",
             "ZRgCIAEoCzIULlJwYy5ScGNSZXNwb25zZU1ldGESFQoNY29tcHJlc3NfdHlw",
             "ZRgDIAEoBRIVCg1lbmNvZGluZ190eXBlGAQgASgFEhIKCnJlcXVlc3RfaWQY",
-            "BSABKBASEQoJa2VlcGFsaXZlGAYgASgIIq4BCg5ScGNSZXF1ZXN0TWV0YRIU",
-            "CgxzZXJ2aWNlX25hbWUYASABKAkSEwoLbWV0aG9kX25hbWUYAiABKAkSEAoI",
-            "dHJhY2VfaWQYBCABKBASFAoMdHJhY2Vfc2VydmVyGAUgASgQEg8KB3NwYW5f",
-            "aWQYBiABKBASFgoOcGFyZW50X3NwYW5faWQYByABKBASDgoGb25ld2F5GAgg",
-            "ASgIEhAKCGFjdG9yX2lkGAkgASgJIjkKD1JwY1Jlc3BvbnNlTWV0YRISCgpl",
-            "cnJvcl9jb2RlGAEgASgFEhIKCmVycm9yX3RleHQYAiABKAkqRAoPUnBjQ29t",
-            "cHJlc3NUeXBlEhgKFFJwY0NvbXByZXNzVHlwZV9Ob25lEAASFwoTUnBjQ29t",
-            "cHJlc3NUeXBlX0xaNBABKmMKD1JwY0VuY29kaW5nVHlwZRIYChRScGNFbmNv",
-            "ZGluZ1R5cGVfTm9uZRAAEhkKFVJwY0VuY29kaW5nVHlwZV9DZXJhcxABEhsK",
-            "F1JwY0VuY29kaW5nVHlwZV9Nc2dQYWNrEAJiBnByb3RvMw=="));
+            "BSABKBASJAoKaGVhcnRfYmVhdBgGIAEoCzIQLlJwYy5ScGNIZWFyQmVhdCKu",
+            "AQoOUnBjUmVxdWVzdE1ldGESFAoMc2VydmljZV9uYW1lGAEgASgJEhMKC21l",
+            "dGhvZF9uYW1lGAIgASgJEg4KBm9uZXdheRgDIAEoCBIQCgh0cmFjZV9pZBgF",
+            "IAEoCRIPCgdzcGFuX2lkGAYgASgJEhYKDnBhcmVudF9zcGFuX2lkGAcgASgJ",
+            "EhAKCGFjdG9yX2lkGAkgASgJEhQKDHJlZW50cmFudF9pZBgKIAEoCSI5Cg9S",
+            "cGNSZXNwb25zZU1ldGESEgoKZXJyb3JfY29kZRgBIAEoBRISCgplcnJvcl90",
+            "ZXh0GAIgASgJIkoKC1JwY0hlYXJCZWF0EhwKFHJlcXVlc3RfbWlsbGlzZWNv",
+            "bmRzGAEgASgQEh0KFXJlc3BvbnNlX21pbGxpc2Vjb25kcxgCIAEoECpECg9S",
+            "cGNDb21wcmVzc1R5cGUSGAoUUnBjQ29tcHJlc3NUeXBlX05vbmUQABIXChNS",
+            "cGNDb21wcmVzc1R5cGVfTFo0EAEqYwoPUnBjRW5jb2RpbmdUeXBlEhgKFFJw",
+            "Y0VuY29kaW5nVHlwZV9Ob25lEAASGQoVUnBjRW5jb2RpbmdUeXBlX0NlcmFz",
+            "EAESGwoXUnBjRW5jb2RpbmdUeXBlX01zZ1BhY2sQAmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Rpc.RpcCompressType), typeof(global::Rpc.RpcEncodingType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcMeta), global::Rpc.RpcMeta.Parser, new[]{ "Request", "Response", "CompressType", "EncodingType", "RequestId", "Keepalive" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequestMeta), global::Rpc.RpcRequestMeta.Parser, new[]{ "ServiceName", "MethodName", "TraceId", "TraceServer", "SpanId", "ParentSpanId", "Oneway", "ActorId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponseMeta), global::Rpc.RpcResponseMeta.Parser, new[]{ "ErrorCode", "ErrorText" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcMeta), global::Rpc.RpcMeta.Parser, new[]{ "Request", "Response", "CompressType", "EncodingType", "RequestId", "HeartBeat" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequestMeta), global::Rpc.RpcRequestMeta.Parser, new[]{ "ServiceName", "MethodName", "Oneway", "TraceId", "SpanId", "ParentSpanId", "ActorId", "ReentrantId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponseMeta), global::Rpc.RpcResponseMeta.Parser, new[]{ "ErrorCode", "ErrorText" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHearBeat), global::Rpc.RpcHearBeat.Parser, new[]{ "RequestMilliseconds", "ResponseMilliseconds" }, null, null, null, null)
           }));
     }
     #endregion
@@ -98,7 +101,7 @@ namespace Rpc {
       compressType_ = other.compressType_;
       encodingType_ = other.encodingType_;
       requestId_ = other.requestId_;
-      keepalive_ = other.keepalive_;
+      heartBeat_ = other.heartBeat_ != null ? other.heartBeat_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -162,17 +165,14 @@ namespace Rpc {
       }
     }
 
-    /// <summary>Field number for the "keepalive" field.</summary>
-    public const int KeepaliveFieldNumber = 6;
-    private bool keepalive_;
-    /// <summary>
-    ///true为心跳, 没有args
-    /// </summary>
+    /// <summary>Field number for the "heart_beat" field.</summary>
+    public const int HeartBeatFieldNumber = 6;
+    private global::Rpc.RpcHearBeat heartBeat_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Keepalive {
-      get { return keepalive_; }
+    public global::Rpc.RpcHearBeat HeartBeat {
+      get { return heartBeat_; }
       set {
-        keepalive_ = value;
+        heartBeat_ = value;
       }
     }
 
@@ -194,7 +194,7 @@ namespace Rpc {
       if (CompressType != other.CompressType) return false;
       if (EncodingType != other.EncodingType) return false;
       if (RequestId != other.RequestId) return false;
-      if (Keepalive != other.Keepalive) return false;
+      if (!object.Equals(HeartBeat, other.HeartBeat)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -206,7 +206,7 @@ namespace Rpc {
       if (CompressType != 0) hash ^= CompressType.GetHashCode();
       if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
       if (RequestId != 0L) hash ^= RequestId.GetHashCode();
-      if (Keepalive != false) hash ^= Keepalive.GetHashCode();
+      if (heartBeat_ != null) hash ^= HeartBeat.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -243,9 +243,9 @@ namespace Rpc {
         output.WriteRawTag(41);
         output.WriteSFixed64(RequestId);
       }
-      if (Keepalive != false) {
-        output.WriteRawTag(48);
-        output.WriteBool(Keepalive);
+      if (heartBeat_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(HeartBeat);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -276,9 +276,9 @@ namespace Rpc {
         output.WriteRawTag(41);
         output.WriteSFixed64(RequestId);
       }
-      if (Keepalive != false) {
-        output.WriteRawTag(48);
-        output.WriteBool(Keepalive);
+      if (heartBeat_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(HeartBeat);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -304,8 +304,8 @@ namespace Rpc {
       if (RequestId != 0L) {
         size += 1 + 8;
       }
-      if (Keepalive != false) {
-        size += 1 + 1;
+      if (heartBeat_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(HeartBeat);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -339,8 +339,11 @@ namespace Rpc {
       if (other.RequestId != 0L) {
         RequestId = other.RequestId;
       }
-      if (other.Keepalive != false) {
-        Keepalive = other.Keepalive;
+      if (other.heartBeat_ != null) {
+        if (heartBeat_ == null) {
+          HeartBeat = new global::Rpc.RpcHearBeat();
+        }
+        HeartBeat.MergeFrom(other.HeartBeat);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -382,8 +385,11 @@ namespace Rpc {
             RequestId = input.ReadSFixed64();
             break;
           }
-          case 48: {
-            Keepalive = input.ReadBool();
+          case 50: {
+            if (heartBeat_ == null) {
+              HeartBeat = new global::Rpc.RpcHearBeat();
+            }
+            input.ReadMessage(HeartBeat);
             break;
           }
         }
@@ -426,8 +432,11 @@ namespace Rpc {
             RequestId = input.ReadSFixed64();
             break;
           }
-          case 48: {
-            Keepalive = input.ReadBool();
+          case 50: {
+            if (heartBeat_ == null) {
+              HeartBeat = new global::Rpc.RpcHearBeat();
+            }
+            input.ReadMessage(HeartBeat);
             break;
           }
         }
@@ -468,12 +477,12 @@ namespace Rpc {
     public RpcRequestMeta(RpcRequestMeta other) : this() {
       serviceName_ = other.serviceName_;
       methodName_ = other.methodName_;
+      oneway_ = other.oneway_;
       traceId_ = other.traceId_;
-      traceServer_ = other.traceServer_;
       spanId_ = other.spanId_;
       parentSpanId_ = other.parentSpanId_;
-      oneway_ = other.oneway_;
       actorId_ = other.actorId_;
+      reentrantId_ = other.reentrantId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -510,61 +519,8 @@ namespace Rpc {
       }
     }
 
-    /// <summary>Field number for the "trace_id" field.</summary>
-    public const int TraceIdFieldNumber = 4;
-    private long traceId_;
-    /// <summary>
-    ///标识同一个大的请求, 例如玩家发起的请求
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long TraceId {
-      get { return traceId_; }
-      set {
-        traceId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "trace_server" field.</summary>
-    public const int TraceServerFieldNumber = 5;
-    private long traceServer_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long TraceServer {
-      get { return traceServer_; }
-      set {
-        traceServer_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "span_id" field.</summary>
-    public const int SpanIdFieldNumber = 6;
-    private long spanId_;
-    /// <summary>
-    ///处理过程中小的请求
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long SpanId {
-      get { return spanId_; }
-      set {
-        spanId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "parent_span_id" field.</summary>
-    public const int ParentSpanIdFieldNumber = 7;
-    private long parentSpanId_;
-    /// <summary>
-    ///当前请求的上层请求
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long ParentSpanId {
-      get { return parentSpanId_; }
-      set {
-        parentSpanId_ = value;
-      }
-    }
-
     /// <summary>Field number for the "oneway" field.</summary>
-    public const int OnewayFieldNumber = 8;
+    public const int OnewayFieldNumber = 3;
     private bool oneway_;
     /// <summary>
     ///是否不需要返回值
@@ -574,6 +530,45 @@ namespace Rpc {
       get { return oneway_; }
       set {
         oneway_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "trace_id" field.</summary>
+    public const int TraceIdFieldNumber = 5;
+    private string traceId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string TraceId {
+      get { return traceId_; }
+      set {
+        traceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "span_id" field.</summary>
+    public const int SpanIdFieldNumber = 6;
+    private string spanId_ = "";
+    /// <summary>
+    ///处理过程中小的请求
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SpanId {
+      get { return spanId_; }
+      set {
+        spanId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "parent_span_id" field.</summary>
+    public const int ParentSpanIdFieldNumber = 7;
+    private string parentSpanId_ = "";
+    /// <summary>
+    ///当前请求的上层请求
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ParentSpanId {
+      get { return parentSpanId_; }
+      set {
+        parentSpanId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -588,6 +583,20 @@ namespace Rpc {
       get { return actorId_; }
       set {
         actorId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "reentrant_id" field.</summary>
+    public const int ReentrantIdFieldNumber = 10;
+    private string reentrantId_ = "";
+    /// <summary>
+    ///可重入ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ReentrantId {
+      get { return reentrantId_; }
+      set {
+        reentrantId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -606,12 +615,12 @@ namespace Rpc {
       }
       if (ServiceName != other.ServiceName) return false;
       if (MethodName != other.MethodName) return false;
+      if (Oneway != other.Oneway) return false;
       if (TraceId != other.TraceId) return false;
-      if (TraceServer != other.TraceServer) return false;
       if (SpanId != other.SpanId) return false;
       if (ParentSpanId != other.ParentSpanId) return false;
-      if (Oneway != other.Oneway) return false;
       if (ActorId != other.ActorId) return false;
+      if (ReentrantId != other.ReentrantId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -620,12 +629,12 @@ namespace Rpc {
       int hash = 1;
       if (ServiceName.Length != 0) hash ^= ServiceName.GetHashCode();
       if (MethodName.Length != 0) hash ^= MethodName.GetHashCode();
-      if (TraceId != 0L) hash ^= TraceId.GetHashCode();
-      if (TraceServer != 0L) hash ^= TraceServer.GetHashCode();
-      if (SpanId != 0L) hash ^= SpanId.GetHashCode();
-      if (ParentSpanId != 0L) hash ^= ParentSpanId.GetHashCode();
       if (Oneway != false) hash ^= Oneway.GetHashCode();
+      if (TraceId.Length != 0) hash ^= TraceId.GetHashCode();
+      if (SpanId.Length != 0) hash ^= SpanId.GetHashCode();
+      if (ParentSpanId.Length != 0) hash ^= ParentSpanId.GetHashCode();
       if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
+      if (ReentrantId.Length != 0) hash ^= ReentrantId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -650,29 +659,29 @@ namespace Rpc {
         output.WriteRawTag(18);
         output.WriteString(MethodName);
       }
-      if (TraceId != 0L) {
-        output.WriteRawTag(33);
-        output.WriteSFixed64(TraceId);
-      }
-      if (TraceServer != 0L) {
-        output.WriteRawTag(41);
-        output.WriteSFixed64(TraceServer);
-      }
-      if (SpanId != 0L) {
-        output.WriteRawTag(49);
-        output.WriteSFixed64(SpanId);
-      }
-      if (ParentSpanId != 0L) {
-        output.WriteRawTag(57);
-        output.WriteSFixed64(ParentSpanId);
-      }
       if (Oneway != false) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(24);
         output.WriteBool(Oneway);
+      }
+      if (TraceId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(TraceId);
+      }
+      if (SpanId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SpanId);
+      }
+      if (ParentSpanId.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ParentSpanId);
       }
       if (ActorId.Length != 0) {
         output.WriteRawTag(74);
         output.WriteString(ActorId);
+      }
+      if (ReentrantId.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(ReentrantId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -691,29 +700,29 @@ namespace Rpc {
         output.WriteRawTag(18);
         output.WriteString(MethodName);
       }
-      if (TraceId != 0L) {
-        output.WriteRawTag(33);
-        output.WriteSFixed64(TraceId);
-      }
-      if (TraceServer != 0L) {
-        output.WriteRawTag(41);
-        output.WriteSFixed64(TraceServer);
-      }
-      if (SpanId != 0L) {
-        output.WriteRawTag(49);
-        output.WriteSFixed64(SpanId);
-      }
-      if (ParentSpanId != 0L) {
-        output.WriteRawTag(57);
-        output.WriteSFixed64(ParentSpanId);
-      }
       if (Oneway != false) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(24);
         output.WriteBool(Oneway);
+      }
+      if (TraceId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(TraceId);
+      }
+      if (SpanId.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SpanId);
+      }
+      if (ParentSpanId.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(ParentSpanId);
       }
       if (ActorId.Length != 0) {
         output.WriteRawTag(74);
         output.WriteString(ActorId);
+      }
+      if (ReentrantId.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(ReentrantId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -730,23 +739,23 @@ namespace Rpc {
       if (MethodName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(MethodName);
       }
-      if (TraceId != 0L) {
-        size += 1 + 8;
-      }
-      if (TraceServer != 0L) {
-        size += 1 + 8;
-      }
-      if (SpanId != 0L) {
-        size += 1 + 8;
-      }
-      if (ParentSpanId != 0L) {
-        size += 1 + 8;
-      }
       if (Oneway != false) {
         size += 1 + 1;
       }
+      if (TraceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TraceId);
+      }
+      if (SpanId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SpanId);
+      }
+      if (ParentSpanId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ParentSpanId);
+      }
       if (ActorId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
+      }
+      if (ReentrantId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ReentrantId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -765,23 +774,23 @@ namespace Rpc {
       if (other.MethodName.Length != 0) {
         MethodName = other.MethodName;
       }
-      if (other.TraceId != 0L) {
-        TraceId = other.TraceId;
-      }
-      if (other.TraceServer != 0L) {
-        TraceServer = other.TraceServer;
-      }
-      if (other.SpanId != 0L) {
-        SpanId = other.SpanId;
-      }
-      if (other.ParentSpanId != 0L) {
-        ParentSpanId = other.ParentSpanId;
-      }
       if (other.Oneway != false) {
         Oneway = other.Oneway;
       }
+      if (other.TraceId.Length != 0) {
+        TraceId = other.TraceId;
+      }
+      if (other.SpanId.Length != 0) {
+        SpanId = other.SpanId;
+      }
+      if (other.ParentSpanId.Length != 0) {
+        ParentSpanId = other.ParentSpanId;
+      }
       if (other.ActorId.Length != 0) {
         ActorId = other.ActorId;
+      }
+      if (other.ReentrantId.Length != 0) {
+        ReentrantId = other.ReentrantId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -805,28 +814,28 @@ namespace Rpc {
             MethodName = input.ReadString();
             break;
           }
-          case 33: {
-            TraceId = input.ReadSFixed64();
-            break;
-          }
-          case 41: {
-            TraceServer = input.ReadSFixed64();
-            break;
-          }
-          case 49: {
-            SpanId = input.ReadSFixed64();
-            break;
-          }
-          case 57: {
-            ParentSpanId = input.ReadSFixed64();
-            break;
-          }
-          case 64: {
+          case 24: {
             Oneway = input.ReadBool();
+            break;
+          }
+          case 42: {
+            TraceId = input.ReadString();
+            break;
+          }
+          case 50: {
+            SpanId = input.ReadString();
+            break;
+          }
+          case 58: {
+            ParentSpanId = input.ReadString();
             break;
           }
           case 74: {
             ActorId = input.ReadString();
+            break;
+          }
+          case 82: {
+            ReentrantId = input.ReadString();
             break;
           }
         }
@@ -851,28 +860,28 @@ namespace Rpc {
             MethodName = input.ReadString();
             break;
           }
-          case 33: {
-            TraceId = input.ReadSFixed64();
-            break;
-          }
-          case 41: {
-            TraceServer = input.ReadSFixed64();
-            break;
-          }
-          case 49: {
-            SpanId = input.ReadSFixed64();
-            break;
-          }
-          case 57: {
-            ParentSpanId = input.ReadSFixed64();
-            break;
-          }
-          case 64: {
+          case 24: {
             Oneway = input.ReadBool();
+            break;
+          }
+          case 42: {
+            TraceId = input.ReadString();
+            break;
+          }
+          case 50: {
+            SpanId = input.ReadString();
+            break;
+          }
+          case 58: {
+            ParentSpanId = input.ReadString();
             break;
           }
           case 74: {
             ActorId = input.ReadString();
+            break;
+          }
+          case 82: {
+            ReentrantId = input.ReadString();
             break;
           }
         }
@@ -1087,6 +1096,214 @@ namespace Rpc {
           }
           case 18: {
             ErrorText = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RpcHearBeat : pb::IMessage<RpcHearBeat>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RpcHearBeat> _parser = new pb::MessageParser<RpcHearBeat>(() => new RpcHearBeat());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RpcHearBeat> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHearBeat() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHearBeat(RpcHearBeat other) : this() {
+      requestMilliseconds_ = other.requestMilliseconds_;
+      responseMilliseconds_ = other.responseMilliseconds_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHearBeat Clone() {
+      return new RpcHearBeat(this);
+    }
+
+    /// <summary>Field number for the "request_milliseconds" field.</summary>
+    public const int RequestMillisecondsFieldNumber = 1;
+    private long requestMilliseconds_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long RequestMilliseconds {
+      get { return requestMilliseconds_; }
+      set {
+        requestMilliseconds_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "response_milliseconds" field.</summary>
+    public const int ResponseMillisecondsFieldNumber = 2;
+    private long responseMilliseconds_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ResponseMilliseconds {
+      get { return responseMilliseconds_; }
+      set {
+        responseMilliseconds_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RpcHearBeat);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcHearBeat other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RequestMilliseconds != other.RequestMilliseconds) return false;
+      if (ResponseMilliseconds != other.ResponseMilliseconds) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RequestMilliseconds != 0L) hash ^= RequestMilliseconds.GetHashCode();
+      if (ResponseMilliseconds != 0L) hash ^= ResponseMilliseconds.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RequestMilliseconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(RequestMilliseconds);
+      }
+      if (ResponseMilliseconds != 0L) {
+        output.WriteRawTag(17);
+        output.WriteSFixed64(ResponseMilliseconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RequestMilliseconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(RequestMilliseconds);
+      }
+      if (ResponseMilliseconds != 0L) {
+        output.WriteRawTag(17);
+        output.WriteSFixed64(ResponseMilliseconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RequestMilliseconds != 0L) {
+        size += 1 + 8;
+      }
+      if (ResponseMilliseconds != 0L) {
+        size += 1 + 8;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RpcHearBeat other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RequestMilliseconds != 0L) {
+        RequestMilliseconds = other.RequestMilliseconds;
+      }
+      if (other.ResponseMilliseconds != 0L) {
+        ResponseMilliseconds = other.ResponseMilliseconds;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            RequestMilliseconds = input.ReadSFixed64();
+            break;
+          }
+          case 17: {
+            ResponseMilliseconds = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            RequestMilliseconds = input.ReadSFixed64();
+            break;
+          }
+          case 17: {
+            ResponseMilliseconds = input.ReadSFixed64();
             break;
           }
         }

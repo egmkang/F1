@@ -11,9 +11,9 @@ namespace F1.Core.Placement
     public class PlacementExtension
     {
         private readonly IPlacement placement;
-        private readonly RpcMetadata rpcMetadata;
+        private readonly RpcMetaData rpcMetadata;
 
-        public PlacementExtension(IPlacement placement, RpcMetadata rpcMetadata) 
+        public PlacementExtension(IPlacement placement, RpcMetaData rpcMetadata) 
         {
             this.placement = placement;
             this.rpcMetadata = rpcMetadata;

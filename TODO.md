@@ -3,6 +3,7 @@ F1 Framework:
 
 v0.5
 * [ ] tracing
+  * [ ] rpc request sequence
 * [ ] Reminder
 * [ ] Actor LifeTime Configuration
 * [ ] More Sample

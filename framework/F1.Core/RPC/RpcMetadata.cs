@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AspectCore.Extensions.Reflection;
 using Microsoft.Extensions.Logging;
+using AspectCore.Extensions.Reflection;
 using F1.Abstractions.RPC;
 
 namespace F1.Core.RPC
 {
-    public class RpcMetadata
+    public class RpcMetaData
     {
         private readonly ILogger logger;
         //interface => implementation
@@ -16,7 +16,7 @@ namespace F1.Core.RPC
         private readonly Dictionary<string, Type> rpcClientTypes = new Dictionary<string, Type>();
         private readonly Dictionary<string, Type> rpcServerTypes = new Dictionary<string, Type>();
 
-        public RpcMetadata(ILoggerFactory loggerFactory)
+        public RpcMetaData(ILoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
         }

@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DotNetty.Transport.Channels;
-using RpcMessage;
+using RpcProto;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
 using F1.Core.Message;

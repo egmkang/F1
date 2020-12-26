@@ -15,7 +15,7 @@ using F1.Core.RPC;
 
 namespace F1.UnitTest.Network
 {
-    public class Server
+    public class Server : Setup
     {
         static Random random = new Random();
         static int Port = random.Next(10000, 30000);

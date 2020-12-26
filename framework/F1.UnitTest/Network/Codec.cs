@@ -3,11 +3,11 @@ using Xunit;
 using DotNetty.Buffers;
 using DotNetty.Common.Utilities;
 using F1.Core.Message;
-using RpcMessage;
+using RpcProto;
 
 namespace F1.UnitTest.Network
 {
-    public class Codec
+    public class Codec : Setup
     {
         static IByteBufferAllocator Allocator = PooledByteBufferAllocator.Default;
         static Random random = new Random();
@@ -18,7 +18,7 @@ namespace F1.UnitTest.Network
             var msg = new RequestRpcHeartBeat();
             var buffer = msg.ToByteBuffer(Allocator);
 
-            var (length, msg1) = buffer.DecodeOneMessage();
+            var (length, msg1) = buffer.DecodeOneProtobufMessage();
 
             Assert.Equal(0, buffer.ReadableBytes);
             Assert.NotEqual(0, length);
@@ -34,7 +34,7 @@ namespace F1.UnitTest.Network
 
             var half = buffer.Slice(0, buffer.ReadableBytes - 1);
 
-            var (length, msg1) = half.DecodeOneMessage();
+            var (length, msg1) = half.DecodeOneProtobufMessage();
 
             Assert.NotEqual(0, half.ReadableBytes);
             Assert.Equal(0, length);
@@ -50,7 +50,7 @@ namespace F1.UnitTest.Network
             msg.MilliSeconds = random.Next(0, 1000000);
             var buffer = msg.ToByteBuffer(Allocator);
 
-            var (length, msg1) = buffer.DecodeOneMessage();
+            var (length, msg1) = buffer.DecodeOneProtobufMessage();
 
             Assert.Equal(0, buffer.ReadableBytes);
             Assert.NotEqual(0, length);
@@ -77,8 +77,8 @@ namespace F1.UnitTest.Network
             buffer.WriteBytes(buffer1);
             buffer.WriteBytes(buffer2);
 
-            var (length1, msg1) = buffer.DecodeOneMessage();
-            var (length2, msg2) = buffer.DecodeOneMessage();
+            var (length1, msg1) = buffer.DecodeOneProtobufMessage();
+            var (length2, msg2) = buffer.DecodeOneProtobufMessage();
 
             Assert.Equal(0, buffer.ReadableBytes);
             Assert.NotEqual(0, length1);
@@ -105,7 +105,7 @@ namespace F1.UnitTest.Network
 
             Assert.Throws<Exception>(() =>
             {
-                var (length, msg) = buffer.DecodeOneMessage();
+                var (length, msg) = buffer.DecodeOneProtobufMessage();
             });
 
             ReferenceCountUtil.Release(buffer);
@@ -120,7 +120,7 @@ namespace F1.UnitTest.Network
 
             Assert.Throws<Exception>(() =>
             {
-                var (length, msg) = buffer.DecodeOneMessage();
+                var (length, msg) = buffer.DecodeOneProtobufMessage();
             });
 
             ReferenceCountUtil.Release(buffer);

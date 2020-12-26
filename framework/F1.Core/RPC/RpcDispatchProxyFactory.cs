@@ -39,7 +39,7 @@ namespace F1.Core.RPC
     {
         private readonly ILogger logger;
         private readonly IServiceProvider serviceProvider;
-        private readonly RpcMetadata metadata;
+        private readonly RpcMetaData metadata;
         private TimeBasedSequence timeBasedSequence;
         private RpcClientFactory rpcClientFactory;
         private readonly IParametersSerializer serializer;
@@ -48,7 +48,7 @@ namespace F1.Core.RPC
         public RpcDispatchProxyFactory(ILoggerFactory loggerFactory,
                                             IServiceProvider serviceProvider,
                                             IParametersSerializer serializer,
-                                            RpcMetadata metadata,
+                                            RpcMetaData metadata,
                                             TimeBasedSequence timeBasedSequence)
         {
             this.metadata = metadata;

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using DotNetty.Buffers;
+using Google.Protobuf;
 using F1.Abstractions.Network;
 using F1.Core.Utils;
-using Google.Protobuf;
 
 
 namespace F1.Core.Message
@@ -12,7 +12,7 @@ namespace F1.Core.Message
     internal partial class Constants 
     {
         public const int HeaderLength = 8;
-        public const long MaxFrameLength = 1L << 32;
+        public const long MaxFrameLength = 1L << 30;
         public const long MinFrameLength = HeaderLength;
     }
 
@@ -21,21 +21,13 @@ namespace F1.Core.Message
         public IByteBuffer Encode(IByteBufferAllocator bufferAllocator, IMessage message) 
         {
             var bodySize = message.CalculateSize();
-            var messageName = Encoding.UTF8.GetBytes(message.Descriptor.FullName);
+            var messageName = StringMap.GetStringBytes(message.Descriptor.FullName);
             var length = Constants.HeaderLength + 1 + messageName.Length + bodySize;
 
             var buffer = bufferAllocator.Buffer(length);
             buffer.WriteLongLE(length);
-            buffer.WriteByte(messageName.Length);
-            buffer.WriteBytes(messageName);
-            
-            ArraySegment<byte> data = buffer.GetIoBuffer(buffer.WriterIndex, bodySize);
-            Span<byte> span = data;
-            message.WriteTo(span);
 
-            buffer.SetWriterIndex(buffer.WriterIndex + bodySize);
-
-            return buffer;
+            return message.EncodeProtobufMessage(buffer, bodySize);
         }
     }
 
@@ -60,23 +52,8 @@ namespace F1.Core.Message
                     input.ResetReaderIndex();
                     return (0, null);
                 }
-                var messageNameLength = input.ReadByte();
-                var messageName = input.ReadString(messageNameLength, Encoding.UTF8);
-                var bodyBuffer = input.ReadBytes((int)(length - Constants.HeaderLength - 1 - messageNameLength));
 
-                try
-                {
-                    var message = MessageExt.NewMessage(messageName, bodyBuffer);
-                    return (length, message);
-                }
-                catch
-                {
-                    throw;
-                }
-                finally
-                {
-                    bodyBuffer.Release();
-                }
+                return input.DecodeProtobufMessage((int)(length - Constants.HeaderLength));
             }
 
             input.ResetReaderIndex();

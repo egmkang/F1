@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using AspectCore.Extensions.Reflection;
 using Google.Protobuf;
-using RpcMessage;
+using RpcProto;
 using F1.Abstractions.Placement;
 using F1.Abstractions.RPC;
 using F1.Abstractions.Actor;

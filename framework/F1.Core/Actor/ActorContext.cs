@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Google.Protobuf;
-using RpcMessage;
+using RpcProto;
 using F1.Abstractions.RPC;
 using F1.Abstractions.Actor;
 using F1.Abstractions.Network;

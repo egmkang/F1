@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using F1.Abstractions.RPC;
 
+
 namespace F1.UnitTest.RPC
 {
     [Rpc]
@@ -49,7 +50,7 @@ namespace F1.UnitTest.RPC
         }
     }
 
-    public class RpcRequestDisptachHandlerTest
+    public class RpcRequestDisptachHandlerTest : Setup
     {
         IServiceProvider Provider;
 
@@ -57,7 +58,7 @@ namespace F1.UnitTest.RPC
         {
             var service = new ServiceCollection();
             service
-                .AddSingleton<RpcMetadata>()
+                .AddSingleton<RpcMetaData>()
                 .AddSingleton<IRpcDispatchHandler, DispatchHandler>()
                 .AddLogging(j => j.AddConsole());
             var provider = service.BuildServiceProvider();

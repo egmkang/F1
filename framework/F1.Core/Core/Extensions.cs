@@ -41,7 +41,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<IPlacement, PDPlacement>();
             services.TryAddSingleton<TimeBasedSequence>();
             services.TryAddSingleton<SessionUniqueSequence>();
-            services.TryAddSingleton<RpcMetadata>();
+            services.TryAddSingleton<RpcMetaData>();
             services.TryAddSingleton<RpcDispatchProxyFactory>();
             services.TryAddSingleton<DispatchHandler>();
             services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();

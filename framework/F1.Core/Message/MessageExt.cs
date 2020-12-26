@@ -89,7 +89,7 @@ namespace F1.Core.Message
         }
 
         static MessageDecoder decoder = new MessageDecoder();
-        public static (long length, IMessage message) DecodeOneMessage(this IByteBuffer buffer) 
+        public static (long length, IMessage message) DecodeOneProtobufMessage(this IByteBuffer buffer) 
         {
             return decoder.Decode(buffer);
         }
@@ -99,5 +99,16 @@ namespace F1.Core.Message
         {
             return encoder.Encode(allocator, msg);
         }
+
+        static RpcMessageCodec rpcCodec = new RpcMessageCodec();
+        public static IByteBuffer ToByteBuffer(this RpcMessage msg, IByteBufferAllocator allocator) 
+        {
+            return rpcCodec.Encode(allocator, msg);
+        }
+        public static (long length, RpcMessage message) DecodeOneRpcMessage(this IByteBuffer buffer) 
+        {
+            var (length, _, obj) = rpcCodec.Decode(buffer);
+            return (length, obj as RpcMessage);
+        }    
     }
 }

@@ -7,11 +7,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Google.Protobuf;
-using RpcMessage;
+using RpcProto;
 using F1.Abstractions.Placement;
 using F1.Abstractions.RPC;
 using F1.Core.RPC;
 using F1.Core.Utils;
+
 
 namespace F1.UnitTest.RPC
 {
@@ -68,7 +69,7 @@ namespace F1.UnitTest.RPC
         }
     }
 
-    public class RpcDispatchProxyTest
+    public class RpcDispatchProxyTest : Setup
     {
         IServiceProvider Provider;
         RpcDispatchProxyFactory ProxyFactory;
@@ -78,7 +79,7 @@ namespace F1.UnitTest.RPC
         {
             var service = new ServiceCollection();
             service
-                .AddSingleton<RpcMetadata>()
+                .AddSingleton<RpcMetaData>()
                 .AddSingleton<IParametersSerializer, ParametersSerializerCeras>()
                 .AddSingleton<RpcDispatchProxyFactory>()
                 .AddSingleton<UniqueSequence>()

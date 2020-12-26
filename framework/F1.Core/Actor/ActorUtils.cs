@@ -7,7 +7,7 @@ using F1.Abstractions.Network;
 using F1.Abstractions.RPC;
 using F1.Core.RPC;
 using Google.Protobuf;
-using RpcMessage;
+using RpcProto;
 
 namespace F1.Core.Actor
 {

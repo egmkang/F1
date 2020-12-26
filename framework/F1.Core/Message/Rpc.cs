@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace RpcMessage {
+namespace RpcProto {
 
   /// <summary>Holder for reflection information generated from Message/rpc.proto</summary>
   public static partial class RpcReflection {
@@ -24,25 +24,25 @@ namespace RpcMessage {
     static RpcReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFNZXNzYWdlL3JwYy5wcm90bxIKUnBjTWVzc2FnZSLSAQoKUmVxdWVzdFJw",
-            "YxISCgphY3Rvcl90eXBlGAEgASgJEhAKCGFjdG9yX2lkGAIgASgJEg4KBm1l",
-            "dGhvZBgDIAEoCRIMCgRhcmdzGAQgASgMEhMKC25lZWRfcmVzdWx0GAUgASgI",
-            "EhYKDmRlc3Rfc2VydmVyX2lkGAYgASgQEhIKCnNyY19zZXJ2ZXIYCiABKBAS",
-            "FgoOc3JjX3JlcXVlc3RfaWQYCyABKBASEgoKcmVxdWVzdF9pZBgMIAEoEBIT",
-            "CgtyZXNwb25zZV9pZBgNIAEoECKYAQoLUmVzcG9uc2VScGMSJwoHcmVxdWVz",
-            "dBgBIAEoCzIWLlJwY01lc3NhZ2UuUmVxdWVzdFJwYxISCgpyZXF1ZXN0X2lk",
-            "GAogASgQEhMKC3Jlc3BvbnNlX2lkGAsgASgQEhIKCmVycm9yX2NvZGUYDCAB",
-            "KAUSEQoJZXJyb3JfbXNnGA0gASgJEhAKCHJlc3BvbnNlGA4gASgMIiwKE1Jl",
-            "cXVlc3RScGNIZWFydEJlYXQSFQoNbWlsbGlfc2Vjb25kcxgBIAEoECItChRS",
-            "ZXNwb25zZVJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgQYgZw",
-            "cm90bzM="));
+            "ChFNZXNzYWdlL3JwYy5wcm90bxIIUnBjUHJvdG8i0gEKClJlcXVlc3RScGMS",
+            "EgoKYWN0b3JfdHlwZRgBIAEoCRIQCghhY3Rvcl9pZBgCIAEoCRIOCgZtZXRo",
+            "b2QYAyABKAkSDAoEYXJncxgEIAEoDBITCgtuZWVkX3Jlc3VsdBgFIAEoCBIW",
+            "Cg5kZXN0X3NlcnZlcl9pZBgGIAEoEBISCgpzcmNfc2VydmVyGAogASgQEhYK",
+            "DnNyY19yZXF1ZXN0X2lkGAsgASgQEhIKCnJlcXVlc3RfaWQYDCABKBASEwoL",
+            "cmVzcG9uc2VfaWQYDSABKBAilgEKC1Jlc3BvbnNlUnBjEiUKB3JlcXVlc3QY",
+            "ASABKAsyFC5ScGNQcm90by5SZXF1ZXN0UnBjEhIKCnJlcXVlc3RfaWQYCiAB",
+            "KBASEwoLcmVzcG9uc2VfaWQYCyABKBASEgoKZXJyb3JfY29kZRgMIAEoBRIR",
+            "CgllcnJvcl9tc2cYDSABKAkSEAoIcmVzcG9uc2UYDiABKAwiLAoTUmVxdWVz",
+            "dFJwY0hlYXJ0QmVhdBIVCg1taWxsaV9zZWNvbmRzGAEgASgQIi0KFFJlc3Bv",
+            "bnNlUnBjSGVhcnRCZWF0EhUKDW1pbGxpX3NlY29uZHMYASABKBBiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpc), global::RpcMessage.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "NeedResult", "DestServerId", "SrcServer", "SrcRequestId", "RequestId", "ResponseId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpc), global::RpcMessage.ResponseRpc.Parser, new[]{ "Request", "RequestId", "ResponseId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.RequestRpcHeartBeat), global::RpcMessage.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::RpcMessage.ResponseRpcHeartBeat), global::RpcMessage.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcProto.RequestRpc), global::RpcProto.RequestRpc.Parser, new[]{ "ActorType", "ActorId", "Method", "Args", "NeedResult", "DestServerId", "SrcServer", "SrcRequestId", "RequestId", "ResponseId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcProto.ResponseRpc), global::RpcProto.ResponseRpc.Parser, new[]{ "Request", "RequestId", "ResponseId", "ErrorCode", "ErrorMsg", "Response" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcProto.RequestRpcHeartBeat), global::RpcProto.RequestRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::RpcProto.ResponseRpcHeartBeat), global::RpcProto.ResponseRpcHeartBeat.Parser, new[]{ "MilliSeconds" }, null, null, null, null)
           }));
     }
     #endregion
@@ -61,7 +61,7 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[0]; }
+      get { return global::RpcProto.RpcReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -584,7 +584,7 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[1]; }
+      get { return global::RpcProto.RpcReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -617,12 +617,12 @@ namespace RpcMessage {
 
     /// <summary>Field number for the "request" field.</summary>
     public const int RequestFieldNumber = 1;
-    private global::RpcMessage.RequestRpc request_;
+    private global::RpcProto.RequestRpc request_;
     /// <summary>
     ///失败的时候会携带这个信息
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::RpcMessage.RequestRpc Request {
+    public global::RpcProto.RequestRpc Request {
       get { return request_; }
       set {
         request_ = value;
@@ -828,7 +828,7 @@ namespace RpcMessage {
       }
       if (other.request_ != null) {
         if (request_ == null) {
-          Request = new global::RpcMessage.RequestRpc();
+          Request = new global::RpcProto.RequestRpc();
         }
         Request.MergeFrom(other.Request);
       }
@@ -863,7 +863,7 @@ namespace RpcMessage {
             break;
           case 10: {
             if (request_ == null) {
-              Request = new global::RpcMessage.RequestRpc();
+              Request = new global::RpcProto.RequestRpc();
             }
             input.ReadMessage(Request);
             break;
@@ -904,7 +904,7 @@ namespace RpcMessage {
             break;
           case 10: {
             if (request_ == null) {
-              Request = new global::RpcMessage.RequestRpc();
+              Request = new global::RpcProto.RequestRpc();
             }
             input.ReadMessage(Request);
             break;
@@ -948,7 +948,7 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[2]; }
+      get { return global::RpcProto.RpcReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1120,7 +1120,7 @@ namespace RpcMessage {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::RpcMessage.RpcReflection.Descriptor.MessageTypes[3]; }
+      get { return global::RpcProto.RpcReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
