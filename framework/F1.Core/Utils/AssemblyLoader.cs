@@ -27,7 +27,11 @@ namespace F1.Core.Utils
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var asm in assemblies)
             {
-                if (asm.Location == fileName) return true;
+                try
+                {
+                    if (asm.Location == fileName) return true;
+                }
+                catch { }
             }
             return false;
         }

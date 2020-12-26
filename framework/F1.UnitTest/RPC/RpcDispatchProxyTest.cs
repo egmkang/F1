@@ -81,6 +81,7 @@ namespace F1.UnitTest.RPC
             service
                 .AddSingleton<RpcMetaData>()
                 .AddSingleton<IParametersSerializer, ParametersSerializerCeras>()
+                .AddSingleton<TimeBasedSequence>()
                 .AddSingleton<RpcDispatchProxyFactory>()
                 .AddSingleton<UniqueSequence>()
                 .AddLogging(j => j.AddConsole());
