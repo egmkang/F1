@@ -29,13 +29,14 @@ namespace Sample.Impl
             //this.Logger.LogInformation("PlayerImpl.ProcessUserInputMessage, Type:{1}, Msg:{0}",
             //                            msg.Inner, msg.Inner.GetType().Name);
 
-            if (msg.Inner is NotifyConnectionAborted)
+            var innerMessage = msg.InnerAsMessage();
+            if (innerMessage is NotifyConnectionAborted aborted)
             {
-                await this.ProcessNotifyConnectionAborted(msg.Inner as NotifyConnectionAborted).ConfigureAwait(false);
+                await this.ProcessNotifyConnectionAborted(aborted).ConfigureAwait(false);
             }
-            else if (msg.Inner is NotifyNewMessage)
+            else if (innerMessage is NotifyNewMessage newMessage)
             {
-                await this.ProcessNotifyNewMessage(msg.SourceConnection, msg.Inner as NotifyNewMessage).ConfigureAwait(false);
+                await this.ProcessNotifyNewMessage(msg.SourceConnection, newMessage).ConfigureAwait(false);
             }
             else
             {
@@ -57,6 +58,7 @@ namespace Sample.Impl
 
         private async Task ProcessNotifyNewMessage(IChannel channel, NotifyNewMessage newMessage)
         {
+            this.BeforeProcessUserMessage();
             try
             {
                 if (this.SessionID != newMessage.SessionId)
@@ -108,6 +110,7 @@ namespace Sample.Impl
             {
                 this.Logger.LogError("ProcessNotifyNewMessage, PlayerID:{0}, Exception:{1}", this.ID, e);
             }
+            this.EndProcessUserMessage();
         }
 
         public void SendMessageToPlayer(IChannel channel, IMessage message)

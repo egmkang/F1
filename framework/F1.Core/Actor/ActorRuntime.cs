@@ -27,10 +27,10 @@ namespace F1.Core.Actor
         private readonly IPlacement placement;
         private readonly RpcMetaData rpcMetadata;
 
-        public IActorContext Context { get; internal set; }
+        public IActorContext ClientSideContext { get; internal set; }
 
         #region ServerSequenceContext
-        private class ServerSequenceContext : IActorContext
+        private class ClientSequenceContext : IActorContext
         {
             public bool Loaded => throw new NotImplementedException();
 
@@ -40,6 +40,10 @@ namespace F1.Core.Actor
                 {
                     return $"{this.ServerID}_{this.UniqueSequence.GetNewSequence()}";
                 }
+                set 
+                {
+                    throw new Exception("cannot set ClientSideContext");
+                }
             }
             public long LastMessageTime => throw new NotImplementedException();
 
@@ -47,7 +51,7 @@ namespace F1.Core.Actor
 
             private long ServerID;
             private readonly TimeBasedSequence UniqueSequence;
-            public ServerSequenceContext(long ServerID, TimeBasedSequence uniqueSequence)
+            public ClientSequenceContext(long ServerID, TimeBasedSequence uniqueSequence)
             {
                 this.ServerID = ServerID;
                 this.UniqueSequence = uniqueSequence;
@@ -132,7 +136,9 @@ namespace F1.Core.Actor
 
                 this.logger.LogInformation("ActorHost ServerID:{0}", this.ServerID);
 
-                this.Context = new ServerSequenceContext(this.ServerID, this.TimeSequence);
+                this.ClientSideContext = new ClientSequenceContext(this.ServerID, this.TimeSequence);
+
+                actorManager.ClientSideContext = this.ClientSideContext;
             }
             catch (Exception e) 
             {

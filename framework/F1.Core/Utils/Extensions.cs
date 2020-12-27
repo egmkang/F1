@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using F1.Core.Message;
-
+using F1.Abstractions.Network;
 
 namespace F1.Core.Utils
 {
@@ -34,6 +34,15 @@ namespace F1.Core.Utils
             {
                 Meta = meta,
             };
+        }
+
+        public static IMessage InnerAsMessage(this InboundMessage inboundMessage)
+        {
+            if (inboundMessage.Inner is RpcMessage rpcMessage && rpcMessage.Meta is IMessage t) 
+            {
+                return t;
+            }
+            return null;
         }
     }
 }

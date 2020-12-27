@@ -20,7 +20,7 @@ namespace F1.Core.Actor
 
         public T GetActorProxy<T>(string name)
         {
-            return this.dispatchProxyFactory.CreateProxy<T>(name, runtime.Context);
+            return this.dispatchProxyFactory.CreateProxy<T>(name, runtime.ClientSideContext);
         }
     }
 }

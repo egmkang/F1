@@ -24,6 +24,7 @@ v0.3
     * [x] dispatch
     * [ ] Gateway NewMessageComing
   * [x] args encoding (ceras/msgpack)
+  * [ ] LZ4
 * [x] Protobuf Codec (Span Support)
 
 v0.2

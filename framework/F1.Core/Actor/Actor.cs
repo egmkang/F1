@@ -22,6 +22,8 @@ namespace F1.Core.Actor
         private ActorTimerManager TimerManager { get; set; }
         public IMessageCenter MessageCenter { get; private set; }
 
+        internal Func<string> NewSourceReentrantId { get; set; } 
+
         internal void InitActor(Type type, string id, IActorContext context, IMessageCenter messageCenter)
         {
             this.ActorType = type;
@@ -115,6 +117,16 @@ namespace F1.Core.Actor
                 }
                 catch { }
             }
+        }
+
+            //在这边更新可重入ID
+        public void BeforeProcessUserMessage() 
+        {
+            this.Context.ReentrantId = this.NewSourceReentrantId();
+        }
+        public void EndProcessUserMessage() 
+        {
+            this.Context.ReentrantId = "";
         }
 
         protected virtual void OnSessionIDChanged(long oldId, long newId)

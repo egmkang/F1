@@ -16,7 +16,7 @@ namespace F1.Abstractions.Actor
         /// 如果是Actor调用其他Actor, 那么Context是需要有传染性
         /// 如果是Client调用ActorProxy, 那么不需要传染
         /// </summary>
-        string ReentrantId { get; }
+        string ReentrantId { get; set; }
         /// <summary>
         /// 获取上次处理消息的时间
         /// </summary>

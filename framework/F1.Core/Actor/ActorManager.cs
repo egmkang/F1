@@ -14,6 +14,7 @@ using F1.Core.RPC;
 using F1.Core.Message;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
+using F1.Abstractions.Actor;
 using F1.Core.Network;
 using Rpc;
 
@@ -33,6 +34,13 @@ namespace F1.Core.Actor
         private readonly IPlacement placement;
         private readonly IServiceProvider serviceProvider;
         private ClientConnectionPool clientConnectionPool;
+
+        public IActorContext ClientSideContext { get; internal set; }
+        internal Func<string> FnCache => NewSourceReentrantId;
+        internal string NewSourceReentrantId()
+        {
+            return ClientSideContext.ReentrantId;
+        }
 
         public ActorManager(ILoggerFactory loggerFactory,
                             ActorFactory actorFactory,
@@ -81,6 +89,7 @@ namespace F1.Core.Actor
                 actor = this.actorFactory.CreateActor(serverType, uniqueID);
                 Contract.Assert(actor != null);
 
+                actor.NewSourceReentrantId = this.FnCache;
                 this.actorInstances.TryAdd((serverType, uniqueID), actor);
                 return actor;
             }

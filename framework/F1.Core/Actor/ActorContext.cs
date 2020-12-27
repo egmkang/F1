@@ -28,7 +28,7 @@ namespace F1.Core.Actor
         /// <summary>
         /// 可重入ID
         /// </summary>
-        public string ReentrantId { get; internal set; }
+        public string ReentrantId { get; set; } = "";
 
         public long RunningLoopID { get; internal set; }
 
@@ -55,7 +55,7 @@ namespace F1.Core.Actor
                 //                this.Actor.UniqueID, requestMeta.ReentrantId);
 
                 //可重入
-                if ((request.Meta as RpcRequest).ReentrantId == this.ReentrantId)
+                if (request.Meta is RpcRequest rpcRequest && rpcRequest.ReentrantId == this.ReentrantId)
                 {
                     _ = this.DispatchMessage(inboundMessage).ConfigureAwait(false);
                     return;
@@ -98,7 +98,7 @@ namespace F1.Core.Actor
             {
                 timer.Tick();
             }
-            else if (inboundMessage.Inner is RpcMessage rpcMessage)
+            else if (inboundMessage.Inner is RpcMessage rpcMessage && rpcMessage.Meta is RpcRequest)
             {
                 await this.DispatchRpcRequest(inboundMessage.SourceConnection, rpcMessage).ConfigureAwait(false);
             }
