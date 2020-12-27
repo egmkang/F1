@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetty.Transport.Channels;
 using Google.Protobuf;
-using RpcProto;
 using F1.Core.Utils;
 using F1.Core.RPC;
 using F1.Core.Message;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
 using F1.Core.Network;
+using Rpc;
 
 namespace F1.Core.Actor
 {
@@ -49,8 +49,8 @@ namespace F1.Core.Actor
             this.placement = placement;
             this.serviceProvider = serviceProvider;
 
-            this.messageCenter.RegisterTypedMessageProc<RequestRpc>(this.ProcessRequestRpc);
-            this.messageCenter.RegisterTypedMessageProc<RequestRpcHeartBeat>(this.ProcessRequestRpcHeartBeat);
+            this.messageCenter.RegisterTypedMessageProc<RpcRequest>(this.ProcessRpcRequest);
+            this.messageCenter.RegisterTypedMessageProc<RpcHeartBeatRequest>(this.ProcessRpcRequestHeartBeat);
             this.messageCenter.RegisterUserMessageCallback((type, actorID, inboundMessage) => this.DispatchUserMessage(inboundMessage, type, actorID));
 
             _ = Util.RunTaskTimer(this.ActorGC, ActorGCInterval);
@@ -113,18 +113,18 @@ namespace F1.Core.Actor
 
         private async Task ProcessRequestRpcSlowPath(InboundMessage inboundMessage)
         {
-            var requestRpc = inboundMessage.Inner as RequestRpc;
+            var requestRpc = inboundMessage.Inner as RpcRequest;
             Contract.Assert(requestRpc != null);
 
-            var implType = this.rpcMetadata.GetServerType(requestRpc.ActorType);
-            if (implType == null) 
+            var implType = this.rpcMetadata.GetServerType(requestRpc.ServiceName);
+            if (implType == null)
             {
-                this.logger.LogError("DispatchRpcRequestSlowPath, InterfaceType:{0} not found ImplType", requestRpc.ActorType);
+                this.logger.LogError("DispatchRpcRequestSlowPath, InterfaceType:{0} not found ImplType", requestRpc.ServiceName);
                 return;
             }
             var args = new PlacementFindActorPositionRequest()
             {
-                ActorType = requestRpc.ActorType,
+                ActorType = requestRpc.ServiceName,
                 ActorID = requestRpc.ActorId,
                 TTL = 0,
             };
@@ -143,37 +143,42 @@ namespace F1.Core.Actor
                 {
                     if (response == null)
                     {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorPositionNotFound, "PositionNotFound");
+                        ActorUtils.SendRepsonseRpcError(inboundMessage.SourceConnection, requestRpc, this.messageCenter, RpcErrorCode.ActorPositionNotFound, "PositionNotFound");
                     }
                     else
                     {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.ActorHasNewPosition, "Actor has new position");
+                        ActorUtils.SendRepsonseRpcError(inboundMessage.SourceConnection, requestRpc, this.messageCenter, RpcErrorCode.ActorHasNewPosition, "Actor has new position");
                     }
                 }
             }
             catch (Exception e)
             {
-                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, e.ToString());
+                ActorUtils.SendRepsonseRpcError(inboundMessage.SourceConnection, requestRpc, this.messageCenter, RpcErrorCode.Others, e.ToString());
             }
         }
 
-        private void ProcessRequestRpcHeartBeat(InboundMessage inboundMessage)
+        private void ProcessRpcRequestHeartBeat(InboundMessage inboundMessage)
         {
-            var response = new ResponseRpcHeartBeat()
+            var req = (inboundMessage.Inner as RpcMessage).Meta as RpcHeartBeatRequest;
+
+            var rpcMessage = new RpcMessage()
             {
-                MilliSeconds = (inboundMessage.Inner as RequestRpcHeartBeat).MilliSeconds,
+                Meta = new RpcHeartBeatResponse()
+                {
+                    ResponseMilliseconds = req.RequestMilliseconds,
+                },
             };
-            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, response));
+            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, rpcMessage));
             //this.logger.LogInformation("ProcessRequestRpcHeartBeat, SessionID:{0}", inboundMessage.SourceConnection.GetSessionInfo().SessionID);
         }
 
-        private void DisptachRequestRPC(InboundMessage inboundMessage, RequestRpc requestRpc)
+        private void DisptachRequestRPC(InboundMessage inboundMessage, RpcRequest requestRpc)
         {
-            var actor = this.GetActor(requestRpc.ActorType, requestRpc.ActorId);
+            var actor = this.GetActor(requestRpc.ServiceName, requestRpc.ActorId);
             if (actor == null)
             {
-                this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ActorType, requestRpc.ActorId);
-                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, "GetActor fail");
+                this.logger.LogError("ProcessRequestRpc Actor not found, ID:{0}@{1}", requestRpc.ServiceName, requestRpc.ActorId);
+                ActorUtils.SendRepsonseRpcError(inboundMessage.SourceConnection, requestRpc, this.messageCenter, RpcErrorCode.Others, "GetActor fail");
                 return;
             }
             actor.Context.SendMail(inboundMessage);
@@ -186,10 +191,10 @@ namespace F1.Core.Actor
         /// <param name="type">Actor的类型</param>
         /// <param name="actorID">Actor的ID</param>
         /// <returns>成功返回true</returns>
-        public bool DispatchUserMessage(InboundMessage inboundMessage, string type, string actorID) 
+        public bool DispatchUserMessage(InboundMessage inboundMessage, string type, string actorID)
         {
             var implType = this.rpcMetadata.GetServerType(type);
-            if (implType == null) 
+            if (implType == null)
             {
                 this.logger.LogError("DispatchUserMessage, InterfaceType:{0} not found ImplType:{1}", type);
                 return false;
@@ -200,7 +205,7 @@ namespace F1.Core.Actor
             args.ActorID = actorID;
             args.TTL = 0;
 
-            try 
+            try
             {
                 var destPosition = this.placement.FindActorPositionInCache(args);
                 if (destPosition != null && destPosition.ServerID == this.placement.CurrentServerID)
@@ -209,35 +214,35 @@ namespace F1.Core.Actor
                     actor.Context.SendMail(inboundMessage);
                     return true;
                 }
-                else 
+                else
                 {
                     _ = this.DispatchUserMessageSlowPath(inboundMessage, type, actorID);
                 }
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 this.logger.LogError("DispatchUserMessage, Actor:{0}/{1}, Error:{2}", type, actorID, e.ToString());
             }
             return false;
         }
 
-        private IChannel GetServerChannelByID(long serverID) 
+        private IChannel GetServerChannelByID(long serverID)
         {
-            if (this.clientConnectionPool == null) 
+            if (this.clientConnectionPool == null)
             {
                 this.clientConnectionPool = this.serviceProvider.GetRequiredService<ClientConnectionPool>();
             }
-            if (this.clientConnectionPool != null) 
+            if (this.clientConnectionPool != null)
             {
                 return this.clientConnectionPool.GetChannelByServerID(serverID);
             }
             return null;
         }
 
-        private async Task DispatchUserMessageSlowPath(InboundMessage inboundMessage, string type, string actorID) 
+        private async Task DispatchUserMessageSlowPath(InboundMessage inboundMessage, string type, string actorID)
         {
             var implType = this.rpcMetadata.GetServerType(type);
-            if (implType == null) 
+            if (implType == null)
             {
                 this.logger.LogError("DispatchUserMessageSlowPath, InterfaceType:{0} not found ImplType", type);
                 return;
@@ -261,7 +266,7 @@ namespace F1.Core.Actor
                     actor.Context.SendMail(inboundMessage);
                     return;
                 }
-                else  if (response != null)
+                else if (response != null)
                 {
                     var channel = this.GetServerChannelByID(response.ServerID);
                     this.messageCenter.SendMessage(new OutboundMessage(channel, inboundMessage.Inner));
@@ -269,7 +274,7 @@ namespace F1.Core.Actor
                 }
                 logger.LogError("DispatchUserMessageSlowPath, ActorType:{0} ActorID:{1} not found", type, actorID);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 logger.LogError("DispatchUserMessageSlowPath, ActorType:{0} ActorID:{1}, Exception:{2}", type, actorID, e);
             }
@@ -277,24 +282,35 @@ namespace F1.Core.Actor
 
         static ThreadLocal<PlacementFindActorPositionRequest> pdPositionArgsCache = new ThreadLocal<PlacementFindActorPositionRequest>(() => new PlacementFindActorPositionRequest());
 
-        private void ProcessRequestRpc(InboundMessage inboundMessage) 
+        private void ProcessRpcRequest(InboundMessage inboundMessage)
         {
-            var requestRpc = inboundMessage.Inner as RequestRpc;
-            if (requestRpc == null) 
+            var rpcMessage = inboundMessage.Inner as RpcMessage;
+            if (rpcMessage == null)
             {
                 this.logger.LogError("ProcessRequestRpc input message type is {0}", inboundMessage.Inner.GetType());
                 return;
             }
+            var requestRpc = rpcMessage.Meta as RpcRequest;
+            if (requestRpc == null) 
+            {
+                this.logger.LogError("ProcessRequestRpc input message type is {0}", rpcMessage.Meta.GetType());
+                return;
+            }
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                this.logger.LogTrace("ProcessRpcRequest, Actor:{0}, Call:{1}.{2}",
+                                    requestRpc.ActorId, requestRpc.ServiceName, requestRpc.MethodName);
+            }
             try
             {
-                var implType = this.rpcMetadata.GetServerType(requestRpc.ActorType);
+                var implType = this.rpcMetadata.GetServerType(requestRpc.ServiceName);
                 if (implType == null) 
                 {
-                    this.logger.LogError("ProcessRequestRpc, InterfaceType:{0} not found ImplType", requestRpc.ActorType);
+                    this.logger.LogError("ProcessRequestRpc, InterfaceType:{0} not found ImplType", requestRpc.ServiceName);
                     return;
                 }
                 var args = pdPositionArgsCache.Value;
-                args.ActorType = requestRpc.ActorType;
+                args.ActorType = requestRpc.ServiceName;
                 args.ActorID = requestRpc.ActorId;
                 args.TTL = 0;
 
@@ -313,9 +329,9 @@ namespace F1.Core.Actor
             catch (Exception e) 
             {
                 this.logger.LogError("ProcessRequestRpc, ID:{0}@{1}, Exception:{2}",
-                    requestRpc.ActorType, requestRpc.ActorId, e.ToString());
+                    requestRpc.ServiceName, requestRpc.ActorId, e.ToString());
 
-                ActorUtils.SendRepsonseRpcError(inboundMessage, this.messageCenter, RpcErrorCode.Others, e.ToString());
+                ActorUtils.SendRepsonseRpcError(inboundMessage.SourceConnection, requestRpc, this.messageCenter, RpcErrorCode.Others, e.ToString());
             }
         }
     }

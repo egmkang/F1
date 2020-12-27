@@ -223,8 +223,8 @@ namespace F1.Core.Message
             }
             if (this.logger.IsEnabled(LogLevel.Debug)) 
             {
-                if (message.MessageName != "RpcMessage.RequestRpcHeartBeat" &&
-                    message.MessageName != "RpcMessage.ResponseRpcHeartBeat") 
+                if (message.MessageName != "Rpc.RpcHeartBeatRequest" &&
+                    message.MessageName != "Rpc.RpcHeartBeatResponse") 
                 {
                     this.logger.LogDebug("ProcessMessage, MessageName:{0}", message.MessageName);
                 }

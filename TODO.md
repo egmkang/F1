@@ -21,7 +21,8 @@ v0.3
   * [x] RPC Meta
   * [ ] RPC Protocol
     * [x] codec
-    * [ ] dispatch
+    * [x] dispatch
+    * [ ] Gateway NewMessageComing
   * [x] args encoding (ceras/msgpack)
 * [x] Protobuf Codec (Span Support)
 

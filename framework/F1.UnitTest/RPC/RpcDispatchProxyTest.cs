@@ -7,12 +7,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using Google.Protobuf;
-using RpcProto;
 using F1.Abstractions.Placement;
 using F1.Abstractions.RPC;
 using F1.Core.RPC;
 using F1.Core.Utils;
-
+using Rpc;
+using F1.Core.Message;
+using F1.Abstractions.Actor;
+using F1.Abstractions.Network;
 
 namespace F1.UnitTest.RPC
 {
@@ -55,16 +57,43 @@ namespace F1.UnitTest.RPC
         }
     }
 
-    public static partial class Ext 
+    class ActorContextMock : IActorContext
     {
-        public static ResponseRpc MakeResp(this object msg) 
+        public bool Loaded => false;
+
+        public string ReentrantId { get; set; } = "";
+
+        public long LastMessageTime => throw new NotImplementedException();
+
+        public long RunningLoopID => throw new NotImplementedException();
+
+        public void Run()
         {
-            var req = msg as RequestRpc;
-            return new ResponseRpc() 
+            throw new NotImplementedException();
+        }
+
+        public void SendMail(InboundMessage inboundMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Stop()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public static partial class Ext
+    {
+        public static RpcMessage MakeResp(this object msg)
+        {
+            var req = (msg as RpcMessage).Meta as RpcRequest;
+            return new RpcMessage()
             {
-                 Request = req,
-                 RequestId = req.RequestId,
-                 ResponseId = req.ResponseId,
+                Meta = new RpcResponse()
+                {
+                    RequestId = req.RequestId,
+                },
             };
         }
     }
@@ -80,7 +109,7 @@ namespace F1.UnitTest.RPC
             var service = new ServiceCollection();
             service
                 .AddSingleton<RpcMetaData>()
-                .AddSingleton<IParametersSerializer, ParametersSerializerCeras>()
+                .AddSingleton<IParametersSerializerFactory, ParametersSerializerFactory>()
                 .AddSingleton<TimeBasedSequence>()
                 .AddSingleton<RpcDispatchProxyFactory>()
                 .AddSingleton<UniqueSequence>()
@@ -88,7 +117,8 @@ namespace F1.UnitTest.RPC
             var provider = service.BuildServiceProvider();
 
             Provider = provider;
-            Serializer = Provider.GetRequiredService<IParametersSerializer>();
+            var SerializerFactory = Provider.GetRequiredService<IParametersSerializerFactory>();
+            Serializer = SerializerFactory.GetSerializer(0);
             ProxyFactory = Provider.GetRequiredService<RpcDispatchProxyFactory>();
         }
 
@@ -102,7 +132,7 @@ namespace F1.UnitTest.RPC
                 if (e != null)  throw e;
 
                 var response = _msg.MakeResp();
-                response.Response = ByteString.CopyFrom(bytes);
+                response.Body = bytes;
 
                 return response;
             };
@@ -113,6 +143,7 @@ namespace F1.UnitTest.RPC
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null));
 
             Assert.NotNull(proxy);
@@ -124,6 +155,7 @@ namespace F1.UnitTest.RPC
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null), 1000, new RpcTimeOutException());
 
             Exception E = null;
@@ -144,6 +176,7 @@ namespace F1.UnitTest.RPC
             var expected = $"{1212}.{2232}.asas.dddd";
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(expected, typeof(string)));
 
             var s = await proxy.InputMany(1212, 2232, "asas", "dddd");
@@ -155,6 +188,7 @@ namespace F1.UnitTest.RPC
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(null, null));
 
             await proxy.VoidFunc();
@@ -165,6 +199,7 @@ namespace F1.UnitTest.RPC
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
             inner.SendHook = MakeSimpleResponse(Serializer.Serialize(1111, typeof(int)));
 
             var result = await proxy.ReturnInt();
@@ -186,6 +221,7 @@ namespace F1.UnitTest.RPC
         {
             var proxy = ProxyFactory.CreateProxy<IDispatchProxyTest1>("111");
             var inner = proxy as RpcDispatchProxy;
+            inner.Context = new ActorContextMock();
 
 
             var args = new (int a, int b)[] 

@@ -12,6 +12,7 @@ using F1.Abstractions.Placement;
 using F1.Core.Message;
 using F1.Core.Network;
 using F1.Core.Placement;
+using F1.Core.Utils;
 using GatewayMessage;
 
 namespace F1.Gateway
@@ -71,7 +72,7 @@ namespace F1.Gateway
                         ServiceType =  playerInfo.DestServiceType,
                         ActorId = playerInfo.DestActorID,
                         SessionId = sessionInfo.SessionID,
-                    });
+                    }.AsRpcMessage());
                     if (result) return;
                 }
                 _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo, data, false);
@@ -117,7 +118,7 @@ namespace F1.Gateway
                         ActorId = gatewayPlayer.DestActorID,
                         ServiceType = gatewayPlayer.DestServiceType,
                     };
-                    this.messageCenter.SendMessageToServer(position.ServerID, msg);
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg.AsRpcMessage());
                 }
                 else
                 {
@@ -131,7 +132,7 @@ namespace F1.Gateway
                         ServiceType = gatewayPlayer.DestServiceType,
                         ActorId = gatewayPlayer.DestActorID,
                     };
-                    this.messageCenter.SendMessageToServer(position.ServerID, msg);
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg.AsRpcMessage());
                 }
             }
             catch (Exception e)
@@ -143,20 +144,21 @@ namespace F1.Gateway
 
         private void ProcessGatewayHeartBeat(InboundMessage inboundMessage)
         {
-            var msg = inboundMessage.Inner as RequestHeartBeat;
+            var msg = (inboundMessage.Inner as RpcMessage).Meta as RequestHeartBeat;
             if (msg == null)
             {
                 this.logger.LogError("ProcessGatewayHeartBeat, input message type:{0}", inboundMessage.Inner.GetType());
                 return;
             }
-            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, new ResponseHeartBeat()
-            {
+            var resp = new ResponseHeartBeat() 
+            { 
                 MilliSecond = msg.MilliSecond,
-            }));
+            };
+            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, resp.AsRpcMessage()));
         }
         private void ProcessGatewayCloseConnection(InboundMessage inboundMessage)
         {
-            var msg = inboundMessage.Inner as RequestCloseConnection;
+            var msg = (inboundMessage.Inner as  RpcMessage).Meta as RequestCloseConnection;
             if (msg == null)
             {
                 this.logger.LogError("ProcessGatewayCloseConnection, input message type:{0}", inboundMessage.Inner.GetType());
@@ -180,7 +182,7 @@ namespace F1.Gateway
 
         private void ProcessGatewayChangeMessageDestination(InboundMessage inboundMessage) 
         {
-            var msg = inboundMessage.Inner as RequestChangeMessageDestination;
+            var msg = (inboundMessage.Inner as RpcMessage).Meta as RequestChangeMessageDestination;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessGatewayChangeMessageDestination, input message type:{0}", inboundMessage.Inner.GetType());
@@ -206,7 +208,7 @@ namespace F1.Gateway
 
         private void ProcessGatewaySendMessageToPlayer(InboundMessage inboundMessage) 
         {
-            var msg = inboundMessage.Inner as RequestSendMessageToPlayer;
+            var msg = (inboundMessage.Inner as RpcMessage).Meta as RequestSendMessageToPlayer;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessGatewaySendMessageToPlayer, input message type:{0}", inboundMessage.Inner.GetType());

@@ -16,12 +16,12 @@ namespace F1.UnitTest.Network
     {
         static IByteBufferAllocator Allocator = PooledByteBufferAllocator.Default;
         static Random random = new Random();
-        static RpcRequestMeta requestMeta = new RpcRequestMeta() 
+        static RpcRequest requestMeta = new RpcRequest() 
         {
              ServiceName = "ITest",
              MethodName = "Func1",
         };
-        static RpcResponseMeta responseMeta = new RpcResponseMeta() { };
+        static RpcResponse responseMeta = new RpcResponse() { };
 
         [Fact]
         public void EmptyBody() 
@@ -29,10 +29,7 @@ namespace F1.UnitTest.Network
             var body = new byte[0];
             var rpcMessage = new RpcMessage() 
             {
-                 Meta = new RpcMeta() 
-                 { 
-                      Request = requestMeta,
-                 },
+                 Meta =  requestMeta,
                  Body = body,
             };
 
@@ -56,10 +53,7 @@ namespace F1.UnitTest.Network
 
             var rpcMessage = new RpcMessage() 
             {
-                 Meta = new RpcMeta() 
-                 { 
-                      Request = requestMeta,
-                 },
+                 Meta = requestMeta,
                  Body = body,
             };
 
@@ -83,13 +77,9 @@ namespace F1.UnitTest.Network
             var body = new byte[0];
             var rpcMessage = new RpcMessage()
             {
-                Meta = new RpcMeta()
+                Meta = new RpcHeartBeatRequest()
                 {
-                    HeartBeat = new RpcHearBeat() 
-                    {
-                        RequestMilliseconds = 1,
-                        ResponseMilliseconds = 2,
-                    }
+                    RequestMilliseconds = 1,
                 },
                 Body = body,
             };

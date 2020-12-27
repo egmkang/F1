@@ -20,6 +20,8 @@ namespace F1.Core.RPC
 
         private CerasSerializer serializer => Serializer.Value;
 
+        public int SerializerType => (int)Rpc.RpcEncodingType.Ceras;
+
         public byte[] Serialize(object[] p, Type[] types) 
         {
             return this.serializer.Serialize(p);
@@ -44,6 +46,9 @@ namespace F1.Core.RPC
     public class ParametersSerializerMsgPack : IParametersSerializer
     {
         static byte[] Empty = new byte[0];
+
+        public int SerializerType => (int)Rpc.RpcEncodingType.MsgPack;
+
         public byte[] Serialize(object[] p, Type[] types) 
         {
             using var memoryStream = new MemoryStream(128);

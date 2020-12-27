@@ -19,19 +19,19 @@ namespace F1.Core.Actor
         private readonly ILogger logger;
         private readonly RpcDispatchProxyFactory proxyFactory;
         private readonly DispatchHandler requestDispatchHandler;
-        private readonly IParametersSerializer parametersSerializer;
+        private readonly IParametersSerializerFactory parametersSerializerFactory;
         private readonly IMessageCenter messageCenter;
 
         public ActorFactory(ILoggerFactory loggerFactory,
                             RpcDispatchProxyFactory proxyFactory,
                             DispatchHandler requestDispatchHandler,
-                            IParametersSerializer parametersSerializer,
+                            IParametersSerializerFactory parametersSerializerFactory,
                             IMessageCenter messageCenter) 
         {
             this.logger = loggerFactory.CreateLogger("F1.Core.Actor");
             this.proxyFactory = proxyFactory;
             this.requestDispatchHandler = requestDispatchHandler;
-            this.parametersSerializer = parametersSerializer;
+            this.parametersSerializerFactory = parametersSerializerFactory;
             this.messageCenter = messageCenter;
         }
 
@@ -59,7 +59,7 @@ namespace F1.Core.Actor
             actor.Logger = this.logger;
             actor.ProxyFactory = this.proxyFactory;
             context.Dispatcher = this.requestDispatchHandler;
-            context.Serializer = this.parametersSerializer;
+            context.SerializerFactory = this.parametersSerializerFactory;
 
             this.logger.LogInformation("CreateActor, ID:{0}", actor.UniqueID);
 

@@ -3,56 +3,53 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using DotNetty.Transport.Channels;
 using F1.Abstractions.Network;
 using F1.Abstractions.RPC;
+using F1.Core.Message;
 using F1.Core.RPC;
 using Google.Protobuf;
-using RpcProto;
+using Rpc;
+
 
 namespace F1.Core.Actor
 {
     internal sealed class ActorUtils
     {
-        static Func<byte[], ByteString> CreateByteStringByBytes = null;
-
-        static ActorUtils() 
+        public static void SendRepsonseRpcError(IChannel sourceChannel, RpcRequest req, IMessageCenter messageCenter, RpcErrorCode errorCode, string errorMessage)
         {
-            //减少一次拷贝
-            if (CreateByteStringByBytes == null) 
+            var resp = new RpcMessage()
             {
-                var param = Expression.Parameter(typeof(byte[]), "bytes");
-                var ctor = typeof(ByteString).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(byte[]) }, null);
-                var lambda = Expression.Lambda<Func<byte[], ByteString>>(
-                    Expression.New(ctor, param), param);
-                CreateByteStringByBytes = lambda.Compile();
-            }
-        }
+                Meta = new RpcResponse()
+                {
+                    RequestId = req.RequestId,
+                    CallId = req.CallId,
+                    ErrorCode = (int)errorCode,
+                    ErrorText = errorMessage,
+                },
+            };
 
-        public static void SendRepsonseRpcError(InboundMessage inboundMessage, IMessageCenter messageCenter, RpcErrorCode errorCode, string errorMessage)
-        {
-            var request = inboundMessage.Inner as RequestRpc;
-
-            var response = new ResponseRpc();
-            response.Request = request;
-            response.RequestId = request.RequestId;
-            response.ResponseId = request.ResponseId;
-            response.ErrorCode = (int)errorCode;
-            response.ErrorMsg = errorMessage;
-
-            var outboundMessage = new OutboundMessage(inboundMessage.SourceConnection, response);
+            var outboundMessage = new OutboundMessage(sourceChannel, resp);
             messageCenter.SendMessage(outboundMessage);
         }
 
-        public static void SendResponseRpc(InboundMessage inboundMessage, IMessageCenter messageCenter, object returnValue, IParametersSerializer serializer)
+        public static void SendResponseRpc(IChannel sourceChannel, RpcRequest req, IMessageCenter messageCenter, object returnValue, IParametersSerializer serializer)
         {
-            var request = inboundMessage.Inner as RequestRpc;
+            var body = serializer.Serialize(returnValue, typeof(object));
+            var resp = new RpcMessage() 
+            {
+                Meta = new RpcResponse()
+                {
+                    RequestId = req.RequestId,
+                    CallId = req.CallId,
+                    EncodingType = req.EncodingType,
+                },
+                //TODO:
+                //LZ4
+                Body = body,
+            };
 
-            var response = new ResponseRpc();
-            response.RequestId = request.RequestId;
-            response.ResponseId = request.ResponseId;
-            response.Response = CreateByteStringByBytes(serializer.Serialize(returnValue, typeof(object)));
-
-            var outboundMessage = new OutboundMessage(inboundMessage.SourceConnection, response);
+            var outboundMessage = new OutboundMessage(sourceChannel, resp);
             messageCenter.SendMessage(outboundMessage);
         }
     }

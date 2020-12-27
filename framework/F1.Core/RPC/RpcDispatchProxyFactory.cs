@@ -23,14 +23,14 @@ namespace F1.Core.RPC
         {
             this.NewCompletionSource = f;
             this.IsOneWay = isOneWay;
-            this.Name = name;
+            this.MethodName = name;
             this.ParametersType = paramsType;
             this.ReturnType = returnType;
         }
 
         public Func<IGenericCompletionSource> NewCompletionSource { get; private set; }
         public bool IsOneWay { get; private set; }
-        public string Name { get; private set; }
+        public string MethodName { get; private set; }
         public Type ReturnType { get; private set; }
         public Type[] ParametersType { get; private set; }
     }
@@ -47,7 +47,7 @@ namespace F1.Core.RPC
 
         public RpcDispatchProxyFactory(ILoggerFactory loggerFactory,
                                             IServiceProvider serviceProvider,
-                                            IParametersSerializer serializer,
+                                            IParametersSerializerFactory parametersSerializerFactory,
                                             RpcMetaData metadata,
                                             TimeBasedSequence timeBasedSequence)
         {
@@ -55,7 +55,7 @@ namespace F1.Core.RPC
             this.serviceProvider = serviceProvider;
             this.timeBasedSequence = timeBasedSequence;
             this.rpcClientFactory = serviceProvider.GetService<RpcClientFactory>();
-            this.serializer = serializer;
+            this.serializer = parametersSerializerFactory.GetSerializer(0);
             this.logger = loggerFactory.CreateLogger("F1.Core.RPC");
 
             this.RegisterClientProxyHandler();
@@ -170,7 +170,7 @@ namespace F1.Core.RPC
                         var o = (IGenericCompletionSource)Activator.CreateInstance(completionSourceType);
                         o.ID = this.GetNewSequence();
                         return o;
-                    }, isOneway, $"{item.Value.Name}.{method.Name}", paramsType, taskInnerType);
+                    }, isOneway, method.Name, paramsType, taskInnerType);
 
                     newCompletionSourceDict.TryAdd(key, handler);
 

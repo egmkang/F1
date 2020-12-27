@@ -3,7 +3,7 @@ using Xunit;
 using DotNetty.Buffers;
 using DotNetty.Common.Utilities;
 using F1.Core.Message;
-using RpcProto;
+
 
 namespace F1.UnitTest.Network
 {
@@ -15,7 +15,7 @@ namespace F1.UnitTest.Network
         [Fact]
         public void EmptyMessage()
         {
-            var msg = new RequestRpcHeartBeat();
+            var msg = new Rpc.RpcHeartBeatRequest();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var (length, msg1) = buffer.DecodeOneProtobufMessage();
@@ -29,7 +29,7 @@ namespace F1.UnitTest.Network
         [Fact]
         public void HalfPacket() 
         {
-            var msg = new RequestRpcHeartBeat();
+            var msg = new Rpc.RpcHeartBeatRequest();
             var buffer = msg.ToByteBuffer(Allocator);
 
             var half = buffer.Slice(0, buffer.ReadableBytes - 1);
@@ -46,8 +46,8 @@ namespace F1.UnitTest.Network
         [Fact]
         public void RandomMessage() 
         {
-            var msg = new RequestRpcHeartBeat();
-            msg.MilliSeconds = random.Next(0, 1000000);
+            var msg = new Rpc.RpcHeartBeatRequest();
+            msg.RequestMilliseconds = random.Next(0, 1000000);
             var buffer = msg.ToByteBuffer(Allocator);
 
             var (length, msg1) = buffer.DecodeOneProtobufMessage();
@@ -56,7 +56,7 @@ namespace F1.UnitTest.Network
             Assert.NotEqual(0, length);
             Assert.NotNull(msg1);
             Assert.IsType(msg.GetType(), msg1);
-            Assert.Equal(msg, (msg1 as RequestRpcHeartBeat));
+            Assert.Equal(msg, (msg1 as Rpc.RpcHeartBeatRequest));
 
             ReferenceCountUtil.Release(buffer);
         }
@@ -64,11 +64,11 @@ namespace F1.UnitTest.Network
         [Fact]
         public void TowMessages()
         {
-            var input1 = new RequestRpcHeartBeat();
-            input1.MilliSeconds = random.Next(0, 1000000);
+            var input1 = new Rpc.RpcHeartBeatRequest();
+            input1.RequestMilliseconds = random.Next(0, 1000000);
 
-            var input2 = new RequestRpcHeartBeat();
-            input2.MilliSeconds = random.Next(0, 10000000);
+            var input2 = new Rpc.RpcHeartBeatRequest();
+            input2.RequestMilliseconds = random.Next(0, 10000000);
 
             var buffer1 = input1.ToByteBuffer(Allocator);
             var buffer2 = input2.ToByteBuffer(Allocator);
@@ -85,11 +85,11 @@ namespace F1.UnitTest.Network
             Assert.NotEqual(0, length2);
             Assert.NotNull(msg1);
             Assert.IsType(input1.GetType(), msg1);
-            Assert.Equal(input1, (msg1 as RequestRpcHeartBeat));
+            Assert.Equal(input1, (msg1 as Rpc.RpcHeartBeatRequest));
 
             Assert.NotNull(msg2);
             Assert.IsType(input2.GetType(), msg2);
-            Assert.Equal(input2, (msg2 as RequestRpcHeartBeat));
+            Assert.Equal(input2, (msg2 as Rpc.RpcHeartBeatRequest));
 
             ReferenceCountUtil.Release(buffer1);
             ReferenceCountUtil.Release(buffer2);

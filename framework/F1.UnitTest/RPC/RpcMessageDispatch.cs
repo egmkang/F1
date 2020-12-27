@@ -72,13 +72,13 @@ namespace F1.UnitTest.RPC
             var instance1 = new RpcRequestDispatchHandlerTestImpl(100);
 
             var aspectCore = Provider.GetService<IRpcDispatchHandler>();
-            var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnInt", instance1, new object[0]);
+            var returnValue = aspectCore.Invoke(typeof(IRpcRquestDispatchHandlerTest).Name, "ReturnInt", instance1, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();
             Assert.Equal(100, result);
 
             var instance2 = new RpcRequestDispatchHandlerTestImpl(101);
-            var returnValue2 = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnInt", instance2, new object[0]);
+            var returnValue2 = aspectCore.Invoke(typeof(IRpcRquestDispatchHandlerTest).Name, "ReturnInt", instance2, new object[0]);
             var result2 = await returnValue2.GetReturnValueAsync();
             Assert.Equal(101, result2);
         }
@@ -89,7 +89,7 @@ namespace F1.UnitTest.RPC
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
             var aspectCore = Provider.GetService<IRpcDispatchHandler>();
-            var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.SleepAddInt", instance, new object[1] { 100 });
+            var returnValue = aspectCore.Invoke(typeof(IRpcRquestDispatchHandlerTest).Name, "SleepAddInt", instance, new object[1] { 100 });
 
             var result = await returnValue.GetReturnValueAsync();
             Assert.Equal(200, result);
@@ -104,7 +104,7 @@ namespace F1.UnitTest.RPC
 
             Assert.Throws<RpcDispatchException>(() =>
             {
-                var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.SleepAddInt1", instance, new object[1] { 100 });
+                var returnValue = aspectCore.Invoke(typeof(IRpcRquestDispatchHandlerTest).Name, "SleepAddInt1", instance, new object[1] { 100 });
             });
         }
 
@@ -114,7 +114,7 @@ namespace F1.UnitTest.RPC
             var instance = new RpcRequestDispatchHandlerTestImpl(100);
 
             var aspectCore = Provider.GetService<IRpcDispatchHandler>();
-            var returnValue = aspectCore.Invoke($"{typeof(IRpcRquestDispatchHandlerTest).Name}.ReturnNothing", instance, new object[0]);
+            var returnValue = aspectCore.Invoke(typeof(IRpcRquestDispatchHandlerTest).Name, "ReturnNothing", instance, new object[0]);
 
             var result = await returnValue.GetReturnValueAsync();
             Assert.Null(result);

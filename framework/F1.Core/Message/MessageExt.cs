@@ -56,7 +56,7 @@ namespace F1.Core.Message
             {
                 try
                 {
-                    if (assembly.GlobalAssemblyCache || assembly.IsDynamic)
+                    if (assembly.IsDynamic)
                     {
                         continue;
                     }

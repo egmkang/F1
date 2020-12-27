@@ -15,11 +15,12 @@ namespace F1.Core.RPC
         /// 在服务端侧调用具体的实现, 通过name来定位到handler, 然后执行获取返回值
         /// 返回值可以是Task和Task<T>
         /// </summary>
-        /// <param name="name">接口类型的名字</param>
+        /// <paramref name="serviceName">接口类型的名称</paramre>
+        /// <param name="methodName">方法名称</param>
         /// <param name="instance">接口的实例</param>
         /// <param name="param">传入参数</param>
         /// <returns>返回值</returns>
-        AsyncReturnValue Invoke(string name, object instance, object[] param);
+        AsyncReturnValue Invoke(string serviceName, string methodName, object instance, object[] param);
     }
 
     public struct AsyncReturnValue 
@@ -57,8 +58,8 @@ namespace F1.Core.RPC
     public class DispatchHandler : IRpcDispatchHandler
     {
         private readonly RpcMetaData metadata;
-        private readonly Dictionary<string, ServerInvoker> invokersMap = new Dictionary<string, ServerInvoker>();
-        private readonly Dictionary<string, (Type[] InputArgsType, GetTaskResult GetReturnValueAction)> argsMap = new Dictionary<string, (Type[], GetTaskResult)>();
+        private readonly Dictionary<(string serviceName, string methodName), ServerInvoker> invokersMap = new Dictionary<(string, string), ServerInvoker>();
+        private readonly Dictionary<(string serviceName, string methodName), (Type[] InputArgsType, GetTaskResult GetReturnValueAction)> argsMap = new Dictionary<(string, string), (Type[], GetTaskResult)>();
 
         private readonly ILogger logger;
 
@@ -92,14 +93,16 @@ namespace F1.Core.RPC
         {
             foreach (var item in this.metadata.RpcClientTypes)
             {
-                var implType = this.metadata.GetServerType(item.Key);
+                var serviceName = item.Key;
+
+                var implType = this.metadata.GetServerType(serviceName);
                 if (implType == null) continue;
 
                 foreach (var method in item.Value.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    var uniqueName = $"{item.Key}.{method.Name}";
+                    var uniqueName = $"{serviceName}.{method.Name}";
                     //不支持重载
-                    if (invokersMap.ContainsKey(uniqueName)) 
+                    if (invokersMap.ContainsKey((serviceName, method.Name))) 
                     {
                         continue;
                     }
@@ -120,10 +123,10 @@ namespace F1.Core.RPC
                         }
                     }
 
-                    argsMap.TryAdd(uniqueName, (paramsType, getReturnValue));
-                    argsMap.TryGetValue(uniqueName, out var argsInfo); 
+                    argsMap.TryAdd((serviceName, method.Name), (paramsType, getReturnValue));
+                    argsMap.TryGetValue((serviceName, method.Name), out var argsInfo); 
 
-                    invokersMap.Add(uniqueName, (instance, param) => 
+                    invokersMap.Add((serviceName, method.Name), (instance, param) => 
                     {
                         var ret = refector.Invoke(instance, param);
                         return new AsyncReturnValue(ret, argsInfo.GetReturnValueAction);
@@ -134,15 +137,15 @@ namespace F1.Core.RPC
             }
         }
 
-        public Type[] GetInputArgsType(string name) 
+        public Type[] GetInputArgsType(string serviceName, string methodName) 
         {
-            this.argsMap.TryGetValue(name, out var argsInfo);
+            this.argsMap.TryGetValue((serviceName, methodName), out var argsInfo);
             return argsInfo.InputArgsType;
         }
 
-        public AsyncReturnValue Invoke(string name, object instance, object[] param)
+        public AsyncReturnValue Invoke(string serviceName, string methodName, object instance, object[] param)
         {
-            this.invokersMap.TryGetValue(name, out var func);
+            this.invokersMap.TryGetValue((serviceName, methodName), out var func);
             if (func != null) 
             {
                 return func(instance, param);

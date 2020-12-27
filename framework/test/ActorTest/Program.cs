@@ -109,23 +109,30 @@ namespace ActorTest
         {
             await Task.Delay(20 * 1000);
 
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("TimerTest");
+            logger.LogInformation("TimerTestBegin");
+
             var clientFactory = serviceProvider.GetRequiredService<IActorClientFactory>();
             var proxyA = clientFactory.GetActorProxy<ITestActorInterface>(id);
 
             await proxyA.RunATimer(count);
+
+            logger.LogInformation("TimerTestEnd");
         }
 
         static async Task RunReentrantTest(IServiceProvider serviceProvider, string id, string idB) 
         {
             await Task.Delay(20 * 1000);
 
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            var logger = loggerFactory.CreateLogger("test");
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("ReentrantTest");
+            logger.LogInformation("ReentrantTestBegin");
+
             var clientFactory = serviceProvider.GetRequiredService<IActorClientFactory>();
             var proxyA = clientFactory.GetActorProxy<ITestActorInterface>(id);
 
             var name = await proxyA.GetTwoNamesAsync(idB);
             logger.LogInformation("TwoNames:{0}", name);
+            logger.LogInformation("ReentrantTestEnd");
         }
 
         static async Task RunTest(IServiceProvider serviceProvider, string id) 
@@ -149,7 +156,9 @@ namespace ActorTest
         {
             await Task.Delay(25 * 1000);
             var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            var logger = loggerFactory.CreateLogger("test");
+            var logger = loggerFactory.CreateLogger("MultiInterface");
+
+            logger.LogInformation("MultiInterfaceTestBegin");
             var clientFactory = serviceProvider.GetRequiredService<IActorClientFactory>();
 
             var proxy1 = clientFactory.GetActorProxy<ITestMultiInterface1>(id);
@@ -161,6 +170,7 @@ namespace ActorTest
             var next4 = await proxy2.GetNext2();
 
             logger.LogInformation("NextNumbers:{0}, {1}, {2}, {3}", next1, next2, next3, next4);
+            logger.LogInformation("MultiInterfaceTestEnd");
         }
 
         static async Task Main(string[] args)
@@ -180,11 +190,11 @@ namespace ActorTest
 
             await builder.InitAsync("127.0.0.1:2379", 10001);
 
-            _ = RunTest(builder.ServiceProvider, "A");
-            _ = RunTest(builder.ServiceProvider, "B");
-            _ = RunReentrantTest(builder.ServiceProvider, "CCCC", "DDDD");
-            _ = RunTimerTest(builder.ServiceProvider, "A", 5);
-            _ = RunMultiInterfaceImpl(builder.ServiceProvider, "MMM");
+            _ = RunTest(builder.ServiceProvider, "T1");
+            _ = RunTest(builder.ServiceProvider, "T2");
+            _ = RunReentrantTest(builder.ServiceProvider, "T3.1", "T3.2");
+            _ = RunTimerTest(builder.ServiceProvider, "T4", 5);
+            _ = RunMultiInterfaceImpl(builder.ServiceProvider, "T5");
 
             while (true)
             {

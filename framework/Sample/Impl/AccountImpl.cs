@@ -160,7 +160,7 @@ namespace F1.Sample.Impl
                 var bytes = codec.EncodeMessage(message);
                 gatewayMessage.Msg = ByteString.CopyFrom(bytes);
 
-                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage))
+                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage.AsRpcMessage()))
                 {
                     this.Logger.LogWarning("SendMessageToPlayer, PlayerID:{0}, DestServerID:{1}",
                         this.ID, serverId);
@@ -177,7 +177,7 @@ namespace F1.Sample.Impl
             var serverId = SessionUniqueSequence.GetServerID(this.SessionID);
             if (serverId != 0)
             {
-                if (!this.MessageCenter.SendMessageToServer(serverId, message))
+                if (!this.MessageCenter.SendMessageToServer(serverId, message.AsRpcMessage()))
                 {
                     this.Logger.LogWarning("SendMessageToGateway, Actor:{0}/{1}, DestServerID:{2}",
                        this.ActorType, this.ID, serverId);

@@ -96,7 +96,7 @@ namespace F1.Core.Network
                 catch (Exception e) 
                 {
                     logger.LogError("SendOutboundMessage Fail, SessionID:{0}, Exception:{1}",
-                        this.sessionID, e.Message);
+                        this.sessionID, e);
                 }
             }
             channel.WriteAndFlushAsync(buffer);

@@ -42,10 +42,16 @@ namespace F1.Core.Gateway
 
         public void OnAddServer(PlacementActorHostInfo server)
         {
+            Func<object> fn = () =>
+            {
+                var rpcMessage = new RpcMessage() 
+                {
+                    Meta = new RequestHeartBeat() { MilliSecond = Platform.GetMilliSeconds() },
+                };
+                return rpcMessage;
+            };
             this.clientConnectionPool.OnAddServer(server.ServerID,
-                IPEndPoint.Parse(server.Address),
-                () => new RequestHeartBeat() { MilliSecond = Platform.GetMilliSeconds(), }
-            );
+                                                IPEndPoint.Parse(server.Address), fn);
         }
         public void OnRemoveServer(PlacementActorHostInfo server)
         {
@@ -59,7 +65,7 @@ namespace F1.Core.Gateway
 
         private void ProcessHeartBeatResponse(InboundMessage message)
         {
-            var msg = message.Inner as ResponseHeartBeat;
+            var msg = (message.Inner as RpcMessage).Meta as ResponseHeartBeat;
             if (msg == null)
             {
                 this.logger.LogError("ProcessHeartBeat input message type:{0}", message.Inner?.GetType());
@@ -76,7 +82,7 @@ namespace F1.Core.Gateway
 
         private void ProcessNotifyConnectionComing(InboundMessage message) 
         {
-            var msg = message.Inner as NotifyConnectionComing;
+            var msg = (message.Inner as RpcMessage).Meta as NotifyConnectionComing;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessNotifyConnectionComing input message type:{0}", message.Inner?.GetType());
@@ -87,7 +93,7 @@ namespace F1.Core.Gateway
 
         private void ProcessNotifyConnectionAborted(InboundMessage message)
         {
-            var msg = message.Inner as NotifyConnectionAborted;
+            var msg = (message.Inner as RpcMessage).Meta as NotifyConnectionAborted;
             if (msg == null)
             {
                 this.logger.LogError("ProcessNotifyConnectionAborted input message type:{0}", message.Inner?.GetType());
@@ -110,7 +116,7 @@ namespace F1.Core.Gateway
 
         private void ProcessNotifyNewMessage(InboundMessage message) 
         {
-            var msg = message.Inner as NotifyNewMessage;
+            var msg = (message.Inner as RpcMessage).Meta as NotifyNewMessage;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessNewMessage input message type:{0}", message.Inner?.GetType());

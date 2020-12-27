@@ -8,7 +8,6 @@ using System.Diagnostics.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DotNetty.Transport.Channels;
-using RpcProto;
 using F1.Abstractions.Network;
 using F1.Abstractions.Placement;
 using F1.Core.Message;
@@ -16,6 +15,7 @@ using F1.Core.Utils;
 using F1.Core.Network;
 using F1.Core.Gateway;
 using F1.Abstractions.Abstractions.Gateway;
+using Rpc;
 
 namespace F1.Core.RPC
 {
@@ -49,8 +49,8 @@ namespace F1.Core.RPC
             this.placement.RegisterServerChangedEvent(this.OnAddServer, this.OnRemoveServer, this.OnOfflineServer);
             this.logger.LogInformation("RpcClientFactory Placement RegisterServerChangedEvent");
 
-            this.messageCenter.RegisterTypedMessageProc<ResponseRpc>(this.ProcessRpcResponse);
-            this.messageCenter.RegisterTypedMessageProc<ResponseRpcHeartBeat>(this.ProcessRpcHeartBeatResponse);
+            this.messageCenter.RegisterTypedMessageProc<RpcResponse>(this.ProcessRpcResponse);
+            this.messageCenter.RegisterTypedMessageProc<RpcHeartBeatResponse>(this.ProcessRpcHeartBeatResponse);
         }
 
         private long NewSequenceID => this.timeBasedSequence.GetNewSequence();
@@ -68,9 +68,17 @@ namespace F1.Core.RPC
                 this.gatewayClientFactory?.OnAddServer(server);
                 return;
             }
+            Func<object> fn = () =>
+            {
+                var rpcMessage = new RpcMessage() 
+                {
+                    Meta = new RpcHeartBeatRequest() { RequestMilliseconds = Platform.GetMilliSeconds() },
+                };
+                return rpcMessage;
+            };
             this.clientConnectionPool.OnAddServer(server.ServerID,
-                IPEndPoint.Parse(server.Address),
-                () => new RequestRpcHeartBeat() { MilliSeconds = Platform.GetMilliSeconds() });
+                                            IPEndPoint.Parse(server.Address),
+                                            fn);
         }
 
         private void OnRemoveServer(PlacementActorHostInfo server) 
@@ -95,7 +103,7 @@ namespace F1.Core.RPC
             //但是自己的不能清掉
         }
 
-        public async Task<ResponseRpc> TrySendRpcRequest(PlacementFindActorPositionRequest actor,
+        public async Task<RpcMessage> TrySendRpcRequest(PlacementFindActorPositionRequest actor,
                                                         object message,
                                                         bool needClearPosition) 
         {
@@ -126,7 +134,7 @@ namespace F1.Core.RPC
                         await Task.Delay(1000).ConfigureAwait(false);
                     }
                     this.logger.LogError("TrySendRpcRequest, Actor:{0}@{1}, Exception:{2}",
-                        actor.ActorType, actor.ActorID, e.Message);
+                        actor.ActorType, actor.ActorID, e);
                 }
             }
 
@@ -138,46 +146,46 @@ namespace F1.Core.RPC
             return this.clientConnectionPool.GetChannelByServerID(serverID);
         }
 
-        public Task<ResponseRpc> SendRpcMessage(IChannel channel, object message)
+        private static readonly RpcMessage EmptyRpcResponse = new RpcMessage() 
         {
-            var request = message as RequestRpc;
-            Contract.Assert(request != null);
-            Contract.Assert(channel != null);
+            Meta = new RpcResponse(),
+        };
 
-            request.ResponseId = this.NewSequenceID;
-            request.DestServerId = channel.GetSessionInfo().ServerID;
+        public Task<RpcMessage> SendRpcMessage(IChannel channel, object message)
+        {
+            var rpcMessage = message as RpcMessage;
+            Contract.Assert(rpcMessage != null);
+            Contract.Assert(channel != null);
+            var request = rpcMessage.Meta as RpcRequest;
+            Contract.Assert(request != null);
+
+            request.RequestId = this.NewSequenceID;
 
             var outboundMessage = new OutboundMessage(channel, message);
             this.messageCenter.SendMessage(outboundMessage);
+
             if (this.logger.IsEnabled(LogLevel.Trace)) 
             {
-                this.logger.LogTrace("SendRpcMessage, {0}", message.GetType());
+                this.logger.LogTrace("SendRpcMessage, Actor:{0}, Service:{1}, Method:{2}, ReentrantId:{3}, RequestId:{4}, CallId:{5}",
+                    request.ActorId, request.ServiceName, request.MethodName, request.ReentrantId, request.RequestId, request.CallId);
             }
 
-            if (!request.NeedResult) 
+            if (request.Oneway) 
             {
-                return Task.FromResult(new ResponseRpc());
+                return Task.FromResult(EmptyRpcResponse);
             }
 
-            var completionSource = new GenericCompletionSource<ResponseRpc>();
-            completionSource.ID = request.ResponseId;
+            var completionSource = new GenericCompletionSource<RpcMessage>();
+            completionSource.ID = request.RequestId;
             this.taskCompletionSourceManager.Push(completionSource);
-            return completionSource.GetTask() as Task<ResponseRpc>;
+            return completionSource.GetTask() as Task<RpcMessage>;
         }
 
-        private void ProcessRpcResponseError(ResponseRpc msg, IGenericCompletionSource completionSource) 
+        private void ProcessRpcResponseError(RpcResponse msg, IGenericCompletionSource completionSource) 
         {
             if (msg.ErrorCode == (int)RpcErrorCode.ActorHasNewPosition)
             {
-                var actorInfo = new PlacementFindActorPositionRequest()
-                {
-                    ActorID = msg.Request.ActorId,
-                    ActorType = msg.Request.ActorType,
-                    TTL = 0,
-                };
-
-                //这边要看错误是否可以通过重试解决
-                _ = this.TrySendRpcRequest(actorInfo, msg, true);
+                completionSource.WithException(new RpcNewPositionException());
             }
             else if (msg.ErrorCode == (int)RpcErrorCode.MethodNotFound)
             {
@@ -185,19 +193,19 @@ namespace F1.Core.RPC
             }
             else 
             {
-                completionSource.WithException(new Exception(msg.ErrorMsg));
+                completionSource.WithException(new Exception(msg.ErrorText));
             }
         }
 
         private void ProcessRpcHeartBeatResponse(InboundMessage message) 
         {
-            var msg = message.Inner as ResponseRpcHeartBeat;
+            var msg = (message.Inner as RpcMessage).Meta as RpcHeartBeatResponse;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessRpcHeartBeat input message type:{0}", message.GetType());
                 return;
             }
-            var elapsedTime = Platform.GetMilliSeconds() - msg.MilliSeconds;
+            var elapsedTime = Platform.GetMilliSeconds() - msg.ResponseMilliseconds;
             if (elapsedTime >= 5) 
             {
                 var sessionInfo = message.SourceConnection.GetSessionInfo();
@@ -208,23 +216,32 @@ namespace F1.Core.RPC
 
         private void ProcessRpcResponse(InboundMessage message)
         {
-            var msg = message.Inner as ResponseRpc;
+            var msg = message.Inner as RpcMessage;
             if (msg == null)
             {
                 this.logger.LogError("ProcessRpcResponse input message type:{0}", message.Inner.GetType());
                 return;
             }
+            var response = msg.Meta as RpcResponse;
+            var body = msg.Body;
 
-            var completionSource = this.taskCompletionSourceManager.GetCompletionSource(msg.ResponseId);
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                this.logger.LogTrace("RpcResponse, RequestId:{0}, CallId:{1}, ErrorCode:{2}, ErrorText:{3}", 
+                                    response.RequestId, response.CallId,
+                                    response.ErrorCode, response.ErrorText);
+            }
+
+            var completionSource = this.taskCompletionSourceManager.GetCompletionSource(response.RequestId);
             if (completionSource == null) 
             {
-                this.logger.LogWarning("ProcessRpcResponse fail, ResponseID:{0}", msg.ResponseId);
+                this.logger.LogWarning("ProcessRpcResponse fail, ResponseID:{0}", response.RequestId);
                 return;
             }
 
-            if (msg.ErrorCode != 0) 
+            if (response.ErrorCode != 0) 
             {
-                this.ProcessRpcResponseError(msg, completionSource);
+                this.ProcessRpcResponseError(response, completionSource);
                 return;
             }
 

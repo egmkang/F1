@@ -4,6 +4,10 @@ using System.Text;
 
 namespace F1.Core.RPC
 {
+    public class RpcNewPositionException : Exception 
+    {
+    }
+
     public class RpcDispatchException : Exception 
     {
         public RpcDispatchException(string message) : base(message) { }

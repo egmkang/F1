@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Google.Protobuf;
-using RpcProto;
+using DotNetty.Transport.Channels;
 using F1.Abstractions.RPC;
 using F1.Abstractions.Actor;
 using F1.Abstractions.Network;
 using F1.Core.RPC;
 using F1.Core.Utils;
+using F1.Core.Message;
+using Rpc;
 
 namespace F1.Core.Actor
 {
@@ -19,11 +21,14 @@ namespace F1.Core.Actor
         private readonly AsyncQueue<InboundMessage> mailBox = new AsyncQueue<InboundMessage>();
         private readonly ILogger logger;
         internal Actor Actor { get; set; }
-        internal IParametersSerializer Serializer { get; set; }
+        internal IParametersSerializerFactory SerializerFactory { get; set; }
         internal DispatchHandler Dispatcher { get; set; }
         internal volatile bool stop = false;
 
-        public (long ServerID, long RequestID) CurrentRequest { get; internal set; }
+        /// <summary>
+        /// 可重入ID
+        /// </summary>
+        public string ReentrantId { get; internal set; }
 
         public long RunningLoopID { get; internal set; }
 
@@ -44,13 +49,13 @@ namespace F1.Core.Actor
 
         public void SendMail(InboundMessage inboundMessage)
         {
-            if (inboundMessage.Inner is RequestRpc requestRpc)
+            if (inboundMessage.Inner is RpcMessage request)
             {
-                //logger.LogDebug("Actor:{0}, InputMessage:{1}_{2}",
-                //                this.Actor.UniqueID, requestRpc.SrcServer, requestRpc.SrcRequestId);
+                //logger.LogDebug("Actor:{0}, InputMessage:{1}",
+                //                this.Actor.UniqueID, requestMeta.ReentrantId);
+
                 //可重入
-                if (requestRpc.SrcServer == this.CurrentRequest.ServerID &&
-                    requestRpc.SrcRequestId == this.CurrentRequest.RequestID)
+                if ((request.Meta as RpcRequest).ReentrantId == this.ReentrantId)
                 {
                     _ = this.DispatchMessage(inboundMessage).ConfigureAwait(false);
                     return;
@@ -93,41 +98,64 @@ namespace F1.Core.Actor
             {
                 timer.Tick();
             }
-            else if (inboundMessage.Inner is RequestRpc requestRpc)
+            else if (inboundMessage.Inner is RpcMessage rpcMessage)
             {
-                this.CurrentRequest = (requestRpc.SrcServer, requestRpc.SrcRequestId);
-
-                var inputTypes = this.Dispatcher.GetInputArgsType(requestRpc.Method);
-                var inputArgs = this.Serializer.Deserialize(getByteStringData(requestRpc.Args), inputTypes);
-                try
-                {
-                    var asyncReturnValue = this.Dispatcher.Invoke(requestRpc.Method, this.Actor, inputArgs);
-                    var value = await asyncReturnValue.GetReturnValueAsync().ConfigureAwait(false);
-                    ActorUtils.SendResponseRpc(inboundMessage, this.Actor.MessageCenter, value, this.Serializer);
-                    this.LastMessageTime = Platform.GetMilliSeconds();
-                }
-                catch (Exception e)
-                {
-                    this.logger.LogError("DispatchMessage Fail, ID:{0}, Exception:{1}",
-                        this.Actor.UniqueID, e.ToString());
-
-                    if (e is RpcDispatchException)
-                    {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.Actor.MessageCenter, RpcErrorCode.MethodNotFound, e.ToString());
-                    }
-                    else 
-                    {
-                        ActorUtils.SendRepsonseRpcError(inboundMessage, this.Actor.MessageCenter, RpcErrorCode.Others, e.ToString());
-                    }
-                }
-                finally 
-                {
-                    this.CurrentRequest = (0, 0);
-                }
+                await this.DispatchRpcRequest(inboundMessage.SourceConnection, rpcMessage).ConfigureAwait(false);
             }
             else 
             {
                 await this.Actor.DispatchUserMessage(inboundMessage).ConfigureAwait(false);
+            }
+        }
+
+        private async Task DispatchRpcRequest(IChannel sourceChannel, RpcMessage rpcMessage)
+        {
+            var requestMeta = rpcMessage.Meta as RpcRequest;
+
+            this.ReentrantId = requestMeta.ReentrantId;
+
+            if (this.logger.IsEnabled(LogLevel.Trace)) 
+            {
+                this.logger.LogTrace("Actor:{0} ReentranId:{1}, Call:{2}.{3}, RequestId:{4}, CallId:{5}",
+                                        this.Actor.UniqueID, this.ReentrantId,
+                                        requestMeta.ServiceName, requestMeta.MethodName,
+                                        requestMeta.RequestId, requestMeta.CallId);
+            }
+
+            var inputTypes = this.Dispatcher.GetInputArgsType(requestMeta.ServiceName, requestMeta.MethodName);
+            var serializer = this.SerializerFactory.GetSerializer(requestMeta.EncodingType);
+            var inputArgs = serializer.Deserialize(rpcMessage.Body, inputTypes);
+            try
+            {
+                var asyncReturnValue = this.Dispatcher.Invoke(requestMeta.ServiceName, requestMeta.MethodName, this.Actor, inputArgs);
+                var value = await asyncReturnValue.GetReturnValueAsync().ConfigureAwait(false);
+                ActorUtils.SendResponseRpc(sourceChannel, requestMeta, this.Actor.MessageCenter, value, serializer);
+                if (this.logger.IsEnabled(LogLevel.Trace)) 
+                {
+                    this.logger.LogTrace("Actor:{0} ReentranId:{1}, Call:{2}.{3}, RequestId:{4}, CallId:{5} Response Returned",
+                                            this.Actor.UniqueID, this.ReentrantId,
+                                            requestMeta.ServiceName, requestMeta.MethodName,
+                                            requestMeta.RequestId, requestMeta.CallId);
+                }
+                this.LastMessageTime = Platform.GetMilliSeconds();
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError("DispatchMessage Fail, ID:{0}, Exception:{1}",
+                    this.Actor.UniqueID, e.ToString());
+
+                if (e is RpcDispatchException)
+                {
+                    ActorUtils.SendRepsonseRpcError(sourceChannel, requestMeta, this.Actor.MessageCenter, RpcErrorCode.MethodNotFound, e.ToString());
+                }
+                else
+                {
+                    ActorUtils.SendRepsonseRpcError(sourceChannel, requestMeta, this.Actor.MessageCenter, RpcErrorCode.Others, e.ToString());
+                }
+            }
+            finally
+            {
+                this.ReentrantId = "";
             }
         }
 

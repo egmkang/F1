@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 using DotNetty.Buffers;
 using Google.Protobuf;
 using F1.Abstractions.Network;
@@ -15,12 +16,17 @@ namespace F1.Core.Message
         public const int RpcMagic = 0x46464646;    //4个字符F
         public const int RpcHeaderLength = 4 + 4 + 4;
         public const int RpcMetaMinLength = 1;
-        public const int RpcMetaMaxLength = 1024;
+        public const int RpcMetaMaxLength = 1 << 30;
         public const int RpcBodyMaxLength = 1 << 30;
     }
 
     public class RpcMessage
     {
+        private static readonly byte[] EmptyBody = new byte[0];
+        public RpcMessage() 
+        {
+            this.Body = EmptyBody;
+        }
         public IMessage Meta { get; set; }
         public byte[] Body { get; set; }
     }
@@ -131,6 +137,7 @@ namespace F1.Core.Message
 
         public IByteBuffer Encode(IByteBufferAllocator allocator, object msg)
         {
+            Contract.Assert((msg as RpcMessage) != null, msg.GetType().FullName);
             return encoder.Encode(allocator, msg as RpcMessage);
         }
     }

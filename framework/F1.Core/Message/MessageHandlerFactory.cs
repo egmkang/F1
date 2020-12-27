@@ -18,7 +18,6 @@ namespace F1.Core.Message
             this.messageCenter = messageCenter;
             this.serviceProvider = serviceProvider;
             this.loggerFactory = loggerFactory;
-            this.Codec = new ProtobufMessageCodec();
         }
 
         public IMessageCodec Codec { get; set; }

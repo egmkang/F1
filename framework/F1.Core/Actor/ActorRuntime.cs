@@ -34,8 +34,13 @@ namespace F1.Core.Actor
         {
             public bool Loaded => throw new NotImplementedException();
 
-            public (long ServerID, long RequestID) CurrentRequest => (this.ServerID, this.UniqueSequence.GetNewSequence());
-
+            public string ReentrantId
+            {
+                get
+                {
+                    return $"{this.ServerID}_{this.UniqueSequence.GetNewSequence()}";
+                }
+            }
             public long LastMessageTime => throw new NotImplementedException();
 
             public long RunningLoopID => throw new NotImplementedException();
@@ -85,7 +90,7 @@ namespace F1.Core.Actor
             var messageCenter = this.ServiceProvider.GetRequiredService<IMessageCenter>();
             var messageHandlerFactory = this.ServiceProvider.GetRequiredService<IMessageHandlerFactory>();
             var clientFactory = this.ServiceProvider.GetRequiredService<IClientConnectionFactory>();
-            messageHandlerFactory.Codec = new ProtobufMessageCodec();
+            messageHandlerFactory.Codec = new RpcMessageCodec();
 
             //TODO, RPC请求快速失败
             messageCenter.RegsiterEvent(

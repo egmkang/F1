@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <None Remove="Message\gateway.proto" />
-    <None Remove="Message\rpc.proto" />
     <None Remove="Message\rpc_meta.proto" />
   </ItemGroup>
 

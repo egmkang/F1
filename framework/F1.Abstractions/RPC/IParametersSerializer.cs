@@ -6,6 +6,7 @@ namespace F1.Abstractions.RPC
 {
     public interface IParametersSerializer
     {
+        int SerializerType { get; }
         byte[] Serialize(object[] p, Type[] types);
         object[] Deserialize(byte[] bytes, Type[] types);
         byte[] Serialize(object p, Type type);

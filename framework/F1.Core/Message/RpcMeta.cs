@@ -24,29 +24,29 @@ namespace Rpc {
     static RpcMetaReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMivwEKB1JwY01ldGESJAoH",
-            "cmVxdWVzdBgBIAEoCzITLlJwYy5ScGNSZXF1ZXN0TWV0YRImCghyZXNwb25z",
-            "ZRgCIAEoCzIULlJwYy5ScGNSZXNwb25zZU1ldGESFQoNY29tcHJlc3NfdHlw",
-            "ZRgDIAEoBRIVCg1lbmNvZGluZ190eXBlGAQgASgFEhIKCnJlcXVlc3RfaWQY",
-            "BSABKBASJAoKaGVhcnRfYmVhdBgGIAEoCzIQLlJwYy5ScGNIZWFyQmVhdCKu",
-            "AQoOUnBjUmVxdWVzdE1ldGESFAoMc2VydmljZV9uYW1lGAEgASgJEhMKC21l",
-            "dGhvZF9uYW1lGAIgASgJEg4KBm9uZXdheRgDIAEoCBIQCgh0cmFjZV9pZBgF",
-            "IAEoCRIPCgdzcGFuX2lkGAYgASgJEhYKDnBhcmVudF9zcGFuX2lkGAcgASgJ",
-            "EhAKCGFjdG9yX2lkGAkgASgJEhQKDHJlZW50cmFudF9pZBgKIAEoCSI5Cg9S",
-            "cGNSZXNwb25zZU1ldGESEgoKZXJyb3JfY29kZRgBIAEoBRISCgplcnJvcl90",
-            "ZXh0GAIgASgJIkoKC1JwY0hlYXJCZWF0EhwKFHJlcXVlc3RfbWlsbGlzZWNv",
-            "bmRzGAEgASgQEh0KFXJlc3BvbnNlX21pbGxpc2Vjb25kcxgCIAEoECpECg9S",
-            "cGNDb21wcmVzc1R5cGUSGAoUUnBjQ29tcHJlc3NUeXBlX05vbmUQABIXChNS",
-            "cGNDb21wcmVzc1R5cGVfTFo0EAEqYwoPUnBjRW5jb2RpbmdUeXBlEhgKFFJw",
-            "Y0VuY29kaW5nVHlwZV9Ob25lEAASGQoVUnBjRW5jb2RpbmdUeXBlX0NlcmFz",
-            "EAESGwoXUnBjRW5jb2RpbmdUeXBlX01zZ1BhY2sQAmIGcHJvdG8z"));
+            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMi/QEKClJwY1JlcXVlc3QS",
+            "FAoMc2VydmljZV9uYW1lGAEgASgJEhMKC21ldGhvZF9uYW1lGAIgASgJEg4K",
+            "Bm9uZXdheRgDIAEoCBIQCgh0cmFjZV9pZBgFIAEoCRIPCgdzcGFuX2lkGAYg",
+            "ASgJEhYKDnBhcmVudF9zcGFuX2lkGAcgASgJEhAKCGFjdG9yX2lkGAkgASgJ",
+            "EhQKDHJlZW50cmFudF9pZBgKIAEoCRIVCg1jb21wcmVzc190eXBlGBQgASgF",
+            "EhUKDWVuY29kaW5nX3R5cGUYFSABKAUSEgoKcmVxdWVzdF9pZBgWIAEoEBIP",
+            "CgdjYWxsX2lkGBcgASgQIogBCgtScGNSZXNwb25zZRISCgplcnJvcl9jb2Rl",
+            "GAEgASgFEhIKCmVycm9yX3RleHQYAiABKAkSFQoNY29tcHJlc3NfdHlwZRgU",
+            "IAEoBRIVCg1lbmNvZGluZ190eXBlGBUgASgFEhIKCnJlcXVlc3RfaWQYFiAB",
+            "KBASDwoHY2FsbF9pZBgXIAEoECIzChNScGNIZWFydEJlYXRSZXF1ZXN0EhwK",
+            "FHJlcXVlc3RfbWlsbGlzZWNvbmRzGAEgASgQIjUKFFJwY0hlYXJ0QmVhdFJl",
+            "c3BvbnNlEh0KFXJlc3BvbnNlX21pbGxpc2Vjb25kcxgBIAEoECpECg9ScGND",
+            "b21wcmVzc1R5cGUSGAoUUnBjQ29tcHJlc3NUeXBlX05vbmUQABIXChNScGND",
+            "b21wcmVzc1R5cGVfTFo0EAEqYwoPUnBjRW5jb2RpbmdUeXBlEhgKFFJwY0Vu",
+            "Y29kaW5nVHlwZV9Ob25lEAASGQoVUnBjRW5jb2RpbmdUeXBlX0NlcmFzEAES",
+            "GwoXUnBjRW5jb2RpbmdUeXBlX01zZ1BhY2sQAmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Rpc.RpcCompressType), typeof(global::Rpc.RpcEncodingType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcMeta), global::Rpc.RpcMeta.Parser, new[]{ "Request", "Response", "CompressType", "EncodingType", "RequestId", "HeartBeat" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequestMeta), global::Rpc.RpcRequestMeta.Parser, new[]{ "ServiceName", "MethodName", "Oneway", "TraceId", "SpanId", "ParentSpanId", "ActorId", "ReentrantId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponseMeta), global::Rpc.RpcResponseMeta.Parser, new[]{ "ErrorCode", "ErrorText" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHearBeat), global::Rpc.RpcHearBeat.Parser, new[]{ "RequestMilliseconds", "ResponseMilliseconds" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequest), global::Rpc.RpcRequest.Parser, new[]{ "ServiceName", "MethodName", "Oneway", "TraceId", "SpanId", "ParentSpanId", "ActorId", "ReentrantId", "CompressType", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponse), global::Rpc.RpcResponse.Parser, new[]{ "ErrorCode", "ErrorText", "CompressType", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHeartBeatRequest), global::Rpc.RpcHeartBeatRequest.Parser, new[]{ "RequestMilliseconds" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHeartBeatResponse), global::Rpc.RpcHeartBeatResponse.Parser, new[]{ "ResponseMilliseconds" }, null, null, null, null)
           }));
     }
     #endregion
@@ -67,15 +67,15 @@ namespace Rpc {
   #endregion
 
   #region Messages
-  public sealed partial class RpcMeta : pb::IMessage<RpcMeta>
+  public sealed partial class RpcRequest : pb::IMessage<RpcRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<RpcMeta> _parser = new pb::MessageParser<RpcMeta>(() => new RpcMeta());
+    private static readonly pb::MessageParser<RpcRequest> _parser = new pb::MessageParser<RpcRequest>(() => new RpcRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RpcMeta> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -88,393 +88,14 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcMeta() {
+    public RpcRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcMeta(RpcMeta other) : this() {
-      request_ = other.request_ != null ? other.request_.Clone() : null;
-      response_ = other.response_ != null ? other.response_.Clone() : null;
-      compressType_ = other.compressType_;
-      encodingType_ = other.encodingType_;
-      requestId_ = other.requestId_;
-      heartBeat_ = other.heartBeat_ != null ? other.heartBeat_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcMeta Clone() {
-      return new RpcMeta(this);
-    }
-
-    /// <summary>Field number for the "request" field.</summary>
-    public const int RequestFieldNumber = 1;
-    private global::Rpc.RpcRequestMeta request_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Rpc.RpcRequestMeta Request {
-      get { return request_; }
-      set {
-        request_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "response" field.</summary>
-    public const int ResponseFieldNumber = 2;
-    private global::Rpc.RpcResponseMeta response_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Rpc.RpcResponseMeta Response {
-      get { return response_; }
-      set {
-        response_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "compress_type" field.</summary>
-    public const int CompressTypeFieldNumber = 3;
-    private int compressType_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CompressType {
-      get { return compressType_; }
-      set {
-        compressType_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "encoding_type" field.</summary>
-    public const int EncodingTypeFieldNumber = 4;
-    private int encodingType_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int EncodingType {
-      get { return encodingType_; }
-      set {
-        encodingType_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "request_id" field.</summary>
-    public const int RequestIdFieldNumber = 5;
-    private long requestId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long RequestId {
-      get { return requestId_; }
-      set {
-        requestId_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "heart_beat" field.</summary>
-    public const int HeartBeatFieldNumber = 6;
-    private global::Rpc.RpcHearBeat heartBeat_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Rpc.RpcHearBeat HeartBeat {
-      get { return heartBeat_; }
-      set {
-        heartBeat_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RpcMeta);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RpcMeta other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(Request, other.Request)) return false;
-      if (!object.Equals(Response, other.Response)) return false;
-      if (CompressType != other.CompressType) return false;
-      if (EncodingType != other.EncodingType) return false;
-      if (RequestId != other.RequestId) return false;
-      if (!object.Equals(HeartBeat, other.HeartBeat)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (request_ != null) hash ^= Request.GetHashCode();
-      if (response_ != null) hash ^= Response.GetHashCode();
-      if (CompressType != 0) hash ^= CompressType.GetHashCode();
-      if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
-      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
-      if (heartBeat_ != null) hash ^= HeartBeat.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (request_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Request);
-      }
-      if (response_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Response);
-      }
-      if (CompressType != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(CompressType);
-      }
-      if (EncodingType != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(EncodingType);
-      }
-      if (RequestId != 0L) {
-        output.WriteRawTag(41);
-        output.WriteSFixed64(RequestId);
-      }
-      if (heartBeat_ != null) {
-        output.WriteRawTag(50);
-        output.WriteMessage(HeartBeat);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (request_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Request);
-      }
-      if (response_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Response);
-      }
-      if (CompressType != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(CompressType);
-      }
-      if (EncodingType != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(EncodingType);
-      }
-      if (RequestId != 0L) {
-        output.WriteRawTag(41);
-        output.WriteSFixed64(RequestId);
-      }
-      if (heartBeat_ != null) {
-        output.WriteRawTag(50);
-        output.WriteMessage(HeartBeat);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (request_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Request);
-      }
-      if (response_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Response);
-      }
-      if (CompressType != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CompressType);
-      }
-      if (EncodingType != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(EncodingType);
-      }
-      if (RequestId != 0L) {
-        size += 1 + 8;
-      }
-      if (heartBeat_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(HeartBeat);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RpcMeta other) {
-      if (other == null) {
-        return;
-      }
-      if (other.request_ != null) {
-        if (request_ == null) {
-          Request = new global::Rpc.RpcRequestMeta();
-        }
-        Request.MergeFrom(other.Request);
-      }
-      if (other.response_ != null) {
-        if (response_ == null) {
-          Response = new global::Rpc.RpcResponseMeta();
-        }
-        Response.MergeFrom(other.Response);
-      }
-      if (other.CompressType != 0) {
-        CompressType = other.CompressType;
-      }
-      if (other.EncodingType != 0) {
-        EncodingType = other.EncodingType;
-      }
-      if (other.RequestId != 0L) {
-        RequestId = other.RequestId;
-      }
-      if (other.heartBeat_ != null) {
-        if (heartBeat_ == null) {
-          HeartBeat = new global::Rpc.RpcHearBeat();
-        }
-        HeartBeat.MergeFrom(other.HeartBeat);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            if (request_ == null) {
-              Request = new global::Rpc.RpcRequestMeta();
-            }
-            input.ReadMessage(Request);
-            break;
-          }
-          case 18: {
-            if (response_ == null) {
-              Response = new global::Rpc.RpcResponseMeta();
-            }
-            input.ReadMessage(Response);
-            break;
-          }
-          case 24: {
-            CompressType = input.ReadInt32();
-            break;
-          }
-          case 32: {
-            EncodingType = input.ReadInt32();
-            break;
-          }
-          case 41: {
-            RequestId = input.ReadSFixed64();
-            break;
-          }
-          case 50: {
-            if (heartBeat_ == null) {
-              HeartBeat = new global::Rpc.RpcHearBeat();
-            }
-            input.ReadMessage(HeartBeat);
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            if (request_ == null) {
-              Request = new global::Rpc.RpcRequestMeta();
-            }
-            input.ReadMessage(Request);
-            break;
-          }
-          case 18: {
-            if (response_ == null) {
-              Response = new global::Rpc.RpcResponseMeta();
-            }
-            input.ReadMessage(Response);
-            break;
-          }
-          case 24: {
-            CompressType = input.ReadInt32();
-            break;
-          }
-          case 32: {
-            EncodingType = input.ReadInt32();
-            break;
-          }
-          case 41: {
-            RequestId = input.ReadSFixed64();
-            break;
-          }
-          case 50: {
-            if (heartBeat_ == null) {
-              HeartBeat = new global::Rpc.RpcHearBeat();
-            }
-            input.ReadMessage(HeartBeat);
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  public sealed partial class RpcRequestMeta : pb::IMessage<RpcRequestMeta>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<RpcRequestMeta> _parser = new pb::MessageParser<RpcRequestMeta>(() => new RpcRequestMeta());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RpcRequestMeta> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcRequestMeta() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcRequestMeta(RpcRequestMeta other) : this() {
+    public RpcRequest(RpcRequest other) : this() {
       serviceName_ = other.serviceName_;
       methodName_ = other.methodName_;
       oneway_ = other.oneway_;
@@ -483,12 +104,16 @@ namespace Rpc {
       parentSpanId_ = other.parentSpanId_;
       actorId_ = other.actorId_;
       reentrantId_ = other.reentrantId_;
+      compressType_ = other.compressType_;
+      encodingType_ = other.encodingType_;
+      requestId_ = other.requestId_;
+      callId_ = other.callId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcRequestMeta Clone() {
-      return new RpcRequestMeta(this);
+    public RpcRequest Clone() {
+      return new RpcRequest(this);
     }
 
     /// <summary>Field number for the "service_name" field.</summary>
@@ -600,13 +225,57 @@ namespace Rpc {
       }
     }
 
+    /// <summary>Field number for the "compress_type" field.</summary>
+    public const int CompressTypeFieldNumber = 20;
+    private int compressType_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RpcRequestMeta);
+    public int CompressType {
+      get { return compressType_; }
+      set {
+        compressType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "encoding_type" field.</summary>
+    public const int EncodingTypeFieldNumber = 21;
+    private int encodingType_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int EncodingType {
+      get { return encodingType_; }
+      set {
+        encodingType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 22;
+    private long requestId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "call_id" field.</summary>
+    public const int CallIdFieldNumber = 23;
+    private long callId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long CallId {
+      get { return callId_; }
+      set {
+        callId_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RpcRequestMeta other) {
+    public override bool Equals(object other) {
+      return Equals(other as RpcRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -621,6 +290,10 @@ namespace Rpc {
       if (ParentSpanId != other.ParentSpanId) return false;
       if (ActorId != other.ActorId) return false;
       if (ReentrantId != other.ReentrantId) return false;
+      if (CompressType != other.CompressType) return false;
+      if (EncodingType != other.EncodingType) return false;
+      if (RequestId != other.RequestId) return false;
+      if (CallId != other.CallId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -635,6 +308,10 @@ namespace Rpc {
       if (ParentSpanId.Length != 0) hash ^= ParentSpanId.GetHashCode();
       if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (ReentrantId.Length != 0) hash ^= ReentrantId.GetHashCode();
+      if (CompressType != 0) hash ^= CompressType.GetHashCode();
+      if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
+      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
+      if (CallId != 0L) hash ^= CallId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -683,6 +360,22 @@ namespace Rpc {
         output.WriteRawTag(82);
         output.WriteString(ReentrantId);
       }
+      if (CompressType != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(CompressType);
+      }
+      if (EncodingType != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteInt32(EncodingType);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(177, 1);
+        output.WriteSFixed64(RequestId);
+      }
+      if (CallId != 0L) {
+        output.WriteRawTag(185, 1);
+        output.WriteSFixed64(CallId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -723,6 +416,22 @@ namespace Rpc {
       if (ReentrantId.Length != 0) {
         output.WriteRawTag(82);
         output.WriteString(ReentrantId);
+      }
+      if (CompressType != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(CompressType);
+      }
+      if (EncodingType != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteInt32(EncodingType);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(177, 1);
+        output.WriteSFixed64(RequestId);
+      }
+      if (CallId != 0L) {
+        output.WriteRawTag(185, 1);
+        output.WriteSFixed64(CallId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -757,6 +466,18 @@ namespace Rpc {
       if (ReentrantId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ReentrantId);
       }
+      if (CompressType != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(CompressType);
+      }
+      if (EncodingType != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(EncodingType);
+      }
+      if (RequestId != 0L) {
+        size += 2 + 8;
+      }
+      if (CallId != 0L) {
+        size += 2 + 8;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -764,7 +485,7 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RpcRequestMeta other) {
+    public void MergeFrom(RpcRequest other) {
       if (other == null) {
         return;
       }
@@ -791,6 +512,18 @@ namespace Rpc {
       }
       if (other.ReentrantId.Length != 0) {
         ReentrantId = other.ReentrantId;
+      }
+      if (other.CompressType != 0) {
+        CompressType = other.CompressType;
+      }
+      if (other.EncodingType != 0) {
+        EncodingType = other.EncodingType;
+      }
+      if (other.RequestId != 0L) {
+        RequestId = other.RequestId;
+      }
+      if (other.CallId != 0L) {
+        CallId = other.CallId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -836,6 +569,22 @@ namespace Rpc {
           }
           case 82: {
             ReentrantId = input.ReadString();
+            break;
+          }
+          case 160: {
+            CompressType = input.ReadInt32();
+            break;
+          }
+          case 168: {
+            EncodingType = input.ReadInt32();
+            break;
+          }
+          case 177: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 185: {
+            CallId = input.ReadSFixed64();
             break;
           }
         }
@@ -884,6 +633,22 @@ namespace Rpc {
             ReentrantId = input.ReadString();
             break;
           }
+          case 160: {
+            CompressType = input.ReadInt32();
+            break;
+          }
+          case 168: {
+            EncodingType = input.ReadInt32();
+            break;
+          }
+          case 177: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 185: {
+            CallId = input.ReadSFixed64();
+            break;
+          }
         }
       }
     }
@@ -891,19 +656,19 @@ namespace Rpc {
 
   }
 
-  public sealed partial class RpcResponseMeta : pb::IMessage<RpcResponseMeta>
+  public sealed partial class RpcResponse : pb::IMessage<RpcResponse>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<RpcResponseMeta> _parser = new pb::MessageParser<RpcResponseMeta>(() => new RpcResponseMeta());
+    private static readonly pb::MessageParser<RpcResponse> _parser = new pb::MessageParser<RpcResponse>(() => new RpcResponse());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RpcResponseMeta> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcResponse> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -912,22 +677,26 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcResponseMeta() {
+    public RpcResponse() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcResponseMeta(RpcResponseMeta other) : this() {
+    public RpcResponse(RpcResponse other) : this() {
       errorCode_ = other.errorCode_;
       errorText_ = other.errorText_;
+      compressType_ = other.compressType_;
+      encodingType_ = other.encodingType_;
+      requestId_ = other.requestId_;
+      callId_ = other.callId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcResponseMeta Clone() {
-      return new RpcResponseMeta(this);
+    public RpcResponse Clone() {
+      return new RpcResponse(this);
     }
 
     /// <summary>Field number for the "error_code" field.</summary>
@@ -958,13 +727,57 @@ namespace Rpc {
       }
     }
 
+    /// <summary>Field number for the "compress_type" field.</summary>
+    public const int CompressTypeFieldNumber = 20;
+    private int compressType_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as RpcResponseMeta);
+    public int CompressType {
+      get { return compressType_; }
+      set {
+        compressType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "encoding_type" field.</summary>
+    public const int EncodingTypeFieldNumber = 21;
+    private int encodingType_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int EncodingType {
+      get { return encodingType_; }
+      set {
+        encodingType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 22;
+    private long requestId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "call_id" field.</summary>
+    public const int CallIdFieldNumber = 23;
+    private long callId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long CallId {
+      get { return callId_; }
+      set {
+        callId_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RpcResponseMeta other) {
+    public override bool Equals(object other) {
+      return Equals(other as RpcResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcResponse other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -973,6 +786,10 @@ namespace Rpc {
       }
       if (ErrorCode != other.ErrorCode) return false;
       if (ErrorText != other.ErrorText) return false;
+      if (CompressType != other.CompressType) return false;
+      if (EncodingType != other.EncodingType) return false;
+      if (RequestId != other.RequestId) return false;
+      if (CallId != other.CallId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -981,6 +798,10 @@ namespace Rpc {
       int hash = 1;
       if (ErrorCode != 0) hash ^= ErrorCode.GetHashCode();
       if (ErrorText.Length != 0) hash ^= ErrorText.GetHashCode();
+      if (CompressType != 0) hash ^= CompressType.GetHashCode();
+      if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
+      if (RequestId != 0L) hash ^= RequestId.GetHashCode();
+      if (CallId != 0L) hash ^= CallId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1005,6 +826,22 @@ namespace Rpc {
         output.WriteRawTag(18);
         output.WriteString(ErrorText);
       }
+      if (CompressType != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(CompressType);
+      }
+      if (EncodingType != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteInt32(EncodingType);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(177, 1);
+        output.WriteSFixed64(RequestId);
+      }
+      if (CallId != 0L) {
+        output.WriteRawTag(185, 1);
+        output.WriteSFixed64(CallId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1022,6 +859,22 @@ namespace Rpc {
         output.WriteRawTag(18);
         output.WriteString(ErrorText);
       }
+      if (CompressType != 0) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(CompressType);
+      }
+      if (EncodingType != 0) {
+        output.WriteRawTag(168, 1);
+        output.WriteInt32(EncodingType);
+      }
+      if (RequestId != 0L) {
+        output.WriteRawTag(177, 1);
+        output.WriteSFixed64(RequestId);
+      }
+      if (CallId != 0L) {
+        output.WriteRawTag(185, 1);
+        output.WriteSFixed64(CallId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1037,6 +890,18 @@ namespace Rpc {
       if (ErrorText.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorText);
       }
+      if (CompressType != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(CompressType);
+      }
+      if (EncodingType != 0) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(EncodingType);
+      }
+      if (RequestId != 0L) {
+        size += 2 + 8;
+      }
+      if (CallId != 0L) {
+        size += 2 + 8;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1044,7 +909,7 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RpcResponseMeta other) {
+    public void MergeFrom(RpcResponse other) {
       if (other == null) {
         return;
       }
@@ -1053,6 +918,18 @@ namespace Rpc {
       }
       if (other.ErrorText.Length != 0) {
         ErrorText = other.ErrorText;
+      }
+      if (other.CompressType != 0) {
+        CompressType = other.CompressType;
+      }
+      if (other.EncodingType != 0) {
+        EncodingType = other.EncodingType;
+      }
+      if (other.RequestId != 0L) {
+        RequestId = other.RequestId;
+      }
+      if (other.CallId != 0L) {
+        CallId = other.CallId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1074,6 +951,22 @@ namespace Rpc {
           }
           case 18: {
             ErrorText = input.ReadString();
+            break;
+          }
+          case 160: {
+            CompressType = input.ReadInt32();
+            break;
+          }
+          case 168: {
+            EncodingType = input.ReadInt32();
+            break;
+          }
+          case 177: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 185: {
+            CallId = input.ReadSFixed64();
             break;
           }
         }
@@ -1098,6 +991,22 @@ namespace Rpc {
             ErrorText = input.ReadString();
             break;
           }
+          case 160: {
+            CompressType = input.ReadInt32();
+            break;
+          }
+          case 168: {
+            EncodingType = input.ReadInt32();
+            break;
+          }
+          case 177: {
+            RequestId = input.ReadSFixed64();
+            break;
+          }
+          case 185: {
+            CallId = input.ReadSFixed64();
+            break;
+          }
         }
       }
     }
@@ -1105,19 +1014,19 @@ namespace Rpc {
 
   }
 
-  public sealed partial class RpcHearBeat : pb::IMessage<RpcHearBeat>
+  public sealed partial class RpcHeartBeatRequest : pb::IMessage<RpcHeartBeatRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<RpcHearBeat> _parser = new pb::MessageParser<RpcHearBeat>(() => new RpcHearBeat());
+    private static readonly pb::MessageParser<RpcHeartBeatRequest> _parser = new pb::MessageParser<RpcHeartBeatRequest>(() => new RpcHeartBeatRequest());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<RpcHearBeat> Parser { get { return _parser; } }
+    public static pb::MessageParser<RpcHeartBeatRequest> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1126,22 +1035,21 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcHearBeat() {
+    public RpcHeartBeatRequest() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcHearBeat(RpcHearBeat other) : this() {
+    public RpcHeartBeatRequest(RpcHeartBeatRequest other) : this() {
       requestMilliseconds_ = other.requestMilliseconds_;
-      responseMilliseconds_ = other.responseMilliseconds_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public RpcHearBeat Clone() {
-      return new RpcHearBeat(this);
+    public RpcHeartBeatRequest Clone() {
+      return new RpcHeartBeatRequest(this);
     }
 
     /// <summary>Field number for the "request_milliseconds" field.</summary>
@@ -1155,24 +1063,13 @@ namespace Rpc {
       }
     }
 
-    /// <summary>Field number for the "response_milliseconds" field.</summary>
-    public const int ResponseMillisecondsFieldNumber = 2;
-    private long responseMilliseconds_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long ResponseMilliseconds {
-      get { return responseMilliseconds_; }
-      set {
-        responseMilliseconds_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as RpcHearBeat);
+      return Equals(other as RpcHeartBeatRequest);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(RpcHearBeat other) {
+    public bool Equals(RpcHeartBeatRequest other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -1180,7 +1077,6 @@ namespace Rpc {
         return true;
       }
       if (RequestMilliseconds != other.RequestMilliseconds) return false;
-      if (ResponseMilliseconds != other.ResponseMilliseconds) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1188,7 +1084,6 @@ namespace Rpc {
     public override int GetHashCode() {
       int hash = 1;
       if (RequestMilliseconds != 0L) hash ^= RequestMilliseconds.GetHashCode();
-      if (ResponseMilliseconds != 0L) hash ^= ResponseMilliseconds.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1209,10 +1104,6 @@ namespace Rpc {
         output.WriteRawTag(9);
         output.WriteSFixed64(RequestMilliseconds);
       }
-      if (ResponseMilliseconds != 0L) {
-        output.WriteRawTag(17);
-        output.WriteSFixed64(ResponseMilliseconds);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1226,10 +1117,6 @@ namespace Rpc {
         output.WriteRawTag(9);
         output.WriteSFixed64(RequestMilliseconds);
       }
-      if (ResponseMilliseconds != 0L) {
-        output.WriteRawTag(17);
-        output.WriteSFixed64(ResponseMilliseconds);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1242,6 +1129,175 @@ namespace Rpc {
       if (RequestMilliseconds != 0L) {
         size += 1 + 8;
       }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RpcHeartBeatRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RequestMilliseconds != 0L) {
+        RequestMilliseconds = other.RequestMilliseconds;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            RequestMilliseconds = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            RequestMilliseconds = input.ReadSFixed64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RpcHeartBeatResponse : pb::IMessage<RpcHeartBeatResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RpcHeartBeatResponse> _parser = new pb::MessageParser<RpcHeartBeatResponse>(() => new RpcHeartBeatResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RpcHeartBeatResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Rpc.RpcMetaReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHeartBeatResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHeartBeatResponse(RpcHeartBeatResponse other) : this() {
+      responseMilliseconds_ = other.responseMilliseconds_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RpcHeartBeatResponse Clone() {
+      return new RpcHeartBeatResponse(this);
+    }
+
+    /// <summary>Field number for the "response_milliseconds" field.</summary>
+    public const int ResponseMillisecondsFieldNumber = 1;
+    private long responseMilliseconds_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ResponseMilliseconds {
+      get { return responseMilliseconds_; }
+      set {
+        responseMilliseconds_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RpcHeartBeatResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RpcHeartBeatResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ResponseMilliseconds != other.ResponseMilliseconds) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ResponseMilliseconds != 0L) hash ^= ResponseMilliseconds.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ResponseMilliseconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(ResponseMilliseconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ResponseMilliseconds != 0L) {
+        output.WriteRawTag(9);
+        output.WriteSFixed64(ResponseMilliseconds);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
       if (ResponseMilliseconds != 0L) {
         size += 1 + 8;
       }
@@ -1252,12 +1308,9 @@ namespace Rpc {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(RpcHearBeat other) {
+    public void MergeFrom(RpcHeartBeatResponse other) {
       if (other == null) {
         return;
-      }
-      if (other.RequestMilliseconds != 0L) {
-        RequestMilliseconds = other.RequestMilliseconds;
       }
       if (other.ResponseMilliseconds != 0L) {
         ResponseMilliseconds = other.ResponseMilliseconds;
@@ -1277,10 +1330,6 @@ namespace Rpc {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 9: {
-            RequestMilliseconds = input.ReadSFixed64();
-            break;
-          }
-          case 17: {
             ResponseMilliseconds = input.ReadSFixed64();
             break;
           }
@@ -1299,10 +1348,6 @@ namespace Rpc {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 9: {
-            RequestMilliseconds = input.ReadSFixed64();
-            break;
-          }
-          case 17: {
             ResponseMilliseconds = input.ReadSFixed64();
             break;
           }
