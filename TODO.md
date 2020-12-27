@@ -18,13 +18,11 @@ v0.4
 
 v0.3
 * [ ] RPC重新实现
-  * [ ] RPC Meta
+  * [x] RPC Meta
   * [ ] RPC Protocol
-    * [ ] codec
+    * [x] codec
     * [ ] dispatch
-  * [ ] args encoding
-    * [ ] ceras/msgpack
-    * [ ] args encoding manager
+  * [x] args encoding (ceras/msgpack)
 * [x] Protobuf Codec (Span Support)
 
 v0.2

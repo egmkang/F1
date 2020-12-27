@@ -44,7 +44,7 @@ namespace F1.Core.Core
             services.TryAddSingleton<RpcMetaData>();
             services.TryAddSingleton<RpcDispatchProxyFactory>();
             services.TryAddSingleton<DispatchHandler>();
-            services.TryAddSingleton<IParametersSerializer, ParametersSerializerCeras>();
+            services.TryAddSingleton<IParametersSerializerFactory, ParametersSerializerFactory>();
             services.TryAddSingleton<TaskCompletionSourceManager>();
             services.TryAddSingleton<ClientConnectionPool>();
             services.TryAddSingleton<GatewayClientFactory>();
