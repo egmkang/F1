@@ -28,21 +28,23 @@ namespace F1.Core.Utils
             Resize(list, sz, default(T));
         }
 
-        public static RpcMessage AsRpcMessage(this IMessage meta) 
+        public static RpcMessage ToRpcMessage(this IMessage meta, byte[] body=null) 
         {
-            return new RpcMessage()
+            var m = new RpcMessage() { Meta = meta, };
+            if (body != null) 
             {
-                Meta = meta,
-            };
+                m.Body = body;
+            }
+            return m;
         }
 
-        public static IMessage InnerAsMessage(this InboundMessage inboundMessage)
+        public static (IMessage meta, byte[] body) GetRpcMessage(this InboundMessage inboundMessage)
         {
-            if (inboundMessage.Inner is RpcMessage rpcMessage && rpcMessage.Meta is IMessage t) 
+            if (inboundMessage.Inner is RpcMessage rpcMessage)
             {
-                return t;
+                return (rpcMessage.Meta, rpcMessage.Body);
             }
-            return null;
+            return (null, null);
         }
     }
 }

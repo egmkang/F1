@@ -29,14 +29,14 @@ namespace Sample.Impl
             //this.Logger.LogInformation("PlayerImpl.ProcessUserInputMessage, Type:{1}, Msg:{0}",
             //                            msg.Inner, msg.Inner.GetType().Name);
 
-            var innerMessage = msg.InnerAsMessage();
+            var (innerMessage, body) = msg.GetRpcMessage();
             if (innerMessage is NotifyConnectionAborted aborted)
             {
                 await this.ProcessNotifyConnectionAborted(aborted).ConfigureAwait(false);
             }
             else if (innerMessage is NotifyNewMessage newMessage)
             {
-                await this.ProcessNotifyNewMessage(msg.SourceConnection, newMessage).ConfigureAwait(false);
+                await this.ProcessNotifyNewMessage(msg.SourceConnection, newMessage, body).ConfigureAwait(false);
             }
             else
             {
@@ -56,7 +56,7 @@ namespace Sample.Impl
             await Task.CompletedTask;
         }
 
-        private async Task ProcessNotifyNewMessage(IChannel channel, NotifyNewMessage newMessage)
+        private async Task ProcessNotifyNewMessage(IChannel channel, NotifyNewMessage newMessage, byte[] body)
         {
             this.BeforeProcessUserMessage();
             try
@@ -66,7 +66,7 @@ namespace Sample.Impl
                     this.SetSessionID(newMessage.SessionId);
                 }
 
-                var msg = codec.DecodeMessage(newMessage.Msg.ToByteArray());
+                var msg = codec.DecodeMessage(body);
                 //this.Logger.LogInformation("ProcessNotifyNewMessage, MsgType:{0}, Content:{1}", msg.GetType(), msg);
 
                 if (msg is RequestEcho hello)
@@ -136,7 +136,7 @@ namespace Sample.Impl
                 var bytes = codec.EncodeMessage(message);
                 gatewayMessage.Msg = ByteString.CopyFrom(bytes);
 
-                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage.AsRpcMessage()))
+                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage.ToRpcMessage()))
                 {
                     this.Logger.LogWarning("SendMessageToPlayer, Actor:{0}/{1}, DestServerID:{2}",
                         this.ActorType, this.ID, serverId);
@@ -154,7 +154,7 @@ namespace Sample.Impl
             var serverId = SessionUniqueSequence.GetServerID(this.SessionID);
             if (serverId != 0)
             {
-                if (!this.MessageCenter.SendMessageToServer(serverId, message.AsRpcMessage()))
+                if (!this.MessageCenter.SendMessageToServer(serverId, message.ToRpcMessage()))
                 {
                     this.Logger.LogWarning("SendMessageToGateway, Actor:{0}/{1}, DestServerID:{2}",
                        this.ActorType, this.ID, serverId);

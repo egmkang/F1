@@ -68,11 +68,10 @@ namespace F1.Gateway
                 {
                     var result = this.messageCenter.SendMessageToServer(sessionInfo.ServerID, new NotifyNewMessage()
                     {
-                        Msg = ByteString.CopyFrom(data),
                         ServiceType =  playerInfo.DestServiceType,
                         ActorId = playerInfo.DestActorID,
                         SessionId = sessionInfo.SessionID,
-                    }.AsRpcMessage());
+                    }.ToRpcMessage(data));
                     if (result) return;
                 }
                 _ = this.ProcessGatewayMessageSlow(inboundMessage.SourceConnection, sessionInfo, playerInfo, data, false);
@@ -118,7 +117,7 @@ namespace F1.Gateway
                         ActorId = gatewayPlayer.DestActorID,
                         ServiceType = gatewayPlayer.DestServiceType,
                     };
-                    this.messageCenter.SendMessageToServer(position.ServerID, msg.AsRpcMessage());
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg.ToRpcMessage());
                 }
                 else
                 {
@@ -127,12 +126,11 @@ namespace F1.Gateway
 
                     var msg = new NotifyNewMessage()
                     {
-                        Msg = ByteString.CopyFrom(data),
                         SessionId = sessionInfo.SessionID,
                         ServiceType = gatewayPlayer.DestServiceType,
                         ActorId = gatewayPlayer.DestActorID,
                     };
-                    this.messageCenter.SendMessageToServer(position.ServerID, msg.AsRpcMessage());
+                    this.messageCenter.SendMessageToServer(position.ServerID, msg.ToRpcMessage(data));
                 }
             }
             catch (Exception e)
@@ -154,7 +152,7 @@ namespace F1.Gateway
             { 
                 MilliSecond = msg.MilliSecond,
             };
-            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, resp.AsRpcMessage()));
+            this.messageCenter.SendMessage(new OutboundMessage(inboundMessage.SourceConnection, resp.ToRpcMessage()));
         }
         private void ProcessGatewayCloseConnection(InboundMessage inboundMessage)
         {

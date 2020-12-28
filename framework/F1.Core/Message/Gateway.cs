@@ -32,14 +32,13 @@ namespace GatewayMessage {
             "IlUKF05vdGlmeUNvbm5lY3Rpb25BYm9ydGVkEhIKCnNlc3Npb25faWQYASAB",
             "KBASFAoMc2VydmljZV90eXBlGAIgASgJEhAKCGFjdG9yX2lkGAMgASgJIkIK",
             "FlJlcXVlc3RDbG9zZUNvbm5lY3Rpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIU",
-            "CgxzZXJ2aWNlX3R5cGUYAiABKAkiagoQTm90aWZ5TmV3TWVzc2FnZRISCgpz",
+            "CgxzZXJ2aWNlX3R5cGUYAiABKAkiXQoQTm90aWZ5TmV3TWVzc2FnZRISCgpz",
             "ZXNzaW9uX2lkGAEgASgQEhQKDHNlcnZpY2VfdHlwZRgCIAEoCRIQCghhY3Rv",
-            "cl9pZBgDIAEoCRILCgNtc2cYBCABKAwSDQoFdHJhY2UYBSABKAkiTQoaUmVx",
-            "dWVzdFNlbmRNZXNzYWdlVG9QbGF5ZXISEwoLc2Vzc2lvbl9pZHMYASADKBAS",
-            "CwoDbXNnGAIgASgMEg0KBXRyYWNlGAMgASgJImUKH1JlcXVlc3RDaGFuZ2VN",
-            "ZXNzYWdlRGVzdGluYXRpb24SEgoKc2Vzc2lvbl9pZBgBIAEoEBIYChBuZXdf",
-            "c2VydmljZV90eXBlGAIgASgJEhQKDG5ld19hY3Rvcl9pZBgDIAEoCWIGcHJv",
-            "dG8z"));
+            "cl9pZBgDIAEoCRINCgV0cmFjZRgFIAEoCSJNChpSZXF1ZXN0U2VuZE1lc3Nh",
+            "Z2VUb1BsYXllchITCgtzZXNzaW9uX2lkcxgBIAMoEBILCgNtc2cYAiABKAwS",
+            "DQoFdHJhY2UYAyABKAkiZQofUmVxdWVzdENoYW5nZU1lc3NhZ2VEZXN0aW5h",
+            "dGlvbhISCgpzZXNzaW9uX2lkGAEgASgQEhgKEG5ld19zZXJ2aWNlX3R5cGUY",
+            "AiABKAkSFAoMbmV3X2FjdG9yX2lkGAMgASgJYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -48,7 +47,7 @@ namespace GatewayMessage {
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionComing), global::GatewayMessage.NotifyConnectionComing.Parser, new[]{ "ServiceType", "ActorId", "SessionId", "Token" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyConnectionAborted), global::GatewayMessage.NotifyConnectionAborted.Parser, new[]{ "SessionId", "ServiceType", "ActorId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestCloseConnection), global::GatewayMessage.RequestCloseConnection.Parser, new[]{ "SessionId", "ServiceType" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "ActorId", "Msg", "Trace" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.NotifyNewMessage), global::GatewayMessage.NotifyNewMessage.Parser, new[]{ "SessionId", "ServiceType", "ActorId", "Trace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestSendMessageToPlayer), global::GatewayMessage.RequestSendMessageToPlayer.Parser, new[]{ "SessionIds", "Msg", "Trace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::GatewayMessage.RequestChangeMessageDestination), global::GatewayMessage.RequestChangeMessageDestination.Parser, new[]{ "SessionId", "NewServiceType", "NewActorId" }, null, null, null, null)
           }));
@@ -1144,6 +1143,7 @@ namespace GatewayMessage {
   /// <summary>
   ///1. 玩家新的消息
   ///2. 发送消息给玩家
+  ///玩家的消息在RpcMessage的Body里面, 减少一次编码
   /// </summary>
   public sealed partial class NotifyNewMessage : pb::IMessage<NotifyNewMessage>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1177,7 +1177,6 @@ namespace GatewayMessage {
       sessionId_ = other.sessionId_;
       serviceType_ = other.serviceType_;
       actorId_ = other.actorId_;
-      msg_ = other.msg_;
       trace_ = other.trace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -1220,17 +1219,6 @@ namespace GatewayMessage {
       }
     }
 
-    /// <summary>Field number for the "msg" field.</summary>
-    public const int MsgFieldNumber = 4;
-    private pb::ByteString msg_ = pb::ByteString.Empty;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pb::ByteString Msg {
-      get { return msg_; }
-      set {
-        msg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "trace" field.</summary>
     public const int TraceFieldNumber = 5;
     private string trace_ = "";
@@ -1258,7 +1246,6 @@ namespace GatewayMessage {
       if (SessionId != other.SessionId) return false;
       if (ServiceType != other.ServiceType) return false;
       if (ActorId != other.ActorId) return false;
-      if (Msg != other.Msg) return false;
       if (Trace != other.Trace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1269,7 +1256,6 @@ namespace GatewayMessage {
       if (SessionId != 0L) hash ^= SessionId.GetHashCode();
       if (ServiceType.Length != 0) hash ^= ServiceType.GetHashCode();
       if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
-      if (Msg.Length != 0) hash ^= Msg.GetHashCode();
       if (Trace.Length != 0) hash ^= Trace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1299,10 +1285,6 @@ namespace GatewayMessage {
         output.WriteRawTag(26);
         output.WriteString(ActorId);
       }
-      if (Msg.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteBytes(Msg);
-      }
       if (Trace.Length != 0) {
         output.WriteRawTag(42);
         output.WriteString(Trace);
@@ -1328,10 +1310,6 @@ namespace GatewayMessage {
         output.WriteRawTag(26);
         output.WriteString(ActorId);
       }
-      if (Msg.Length != 0) {
-        output.WriteRawTag(34);
-        output.WriteBytes(Msg);
-      }
       if (Trace.Length != 0) {
         output.WriteRawTag(42);
         output.WriteString(Trace);
@@ -1353,9 +1331,6 @@ namespace GatewayMessage {
       }
       if (ActorId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ActorId);
-      }
-      if (Msg.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Msg);
       }
       if (Trace.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Trace);
@@ -1379,9 +1354,6 @@ namespace GatewayMessage {
       }
       if (other.ActorId.Length != 0) {
         ActorId = other.ActorId;
-      }
-      if (other.Msg.Length != 0) {
-        Msg = other.Msg;
       }
       if (other.Trace.Length != 0) {
         Trace = other.Trace;
@@ -1412,10 +1384,6 @@ namespace GatewayMessage {
             ActorId = input.ReadString();
             break;
           }
-          case 34: {
-            Msg = input.ReadBytes();
-            break;
-          }
           case 42: {
             Trace = input.ReadString();
             break;
@@ -1444,10 +1412,6 @@ namespace GatewayMessage {
           }
           case 26: {
             ActorId = input.ReadString();
-            break;
-          }
-          case 34: {
-            Msg = input.ReadBytes();
             break;
           }
           case 42: {

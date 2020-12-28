@@ -39,12 +39,12 @@ string service_type = 2;
 
 //1. 玩家新的消息
 //2. 发送消息给玩家
+//玩家的消息在RpcMessage的Body里面, 减少一次编码
 message NotifyNewMessage
 {
 sfixed64 session_id = 1;
 string service_type = 2;
 string actor_id = 3;
-bytes msg = 4;
 string trace = 5;
 }
 

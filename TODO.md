@@ -17,14 +17,15 @@ v0.4
 * [ ] Load Balance
 
 v0.3
-* [ ] RPC重新实现
+* [x] RPC重新实现
   * [x] RPC Meta
-  * [ ] RPC Protocol
+  * [x] RPC Protocol
     * [x] codec
     * [x] dispatch
-    * [ ] Gateway NewMessageComing
   * [x] args encoding (ceras/msgpack)
 * [x] Protobuf Codec (Span Support)
+* [x] Gateway NewMessageComing
+* [ ] Gateway SendMessageToPlayer
 
 v0.2
 * [x] PlacementDriver
