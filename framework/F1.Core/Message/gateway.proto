@@ -51,7 +51,6 @@ string trace = 5;
 message RequestSendMessageToPlayer
 {
 repeated sfixed64 session_ids = 1;
-bytes msg = 2;
 string trace = 3;
 }
 

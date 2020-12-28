@@ -119,9 +119,8 @@ namespace Sample.Impl
             gatewayMessage.SessionIds.Add(this.SessionID);
 
             var bytes = codec.EncodeMessage(message);
-            gatewayMessage.Msg = ByteString.CopyFrom(bytes);
 
-            this.MessageCenter.SendMessage(new OutboundMessage(channel, gatewayMessage));
+            this.MessageCenter.SendMessage(new OutboundMessage(channel, gatewayMessage.ToRpcMessage(bytes)));
         }
 
         public void SendMessageToPlayer(IMessage message, string trace = "")
@@ -134,9 +133,8 @@ namespace Sample.Impl
                 gatewayMessage.SessionIds.Add(this.SessionID);
 
                 var bytes = codec.EncodeMessage(message);
-                gatewayMessage.Msg = ByteString.CopyFrom(bytes);
 
-                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage.ToRpcMessage()))
+                if (!this.MessageCenter.SendMessageToServer(serverId, gatewayMessage.ToRpcMessage(bytes)))
                 {
                     this.Logger.LogWarning("SendMessageToPlayer, Actor:{0}/{1}, DestServerID:{2}",
                         this.ActorType, this.ID, serverId);

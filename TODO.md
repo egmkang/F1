@@ -25,7 +25,7 @@ v0.3
   * [x] args encoding (ceras/msgpack)
 * [x] Protobuf Codec (Span Support)
 * [x] Gateway NewMessageComing
-* [ ] Gateway SendMessageToPlayer
+* [x] Gateway SendMessageToPlayer
 
 v0.2
 * [x] PlacementDriver

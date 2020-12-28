@@ -206,14 +206,14 @@ namespace F1.Gateway
 
         private void ProcessGatewaySendMessageToPlayer(InboundMessage inboundMessage) 
         {
-            var msg = (inboundMessage.Inner as RpcMessage).Meta as RequestSendMessageToPlayer;
+            var (innerMsg, body) = inboundMessage.GetRpcMessage();
+            var msg = innerMsg as RequestSendMessageToPlayer;
             if (msg == null) 
             {
                 this.logger.LogError("ProcessGatewaySendMessageToPlayer, input message type:{0}", inboundMessage.Inner.GetType());
                 return;
             }
-            //TODO
-            var bytes = msg.Msg.ToByteArray();
+            var bytes = body;
             foreach (var sessionId in msg.SessionIds) 
             {
                 var channel = this.connectionManager.GetConnection(sessionId);
