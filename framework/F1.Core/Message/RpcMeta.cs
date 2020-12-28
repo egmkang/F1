@@ -24,27 +24,25 @@ namespace Rpc {
     static RpcMetaReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMi/QEKClJwY1JlcXVlc3QS",
+            "ChZNZXNzYWdlL3JwY19tZXRhLnByb3RvEgNScGMi5gEKClJwY1JlcXVlc3QS",
             "FAoMc2VydmljZV9uYW1lGAEgASgJEhMKC21ldGhvZF9uYW1lGAIgASgJEg4K",
             "Bm9uZXdheRgDIAEoCBIQCgh0cmFjZV9pZBgFIAEoCRIPCgdzcGFuX2lkGAYg",
             "ASgJEhYKDnBhcmVudF9zcGFuX2lkGAcgASgJEhAKCGFjdG9yX2lkGAkgASgJ",
-            "EhQKDHJlZW50cmFudF9pZBgKIAEoCRIVCg1jb21wcmVzc190eXBlGBQgASgF",
-            "EhUKDWVuY29kaW5nX3R5cGUYFSABKAUSEgoKcmVxdWVzdF9pZBgWIAEoEBIP",
-            "CgdjYWxsX2lkGBcgASgQIogBCgtScGNSZXNwb25zZRISCgplcnJvcl9jb2Rl",
-            "GAEgASgFEhIKCmVycm9yX3RleHQYAiABKAkSFQoNY29tcHJlc3NfdHlwZRgU",
-            "IAEoBRIVCg1lbmNvZGluZ190eXBlGBUgASgFEhIKCnJlcXVlc3RfaWQYFiAB",
-            "KBASDwoHY2FsbF9pZBgXIAEoECIzChNScGNIZWFydEJlYXRSZXF1ZXN0EhwK",
-            "FHJlcXVlc3RfbWlsbGlzZWNvbmRzGAEgASgQIjUKFFJwY0hlYXJ0QmVhdFJl",
-            "c3BvbnNlEh0KFXJlc3BvbnNlX21pbGxpc2Vjb25kcxgBIAEoECpECg9ScGND",
-            "b21wcmVzc1R5cGUSGAoUUnBjQ29tcHJlc3NUeXBlX05vbmUQABIXChNScGND",
-            "b21wcmVzc1R5cGVfTFo0EAEqYwoPUnBjRW5jb2RpbmdUeXBlEhgKFFJwY0Vu",
-            "Y29kaW5nVHlwZV9Ob25lEAASGQoVUnBjRW5jb2RpbmdUeXBlX0NlcmFzEAES",
-            "GwoXUnBjRW5jb2RpbmdUeXBlX01zZ1BhY2sQAmIGcHJvdG8z"));
+            "EhQKDHJlZW50cmFudF9pZBgKIAEoCRIVCg1lbmNvZGluZ190eXBlGBUgASgF",
+            "EhIKCnJlcXVlc3RfaWQYFiABKBASDwoHY2FsbF9pZBgXIAEoECJxCgtScGNS",
+            "ZXNwb25zZRISCgplcnJvcl9jb2RlGAEgASgFEhIKCmVycm9yX3RleHQYAiAB",
+            "KAkSFQoNZW5jb2RpbmdfdHlwZRgVIAEoBRISCgpyZXF1ZXN0X2lkGBYgASgQ",
+            "Eg8KB2NhbGxfaWQYFyABKBAiMwoTUnBjSGVhcnRCZWF0UmVxdWVzdBIcChRy",
+            "ZXF1ZXN0X21pbGxpc2Vjb25kcxgBIAEoECI1ChRScGNIZWFydEJlYXRSZXNw",
+            "b25zZRIdChVyZXNwb25zZV9taWxsaXNlY29uZHMYASABKBAqYwoPUnBjRW5j",
+            "b2RpbmdUeXBlEhgKFFJwY0VuY29kaW5nVHlwZV9Ob25lEAASGQoVUnBjRW5j",
+            "b2RpbmdUeXBlX0NlcmFzEAESGwoXUnBjRW5jb2RpbmdUeXBlX01zZ1BhY2sQ",
+            "AmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Rpc.RpcCompressType), typeof(global::Rpc.RpcEncodingType), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequest), global::Rpc.RpcRequest.Parser, new[]{ "ServiceName", "MethodName", "Oneway", "TraceId", "SpanId", "ParentSpanId", "ActorId", "ReentrantId", "CompressType", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponse), global::Rpc.RpcResponse.Parser, new[]{ "ErrorCode", "ErrorText", "CompressType", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Rpc.RpcEncodingType), }, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcRequest), global::Rpc.RpcRequest.Parser, new[]{ "ServiceName", "MethodName", "Oneway", "TraceId", "SpanId", "ParentSpanId", "ActorId", "ReentrantId", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcResponse), global::Rpc.RpcResponse.Parser, new[]{ "ErrorCode", "ErrorText", "EncodingType", "RequestId", "CallId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHeartBeatRequest), global::Rpc.RpcHeartBeatRequest.Parser, new[]{ "RequestMilliseconds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Rpc.RpcHeartBeatResponse), global::Rpc.RpcHeartBeatResponse.Parser, new[]{ "ResponseMilliseconds" }, null, null, null, null)
           }));
@@ -53,11 +51,6 @@ namespace Rpc {
 
   }
   #region Enums
-  public enum RpcCompressType {
-    [pbr::OriginalName("RpcCompressType_None")] None = 0,
-    [pbr::OriginalName("RpcCompressType_LZ4")] Lz4 = 1,
-  }
-
   public enum RpcEncodingType {
     [pbr::OriginalName("RpcEncodingType_None")] None = 0,
     [pbr::OriginalName("RpcEncodingType_Ceras")] Ceras = 1,
@@ -104,7 +97,6 @@ namespace Rpc {
       parentSpanId_ = other.parentSpanId_;
       actorId_ = other.actorId_;
       reentrantId_ = other.reentrantId_;
-      compressType_ = other.compressType_;
       encodingType_ = other.encodingType_;
       requestId_ = other.requestId_;
       callId_ = other.callId_;
@@ -225,17 +217,6 @@ namespace Rpc {
       }
     }
 
-    /// <summary>Field number for the "compress_type" field.</summary>
-    public const int CompressTypeFieldNumber = 20;
-    private int compressType_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CompressType {
-      get { return compressType_; }
-      set {
-        compressType_ = value;
-      }
-    }
-
     /// <summary>Field number for the "encoding_type" field.</summary>
     public const int EncodingTypeFieldNumber = 21;
     private int encodingType_;
@@ -290,7 +271,6 @@ namespace Rpc {
       if (ParentSpanId != other.ParentSpanId) return false;
       if (ActorId != other.ActorId) return false;
       if (ReentrantId != other.ReentrantId) return false;
-      if (CompressType != other.CompressType) return false;
       if (EncodingType != other.EncodingType) return false;
       if (RequestId != other.RequestId) return false;
       if (CallId != other.CallId) return false;
@@ -308,7 +288,6 @@ namespace Rpc {
       if (ParentSpanId.Length != 0) hash ^= ParentSpanId.GetHashCode();
       if (ActorId.Length != 0) hash ^= ActorId.GetHashCode();
       if (ReentrantId.Length != 0) hash ^= ReentrantId.GetHashCode();
-      if (CompressType != 0) hash ^= CompressType.GetHashCode();
       if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
       if (RequestId != 0L) hash ^= RequestId.GetHashCode();
       if (CallId != 0L) hash ^= CallId.GetHashCode();
@@ -359,10 +338,6 @@ namespace Rpc {
       if (ReentrantId.Length != 0) {
         output.WriteRawTag(82);
         output.WriteString(ReentrantId);
-      }
-      if (CompressType != 0) {
-        output.WriteRawTag(160, 1);
-        output.WriteInt32(CompressType);
       }
       if (EncodingType != 0) {
         output.WriteRawTag(168, 1);
@@ -417,10 +392,6 @@ namespace Rpc {
         output.WriteRawTag(82);
         output.WriteString(ReentrantId);
       }
-      if (CompressType != 0) {
-        output.WriteRawTag(160, 1);
-        output.WriteInt32(CompressType);
-      }
       if (EncodingType != 0) {
         output.WriteRawTag(168, 1);
         output.WriteInt32(EncodingType);
@@ -466,9 +437,6 @@ namespace Rpc {
       if (ReentrantId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ReentrantId);
       }
-      if (CompressType != 0) {
-        size += 2 + pb::CodedOutputStream.ComputeInt32Size(CompressType);
-      }
       if (EncodingType != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(EncodingType);
       }
@@ -512,9 +480,6 @@ namespace Rpc {
       }
       if (other.ReentrantId.Length != 0) {
         ReentrantId = other.ReentrantId;
-      }
-      if (other.CompressType != 0) {
-        CompressType = other.CompressType;
       }
       if (other.EncodingType != 0) {
         EncodingType = other.EncodingType;
@@ -569,10 +534,6 @@ namespace Rpc {
           }
           case 82: {
             ReentrantId = input.ReadString();
-            break;
-          }
-          case 160: {
-            CompressType = input.ReadInt32();
             break;
           }
           case 168: {
@@ -631,10 +592,6 @@ namespace Rpc {
           }
           case 82: {
             ReentrantId = input.ReadString();
-            break;
-          }
-          case 160: {
-            CompressType = input.ReadInt32();
             break;
           }
           case 168: {
@@ -687,7 +644,6 @@ namespace Rpc {
     public RpcResponse(RpcResponse other) : this() {
       errorCode_ = other.errorCode_;
       errorText_ = other.errorText_;
-      compressType_ = other.compressType_;
       encodingType_ = other.encodingType_;
       requestId_ = other.requestId_;
       callId_ = other.callId_;
@@ -724,17 +680,6 @@ namespace Rpc {
       get { return errorText_; }
       set {
         errorText_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "compress_type" field.</summary>
-    public const int CompressTypeFieldNumber = 20;
-    private int compressType_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CompressType {
-      get { return compressType_; }
-      set {
-        compressType_ = value;
       }
     }
 
@@ -786,7 +731,6 @@ namespace Rpc {
       }
       if (ErrorCode != other.ErrorCode) return false;
       if (ErrorText != other.ErrorText) return false;
-      if (CompressType != other.CompressType) return false;
       if (EncodingType != other.EncodingType) return false;
       if (RequestId != other.RequestId) return false;
       if (CallId != other.CallId) return false;
@@ -798,7 +742,6 @@ namespace Rpc {
       int hash = 1;
       if (ErrorCode != 0) hash ^= ErrorCode.GetHashCode();
       if (ErrorText.Length != 0) hash ^= ErrorText.GetHashCode();
-      if (CompressType != 0) hash ^= CompressType.GetHashCode();
       if (EncodingType != 0) hash ^= EncodingType.GetHashCode();
       if (RequestId != 0L) hash ^= RequestId.GetHashCode();
       if (CallId != 0L) hash ^= CallId.GetHashCode();
@@ -825,10 +768,6 @@ namespace Rpc {
       if (ErrorText.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(ErrorText);
-      }
-      if (CompressType != 0) {
-        output.WriteRawTag(160, 1);
-        output.WriteInt32(CompressType);
       }
       if (EncodingType != 0) {
         output.WriteRawTag(168, 1);
@@ -859,10 +798,6 @@ namespace Rpc {
         output.WriteRawTag(18);
         output.WriteString(ErrorText);
       }
-      if (CompressType != 0) {
-        output.WriteRawTag(160, 1);
-        output.WriteInt32(CompressType);
-      }
       if (EncodingType != 0) {
         output.WriteRawTag(168, 1);
         output.WriteInt32(EncodingType);
@@ -890,9 +825,6 @@ namespace Rpc {
       if (ErrorText.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorText);
       }
-      if (CompressType != 0) {
-        size += 2 + pb::CodedOutputStream.ComputeInt32Size(CompressType);
-      }
       if (EncodingType != 0) {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(EncodingType);
       }
@@ -918,9 +850,6 @@ namespace Rpc {
       }
       if (other.ErrorText.Length != 0) {
         ErrorText = other.ErrorText;
-      }
-      if (other.CompressType != 0) {
-        CompressType = other.CompressType;
       }
       if (other.EncodingType != 0) {
         EncodingType = other.EncodingType;
@@ -951,10 +880,6 @@ namespace Rpc {
           }
           case 18: {
             ErrorText = input.ReadString();
-            break;
-          }
-          case 160: {
-            CompressType = input.ReadInt32();
             break;
           }
           case 168: {
@@ -989,10 +914,6 @@ namespace Rpc {
           }
           case 18: {
             ErrorText = input.ReadString();
-            break;
-          }
-          case 160: {
-            CompressType = input.ReadInt32();
             break;
           }
           case 168: {

@@ -1,12 +1,6 @@
 ﻿syntax="proto3";
 package Rpc;
 
-enum RpcCompressType
-{
-RpcCompressType_None	= 0;
-RpcCompressType_LZ4		= 1;
-}
-
 enum RpcEncodingType
 {
 RpcEncodingType_None		= 0;
@@ -27,7 +21,6 @@ string parent_span_id		= 7;	//当前请求的上层请求
 string actor_id				= 9;	//ActorRPC的对象唯一ID
 string reentrant_id			= 10;	//可重入ID
 
-int32 compress_type			= 20;
 int32 encoding_type			= 21;
 sfixed64 request_id			= 22;
 sfixed64 call_id			= 23;
@@ -38,7 +31,6 @@ message RpcResponse
 int32 error_code			= 1;	//错误码
 string error_text			= 2;	//错误描述
 
-int32 compress_type			= 20;
 int32 encoding_type			= 21;
 sfixed64 request_id			= 22;
 sfixed64 call_id			= 23;
