@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (this *Server) tryUpdateEtcdMembers() {
+func (this *APIServer) tryUpdateEtcdMembers() {
 	resp, err := util.EtcdListMembers(this.etcdClient)
 	if err != nil {
 		log.Error("tryUpdateEtcdMembers", zap.Error(err))
@@ -20,31 +20,29 @@ func (this *Server) tryUpdateEtcdMembers() {
 	this.etcdMembers = resp.Members
 }
 
+//思考一下, 感觉跟etcd断链, 也不需要退出, 等啥时候连上了再重新pull
 //从etcd pull所有的服务器信息
 //构造map, 然后替换hosts
 //需要注意分配程序, 可能新的服务器会丢失一次: Add了Host, 然后pull的时候还没进etcd
-func (this *Server) tryUpdateActorHostListOnce() {
+func (this *APIServer) tryUpdateHostNodesListOnce() {
 	startTime := util.GetMilliSeconds()
-	prefix := ActorHostServerPrefix
+	prefix := HostNodePrefix
 	resp, err := util.EtcdKVGet(this.etcdClient, prefix, clientv3.WithPrefix())
 	if err != nil {
-		log.Error("tryUpdateActorHostListOnce", zap.Error(err))
-		log.Error("etcd server exit")
-
-		this.Shutdown()
+		log.Error("tryUpdateHostNodesListOnce", zap.Error(err))
 		return
 	}
 
-	var list []*ActorHostInfo
+	var list []*HostNodeInfo
 	for _, data := range resp.Kvs {
-		item := tryParseActorHostInfo(data.Value)
+		item := tryParseHostNodeInfo(data.Value)
 		if item != nil {
 			list = append(list, item)
 		}
 	}
 
 	index := buildIndexFromArray(list)
-	add, remove := this.actorMembership.UpdateIndex(startTime, index)
+	add, remove := this.membership.UpdateIndex(startTime, index)
 	if add != nil && len(add) > 0 {
 		log.Info("TryUpdateActorHostList", zap.Reflect("AddServer", add))
 	}
@@ -53,11 +51,11 @@ func (this *Server) tryUpdateActorHostListOnce() {
 	}
 }
 
-func (this *Server) GetActorMembershipRecentEvent() []*ActorHostAddRemoveEvent {
-	return this.actorMembership.GetReadonlyRecentEvents()
+func (this *APIServer) GetMembershipRecentEvent() []*HostNodeAddRemoveEvent {
+	return this.membership.GetReadonlyRecentEvents()
 }
 
-func (this *Server) SaveActorHostInfo(serverInfo *ActorHostInfo) error {
+func (this *APIServer) SaveHostNodeInfo(serverInfo *HostNodeInfo) error {
 	json, err := util.JSON(serverInfo)
 	if err != nil {
 		return err
@@ -71,8 +69,8 @@ func (this *Server) SaveActorHostInfo(serverInfo *ActorHostInfo) error {
 	return nil
 }
 
-func (this *Server) GetActorHostInfoByServerID(serverID int64) *ActorHostInfo {
-	index := this.actorMembership.GetReadonlyIndex()
+func (this *APIServer) GetHostInfoByServerID(serverID int64) *HostNodeInfo {
+	index := this.membership.GetReadonlyIndex()
 	info, ok := index.ids[serverID]
 	if ok {
 		return info
@@ -83,33 +81,31 @@ func (this *Server) GetActorHostInfoByServerID(serverID int64) *ActorHostInfo {
 	if err != nil || data == nil {
 		return nil
 	}
-	info = tryParseActorHostInfo(data)
+	info = tryParseHostNodeInfo(data)
 	return info
 }
 
-func (this *Server) GetActorMembers() map[int64]*ActorHostInfo {
-	return this.actorMembership.GetActorMembers()
+func (this *APIServer) GetHostNodes() map[int64]*HostNodeInfo {
+	return this.membership.GetHostNodesInfo()
 }
 
-func (this *Server) GetActorMembersByType(actorType string) map[int64]*ActorHostInfo {
-	return this.actorMembership.GetMembersByType(actorType)
+func (this *APIServer) GetHostNodesByType(actorType string) map[int64]*HostNodeInfo {
+	return this.membership.GetHostNodesByType(actorType)
 }
 
-func (this *Server) AddActorHostID(serverID int64) {
-	this.actorMembership.AddActorMemberID(serverID)
+func (this *APIServer) AddHostNodeID(serverID int64) {
+	this.membership.AddHostNodeID(serverID)
 }
 
-func (this *Server) GetRegisteredActorHostID(serverID int64) interface{} {
-	v := this.actorMembership.GetActorMemberID(serverID)
+func (this *APIServer) GetRegisteredActorHostID(serverID int64) interface{} {
+	v := this.membership.GetHostNodeID(serverID)
 	return v
 }
 
-//这边还要检查pd有没有update成功
-//需要考虑pd脑裂
-func (this *Server) updateActorHostListLoop() {
+func (this *APIServer) updateHostNodeListLoop() {
 	beginTime := util.GetMilliSeconds()
 	for i := int64(0); this.IsRunning(); i++ {
-		go this.tryUpdateActorHostListOnce()
+		go this.tryUpdateHostNodesListOnce()
 		go this.tryUpdateEtcdMembers()
 		currentTime := util.GetMilliSeconds()
 		sleepTime := beginTime + (i+1)*PDServerHeartBeatTime - currentTime
@@ -117,6 +113,6 @@ func (this *Server) updateActorHostListLoop() {
 	}
 }
 
-func (this *Server) GetActorMembership() *ActorMembership {
-	return this.actorMembership
+func (this *APIServer) GetMembership() *Membership {
+	return this.membership
 }

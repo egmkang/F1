@@ -19,10 +19,25 @@ func main() {
 
 	err = cfg.SetupLogger()
 
-	server := server.NewServer(cfg)
-	server.InitEtcd(api.ApiPrefix, api.NewHandle)
+	if err != nil {
+		log.Error(err.Error())
+		return
+	}
 
-	for server.IsRunning() {
+	s := server.NewAPIServer(cfg)
+	err = s.InitStorage()
+	if err != nil {
+		log.Error(err.Error())
+		return
+	}
+
+	err = s.InitEtcd(api.Prefix, api.NewHandle)
+	if err != nil {
+		log.Error(err.Error())
+		return
+	}
+
+	for s.IsRunning() {
 		time.Sleep(time.Second)
 	}
 	log.Info("exit")

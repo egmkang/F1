@@ -7,23 +7,21 @@ import (
 )
 
 type infoHandler struct {
-	server *server.Server
+	server *server.APIServer
 	render *render.Render
 }
 
-func newInfoHandler(server *server.Server, render *render.Render) *infoHandler {
+func newInfoHandler(server *server.APIServer, render *render.Render) *infoHandler {
 	return &infoHandler{server: server, render: render}
 }
 
 type PDServerInfo struct {
-	Version           string `json:"version"`
-	LastHeartBeatTime int64  `json:"last_heart_beat_time"`
+	Version string `json:"version"`
 }
 
 func (this *infoHandler) Version(w http.ResponseWriter, r *http.Request) {
 	info := PDServerInfo{
-		Version:           "0.1",
-		LastHeartBeatTime: 1,
+		Version: "0.1",
 	}
 	this.render.JSON(w, http.StatusOK, info)
 }

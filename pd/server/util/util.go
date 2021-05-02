@@ -6,6 +6,7 @@ import (
 	"github.com/unrolled/render"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"time"
 )
@@ -59,4 +60,19 @@ func GetMilliSeconds() int64 {
 func GetSeconds() int64 {
 	now := time.Now()
 	return now.Unix()
+}
+
+func RandomInArray(array []int64) int {
+	sum := int64(0)
+	for _, v := range array {
+		sum += v
+	}
+	random := rand.Int63n(sum)
+	for index, v := range array {
+		random -= v
+		if random <= 0 {
+			return index
+		}
+	}
+	return -1
 }

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const DefaultRequestTimeout = time.Second * 10
+const DefaultRequestTimeout = time.Second * 5
 const DefaultSlowRequest = time.Second * 1
 
 func EtcdLeaseGrant(client *clientv3.Client, ttl int64) (*clientv3.LeaseGrantResponse, error) {
@@ -171,8 +171,7 @@ func (this *slowLogTxn) Commit() (*clientv3.TxnResponse, error) {
 		log.Warn("txn too slow", zap.Error(err), zap.Reflect("resp", resp), zap.Duration("cost", cost))
 	}
 
-	//TODO:
-	//metrics
+	//TODO: metrics
 
 	return resp, errors.WithStack(err)
 }

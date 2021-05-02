@@ -12,34 +12,45 @@ import (
 )
 
 //默认存活时间是15秒, 5秒一个心跳
-const ActorHostServerDefaultTTL = 15
+const HostNodeDefaultTTL = 15
 
-type serverHandler struct {
-	server *server.Server
+type membershipHandler struct {
+	server *server.APIServer
 	render *render.Render
 }
 
-func newServerHandler(server *server.Server, render *render.Render) *serverHandler {
-	return &serverHandler{server: server, render: render}
+func newMembershipHandler(server *server.APIServer, render *render.Render) *membershipHandler {
+	return &membershipHandler{server: server, render: render}
 }
 
 type RegisterNewServerResp struct {
 	LeaseID int64 `json:"lease_id"`
 }
 
-type KeepAliveServerResp struct {
-	Hosts  map[int64]*server.ActorHostInfo   `json:"hosts"`
-	Events []*server.ActorHostAddRemoveEvent `json:"events"`
+type KeepAliveServerRequest struct {
+	ServerID int64 `json:"server_id"`
+	LeaseID  int64 `json:"lease_id"`
+	Load     int64 `json:"load"`
 }
 
-func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Request) {
-	serverInfo := &server.ActorHostInfo{}
+type KeepAliveServerResp struct {
+	Hosts  map[int64]*server.HostNodeInfo   `json:"hosts"`
+	Events []*server.HostNodeAddRemoveEvent `json:"events"`
+}
+
+type FetchAllServerResp struct {
+	Hosts  map[int64]*server.HostNodeInfo   `json:"hosts"`
+	Events []*server.HostNodeAddRemoveEvent `json:"events"`
+}
+
+func (this *membershipHandler) RegisterNewServer(w http.ResponseWriter, r *http.Request) {
+	serverInfo := &server.HostNodeInfo{}
 	if err := util.ReadJSONResponseError(this.render, w, r.Body, serverInfo); err != nil {
 		return
 	}
 
 	//从etcd里面获取server信息, 如果存在就拒绝注册
-	if info := this.server.GetActorHostInfoByServerID(serverInfo.ServerID); info != nil {
+	if info := this.server.GetHostInfoByServerID(serverInfo.ServerID); info != nil {
 		this.render.JSON(w, http.StatusBadRequest, fmt.Sprintf("RegisterNewServer, ServerID:%d exist", serverInfo.ServerID))
 		log.Info("RegisterNewServer server exist", zap.Int64("ServerID", info.ServerID), zap.Int64("LeaseID", info.LeaseID))
 		return
@@ -54,7 +65,7 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 
 	serverInfo.StartTime = util.GetMilliSeconds()
 	if serverInfo.TTL == 0 {
-		serverInfo.TTL = ActorHostServerDefaultTTL
+		serverInfo.TTL = HostNodeDefaultTTL
 	}
 
 	lease, err := util.EtcdLeaseGrant(this.server.GetEtcdClient(), serverInfo.TTL)
@@ -64,22 +75,19 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 	}
 	serverInfo.LeaseID = int64(lease.ID)
 
-	err = this.server.SaveActorHostInfo(serverInfo)
+	err = this.server.SaveHostNodeInfo(serverInfo)
 	if err != nil {
 		this.render.JSON(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	this.server.AddActorHostID(serverInfo.ServerID)
+	this.server.AddHostNodeID(serverInfo.ServerID)
 
 	var sb = strings.Builder{}
-	for _, s := range serverInfo.Services {
-		if len(s.ImplType) == 0 {
-			continue
-		}
-		sb.WriteString(s.ActorType)
+	for key, s := range serverInfo.Services {
+		sb.WriteString(key)
 		sb.WriteString(" => ")
-		sb.WriteString(s.ImplType)
+		sb.WriteString(s)
 		sb.WriteString(", ")
 	}
 
@@ -100,8 +108,16 @@ func (this *serverHandler) RegisterNewServer(w http.ResponseWriter, r *http.Requ
 	this.render.JSON(w, http.StatusOK, data)
 }
 
-func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Request) {
-	serverInfo := &server.ActorHostInfo{}
+func (this *membershipHandler) FetchAllServer(w http.ResponseWriter, r *http.Request) {
+	result := &FetchAllServerResp{
+		Hosts:  this.server.GetHostNodes(),
+		Events: this.server.GetMembershipRecentEvent(),
+	}
+	this.render.JSON(w, http.StatusOK, result)
+}
+
+func (this *membershipHandler) KeepAliveServer(w http.ResponseWriter, r *http.Request) {
+	serverInfo := &KeepAliveServerRequest{}
 	if err := util.ReadJSONResponseError(this.render, w, r.Body, serverInfo); err != nil {
 		return
 	}
@@ -118,7 +134,7 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 	}
 
 	//更新缓存和etcd里面的数据
-	info := this.server.GetActorHostInfoByServerID(serverInfo.ServerID)
+	info := this.server.GetHostInfoByServerID(serverInfo.ServerID)
 	if info == nil {
 		log.Error("KeepAliveServer server not found", zap.Int64("ServerID", serverInfo.ServerID))
 		this.render.JSON(w, http.StatusBadRequest, "ServerID not found")
@@ -126,7 +142,7 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 	}
 
 	info.Load = serverInfo.Load
-	this.server.SaveActorHostInfo(info)
+	this.server.SaveHostNodeInfo(info)
 
 	log.Debug("KeepAliveServer",
 		zap.Int64("ServerID", info.ServerID),
@@ -134,8 +150,8 @@ func (this *serverHandler) KeepAliveServer(w http.ResponseWriter, r *http.Reques
 		zap.Int64("Load", info.Load))
 
 	result := &KeepAliveServerResp{
-		Hosts:  this.server.GetActorMembers(),
-		Events: this.server.GetActorMembershipRecentEvent(),
+		Hosts:  this.server.GetHostNodes(),
+		Events: this.server.GetMembershipRecentEvent(),
 	}
 	this.render.JSON(w, http.StatusOK, result)
 }

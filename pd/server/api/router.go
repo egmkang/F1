@@ -3,13 +3,16 @@ package api
 import (
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
+	"github.com/urfave/negroni"
 	"net/http"
 	"pd/server"
 )
 
-const ApiPrefix = "/pd"
+const Prefix = "/pd"
 
-func createRouter(prefix string, server *server.Server) *mux.Router {
+const FindPositionUrl = "/api/v1/placement/find_position"
+
+func createRouter(prefix string, server *server.APIServer) *mux.Router {
 	render := render.New(render.Options{IndentJSON: false})
 
 	subRouter := mux.NewRouter().PathPrefix(prefix).Subrouter()
@@ -21,16 +24,22 @@ func createRouter(prefix string, server *server.Server) *mux.Router {
 	subRouter.HandleFunc("/api/v1/id/new_server_id", idHandler.NewServerID).Methods("POST")
 	subRouter.HandleFunc("/api/v1/id/new_sequence/{sequence_key}/{step}", idHandler.NewSequenceID).Methods("POST")
 
-	serverHandler := newServerHandler(server, render)
-	subRouter.HandleFunc("/api/v1/server/register", serverHandler.RegisterNewServer).Methods("POST")
-	subRouter.HandleFunc("/api/v1/server/keep_alive", serverHandler.KeepAliveServer).Methods("POST")
+	membershipHandler := newMembershipHandler(server, render)
+	subRouter.HandleFunc("/api/v1/membership/register", membershipHandler.RegisterNewServer).Methods("POST")
+	subRouter.HandleFunc("/api/v1/membership/keep_alive", membershipHandler.KeepAliveServer).Methods("POST")
+	subRouter.HandleFunc("/api/v1/membership/fetch_all", membershipHandler.FetchAllServer).Methods("POST")
 
-	actorHandler := newActorHandler(server, render)
-	subRouter.HandleFunc("/api/v1/actor/find_position", actorHandler.FindPosition).Methods("POST")
-	subRouter.HandleFunc("/api/v1/actor/new_token", actorHandler.NewActorToken).Methods("POST")
+	placementHandler := newPlacementHandler(server, render)
+	subRouter.HandleFunc(FindPositionUrl, placementHandler.FindPosition).Methods("POST")
+	subRouter.HandleFunc("/api/v1/placement/new_token", placementHandler.NewToken).Methods("POST")
 	return subRouter
 }
 
-func NewHandle(server *server.Server) http.Handler {
-	return createRouter(ApiPrefix, server)
+func NewHandle(server *server.APIServer) http.Handler {
+	router := mux.NewRouter()
+	r := createRouter(Prefix, server)
+	router.PathPrefix(Prefix).Handler(negroni.New(
+		NewRedirector(server),
+		negroni.Wrap(r)))
+	return router
 }

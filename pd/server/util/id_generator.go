@@ -84,8 +84,7 @@ func (this *IdGenerator) tryGenerateNewID(client *clientv3.Client) (int64, error
 		return -1, nil
 	}
 
-	//TODO:
-	//metrics
+	//TODO: metrics
 	log.Info("IdGenerator allocates new id", zap.String("path", this.path), zap.Int64("value", number))
 	return number, nil
 }

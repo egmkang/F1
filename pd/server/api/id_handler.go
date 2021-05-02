@@ -32,11 +32,11 @@ func getIdGenerator(sequencePath string, step int64) *util.IdGenerator {
 }
 
 type idHandler struct {
-	server *server.Server
+	server *server.APIServer
 	render *render.Render
 }
 
-func newIdHandler(server *server.Server, render *render.Render) *idHandler {
+func newIdHandler(server *server.APIServer, render *render.Render) *idHandler {
 	return &idHandler{server: server, render: render}
 }
 

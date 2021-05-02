@@ -43,14 +43,15 @@ type Config struct {
 	AdvertiseClientUrls string `toml:"advertise-client-urls" json:"advertise-client-urls"`
 	AdvertisePeerUrls   string `toml:"advertise-peer-urls" json:"advertise-peer-urls"`
 
-	Name              string `toml:"name" json:"name"`
-	DataDir           string `toml:"data-dir" json:"data-dir"`
-	ForceNewCluster   bool   `json:"force-new-cluster"`
-	EnableGRPCGateway bool   `json:"enable-grpc-gateway"`
+	Name            string `toml:"name" json:"name"`
+	DataDir         string `toml:"data-dir" json:"data-dir"`
+	ForceNewCluster bool   `json:"force-new-cluster"`
 
 	InitialCluster      string `toml:"initial-cluster" json:"initial-cluster"`
 	InitialClusterState string `toml:"initial-cluster-state" json:"initial-cluster-state"`
 	InitialClusterToken string `toml:"initial-cluster-token" json:"initial-cluster-token"`
+
+	RedisUrls string `toml:"redis-urls" json:"redis-urls"`
 
 	// Join to an existing pd cluster, a string of endpoints.
 	Join string `toml:"join" json:"join"`
@@ -177,6 +178,7 @@ func NewConfig() *Config {
 	fs.StringVar(&cfg.InitialCluster, "initial-cluster", "", "initial cluster configuration for bootstrapping, e,g. pd=http://127.0.0.1:2380")
 	fs.StringVar(&cfg.Join, "join", "", "join to an existing cluster (usage: cluster's '${advertise-client-urls}'")
 
+	fs.StringVar(&cfg.RedisUrls, "redis-urls", "", "set redis pool urls, e.g. redis://:password@localhost:6379/1,redis://:password@localhost:6379/2")
 	fs.BoolVar(&cfg.ForceNewCluster, "force-new-cluster", false, "force to create a new one-member cluster")
 
 	return cfg
@@ -402,9 +404,6 @@ func (c *Config) Adjust(meta *toml.MetaData) error {
 	if !configMetaData.IsDefined("enable-prevote") {
 		c.PreVote = true
 	}
-	if !configMetaData.IsDefined("enable-grpc-gateway") {
-		c.EnableGRPCGateway = defaultEnableGRPCGateway
-	}
 
 	return nil
 }
@@ -422,19 +421,20 @@ const (
 	defaultInitialClusterState = embed.ClusterStateFlagNew
 	defaultInitialClusterToken = "pd-cluster"
 
+	//TiDB需要跨机房, 所以心跳超时是500ms, 选举超时是3000ms
+	//游戏的PD因为不需要跨机房, 所以可以把心跳超时和选举超时改成默认配置
 	// etcd use 100ms for heartbeat and 1s for election timeout.
 	// We can enlarge both a little to reduce the network aggression.
 	// now embed etcd use TickMs for heartbeat, we will update
 	// after embed etcd decouples tick and heartbeat.
-	defaultTickInterval = 500 * time.Millisecond
+	defaultTickInterval = 100 * time.Millisecond
 	// embed etcd has a check that `5 * tick > election`
-	defaultElectionInterval = 3000 * time.Millisecond
+	defaultElectionInterval = 1000 * time.Millisecond
 
 	defaultHeartbeatStreamRebindInterval = time.Minute
 
 	defaultLeaderPriorityCheckInterval = time.Minute
 
-	defaultEnableGRPCGateway   = true
 	defaultDisableErrorVerbose = true
 )
 
@@ -475,7 +475,6 @@ func (c *Config) GenEmbedEtcdConfig() (*embed.Config, error) {
 
 	cfg.ForceNewCluster = c.ForceNewCluster
 	cfg.ZapLoggerBuilder = embed.NewZapCoreLoggerBuilder(c.logger, c.logger.Core(), c.logProps.Syncer)
-	cfg.EnableGRPCGateway = c.EnableGRPCGateway
 	cfg.EnableV2 = true
 	cfg.Logger = "zap"
 	var err error
