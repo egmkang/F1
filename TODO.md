@@ -10,11 +10,10 @@ v0.5
 * [ ] Actor System Support
 
 v0.4
-* [ ] PlacementDriver
-  * [ ] Consul Raft / DragonBoat
-  * [ ] Virtual Nodes Management
-  * [ ] Object Location
-* [ ] Load Balance
+* [x] PlacementDriver
+  * [x] API重构
+  * [x] 提供一个Placement的存储层抽象, 目前使用redis来当存储实现
+  * [ ] C#部分还没跟着重构
 
 v0.3
 * [x] RPC重新实现
