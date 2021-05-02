@@ -8,6 +8,9 @@ v0.5
 * [ ] Actor LifeTime Configuration
 * [ ] More Sample
 * [ ] Actor System Support
+* [ ] Gateway
+  * [ ] WebSocket
+  * [ ] Http
 
 v0.4
 * [x] PlacementDriver
