@@ -108,7 +108,7 @@ namespace F1.Core.Placement
             }
             this.positionLru.Remove(uniqueName);
 
-            var (code, str) = await this.PostAsync("/pd/api/v1/actor/find_position", request).ConfigureAwait(false);
+            var (code, str) = await this.PostAsync("/pd/api/v1/placement/find_position", request).ConfigureAwait(false);
             if (code != (int)HttpStatusCode.OK) 
             {
                 this.logger.LogError("FindActorPositionAsync fail, ActorType:{0}, ActorID:{1}, TTL:{2}, ErrorMessage:{3}",
@@ -150,7 +150,7 @@ namespace F1.Core.Placement
 
         public async Task<long> GenerateNewTokenAsync()
         {
-            var path  = "/pd/api/v1/actor/new_token";
+            var path  = "/pd/api/v1/placement/new_token";
             var (code, str) = await this.PostAsync(path, EmptyObject.AsJson()).ConfigureAwait(false);
 
             if (code != (int)HttpStatusCode.OK) 
@@ -180,7 +180,7 @@ namespace F1.Core.Placement
 
         public async Task<PlacementKeepAliveResponse> KeepAliveServerAsync(long serverID, long leaseID, long load)
         {
-            var path = "/pd/api/v1/server/keep_alive";
+            var path = "/pd/api/v1/membership/keep_alive";
             var (code, str) = await this.PostAsync(path, new PlacementActorHostInfo()
             {
                 ServerID = serverID,
@@ -208,7 +208,7 @@ namespace F1.Core.Placement
             {
                 info.TTL = 15;
             }
-            var path = "/pd/api/v1/server/register";
+            var path = "/pd/api/v1/membership/register";
             var (code, str) = await this.PostAsync(path, info).ConfigureAwait(false);
             if (code != (int)HttpStatusCode.OK) 
             {
@@ -221,7 +221,7 @@ namespace F1.Core.Placement
                 this.currentServerInfo.ServerID = info.ServerID;
                 this.currentServerInfo.StartTime = info.StartTime;
                 this.currentServerInfo.Address = info.Address;
-                this.currentServerInfo.Services = info.Services.ToList();
+                this.currentServerInfo.Services = info.Services;
                 this.currentServerInfo.TTL = info.TTL;
 
                 this.currentServerInfo.LeaseID = response.LeaseID;

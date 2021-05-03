@@ -67,11 +67,7 @@ namespace PlacementTest
             server_info.ServerID = server_id;
             server_info.StartTime = 101001;
             server_info.Address = Platform.GetLocalAddresss() + ":1111";
-            server_info.Services.Add(new ActorServiceInfo
-            {
-                ActorType = "test_actor",
-                ImplType = "test_actor_impl",
-            });
+            server_info.Services.TryAdd("test_actor", "test_actor_impl");
 
             var lease_id = await placement.RegisterServerAsync(server_info);
             logger.LogInformation("register server response, LeaseID:{0}", lease_id);

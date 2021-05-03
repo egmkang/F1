@@ -6,19 +6,6 @@ using Newtonsoft.Json;
 
 namespace F1.Abstractions.Placement
 {
-    public struct ActorServiceInfo 
-    {
-        /// <summary>
-        /// 接口的类型
-        /// </summary>
-        [JsonProperty("actor_type")]
-        public string ActorType;
-        /// <summary>
-        /// 实现的类型
-        /// </summary>
-        [JsonProperty("impl_type")]
-        public string ImplType;
-    }
     /// <summary>
     /// PD服务器上, Actor宿主服务器的信息
     /// </summary>
@@ -58,7 +45,17 @@ namespace F1.Abstractions.Placement
         /// 服务器能提供的Actor对象类型, 即服务能力
         /// </summary>
         [JsonProperty("services")]
-        public List<ActorServiceInfo> Services = new List<ActorServiceInfo>();
+        public Dictionary<string, string> Services = new Dictionary<string, string>();
+        /// <summary>
+        /// 服务的描述信息
+        /// </summary>
+        [JsonProperty("desc")]
+        public string Desc = "";
+        /// <summary>
+        /// 服务器的额外属性, 用来表示网关等信息
+        /// </summary>
+        [JsonProperty("labels")]
+        public Dictionary<string, string> Labels = new Dictionary<string, string>();
     }
 
     /// <summary>

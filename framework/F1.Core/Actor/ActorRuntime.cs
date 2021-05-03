@@ -167,12 +167,12 @@ namespace F1.Core.Actor
                 foreach (var (key, value) in serverTypes)
                 {
                     if (value == null) continue;
-                    server_info.Services.Add(new ActorServiceInfo
+                    if (!server_info.Services.TryAdd(key, value.Name)) 
                     {
-                        ActorType = key,
-                        ImplType = value.Name,
-                    });
-                    logger.LogTrace("Register ServiceType:{0} => {1}", key, value.Name);
+                        logger.LogError("Register ServiceType:{0} => {1} fail", key, value.Name);
+                        continue;
+                    }
+                    logger.LogInformation("Register ServiceType:{0} => {1}", key, value.Name);
                 }
 
                 var lease_id = await placement.RegisterServerAsync(server_info).ConfigureAwait(false);

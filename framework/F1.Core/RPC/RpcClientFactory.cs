@@ -59,7 +59,7 @@ namespace F1.Core.RPC
         /// </summary>
         public static readonly string ServiceGateway = typeof(IGateway).Name;
 
-        private bool IsGateway(PlacementActorHostInfo server) => server.Services.Count == 1 && server.Services[0].ActorType == ServiceGateway;
+        private bool IsGateway(PlacementActorHostInfo server) => server.Services.Count == 1 && server.Services.ContainsKey(ServiceGateway);
 
         private void OnAddServer(PlacementActorHostInfo server) 
         {
