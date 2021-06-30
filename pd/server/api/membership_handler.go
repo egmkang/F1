@@ -141,6 +141,7 @@ func (this *membershipHandler) KeepAliveServer(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+    info.LeaseID = serverInfo.LeaseID
 	info.Load = serverInfo.Load
 	this.server.SaveHostNodeInfo(info)
 
